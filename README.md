@@ -1,7 +1,10 @@
+## 本项目暂缓更新，预计6月恢复  
+
 # 小麻雀处理器
 [![rvlogo](/doc/图库/Readme/rvlogo.bmp)RISC-V官网收录](https://riscv.org/exchange/?_sf_s=sparrowrv)  
 [![teelogo](/doc/图库/Readme/giteetj.bmp)Gitee推荐项目](https://gitee.com/explore/risc-v)  
 [![book](/doc/图库/Readme/book.png)处理器文档导航页](/doc/文档导航.md)  
+
 ## 简介
 小麻雀处理器(SparrowRV)是一款RISC-V架构的32位单周期两级流水线处理器。它的控制逻辑简单，没有复杂的流水线控制结构，代码注释完备，配有易上手的仿真环境和软件开发环境，适合用于学习。  
 此项目处于开发阶段，master分支更新频繁，稳定版请参阅[release发行版](https://gitee.com/xiaowuzxc/SparrowRV/releases)  
@@ -73,7 +76,7 @@ Linux下仅支持iverilog
 Debian系(Ubuntu、Debian、Deepin)执行以下命令：  
 ```
 sudo apt install make git python3 python3-tk gtkwave gcc g++ bison flex gperf autoconf
-git clone -b v12-branch --depth=1 https://gitee.com/xiaowuzxc/iverilog/
+git clone -b v12_0 --depth=1 https://gitee.com/xiaowuzxc/iverilog/
 cd iverilog
 sh autoconf.sh
 ./configure
