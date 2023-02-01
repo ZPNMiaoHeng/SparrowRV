@@ -1,5 +1,3 @@
-## 本项目暂缓更新，预计6月恢复  
-
 # 小麻雀处理器
 [![rvlogo](/doc/图库/Readme/rvlogo.bmp)RISC-V官网收录](https://riscv.org/exchange/?_sf_s=sparrowrv)  
 [![teelogo](/doc/图库/Readme/giteetj.bmp)Gitee推荐项目](https://gitee.com/explore/risc-v)  
