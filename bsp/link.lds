@@ -2,7 +2,7 @@ OUTPUT_ARCH( "riscv" )
 ENTRY(_start) /*定义程序入口，_start来自启动文件*/
 
 /*以下可修改*/
-_app_in_rtl = 1; /* 程序由RTL设计导入并固化在FPGA=1；程序由串口/JTAG烧录并固化在Flash=0 */
+_app_in_rtl = 0; /* 程序由RTL设计导入并固化在FPGA=1；程序由串口/JTAG烧录并固化在Flash=0 */
 _cpu_iram_size = 32K; /*iram指令存储器大小*/
 _cpu_sram_size = 16K; /*sram数据存储器大小*/
 _cpu_stack_size = 4K; /*堆栈区大小*/
