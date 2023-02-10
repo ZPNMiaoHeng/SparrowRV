@@ -11,7 +11,7 @@ TARGET = obj
 .PHONY: all
 all: $(TARGET)
 
-ASM_SRCS += ../lib/start.S
+ASM_SRCS += ../lib/startup/startup.S
 ASM_SRCS += ../lib/trap/trap_entry.S
 
 C_SRCS += ${wildcard ./*.c}
