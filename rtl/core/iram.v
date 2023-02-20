@@ -114,7 +114,11 @@ end
 
 dpram #(
     .RAM_DEPTH(`IRamSize),
+`ifdef HDL_SIM
+    .RAM_SEL("DP_RAM")
+`else
     .RAM_SEL(`SRAM_MODEL)
+`endif
 ) inst_appram (
     .clk    (clk),
     .addra  (addra[clogb2(`IRamSize-1)-1:0]),

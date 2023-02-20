@@ -23,7 +23,7 @@
 `define DIV_MODE "HF_DIV"
 
 //SRAM模式配置，支持"DP_ROM" "DP_RAM" "SYN_DPR" "EG4_32K"
-`define SRAM_MODEL "DP_RAM"
+`define SRAM_MODEL "DP_ROM"
 
 
 
@@ -36,10 +36,9 @@
  *          开关配置区           
  *--------------------------------*/
 //将程序固化到FPGA内部，SRAM模式必须配置为"DP_ROM"或"DP_RAM"
-`define PROG_IN_FPGA 1'b1
+//`define PROG_IN_FPGA 1'b1
 //固化到FPGA内部的程序路径，仿真无效
-`define PROG_FPGA_PATH ""
-//`define PROG_FPGA_PATH "C:/Users/xiaow/Desktop/gitee/SparrowRV/tb/inst.txt"
+`define PROG_FPGA_PATH "C:/Users/xiaow/Desktop/gitee/SparrowRV/tb/inst.txt"
 
 //启用M扩展(乘法/除法)
 `define RV32_M_ISA 1'b1
