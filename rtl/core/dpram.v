@@ -1,19 +1,13 @@
+`include "defines.v"
 /*
 dpram生成一个不完全的双端口RAM，数据位宽为32位，en使能，we写使能，wem字节写使能
 端口a只读，端口b可读可写
-提供两种实现方式
-1. 行为级建模
-例化参数 RAM_SEL = "RTL_MODEL"，由综合器推断，推荐仿真环境/vivado使用
-2.自定义例化模板
-3.安路EG4S20 FPGA原语例化
 */
 module dpram #(
     parameter RAM_WIDTH = 32,//RAM数据位宽
     parameter RAM_DEPTH = 2048, //RAM深度
-    parameter RAM_SEL = "RTL_MODEL", //选择模型
-    parameter BRAM_EN = "32K", //选择模型
-    parameter MODE = "DP",
-    parameter INIT_FILE = "NONE"
+    parameter RAM_SEL = "DP_RAM" //选择模型
+
 ) (
     input [clogb2(RAM_DEPTH-1)-1:0] addra,  // Port A address bus, width determined from RAM_DEPTH
     input [clogb2(RAM_DEPTH-1)-1:0] addrb,  // Port B address bus, width determined from RAM_DEPTH
@@ -33,10 +27,9 @@ reg [RAM_WIDTH-1:0] BRAM [0:RAM_DEPTH-1];
 
 generate
     case(RAM_SEL)
-        "RTL_MODEL": begin
-            
-            reg [RAM_WIDTH-1:0] ram_data_a = {RAM_WIDTH{1'b0}};
-            reg [RAM_WIDTH-1:0] ram_data_b = {RAM_WIDTH{1'b0}};
+        "DP_RAM": begin
+            reg [RAM_WIDTH-1:0] addra_r;
+            reg [RAM_WIDTH-1:0] addrb_r;
             always @(posedge clk)
                 if (ena) begin
                     if (wea) begin
@@ -50,7 +43,7 @@ generate
                             BRAM[addra][31:24] <= dina[31:24];
                     end
                     else begin
-                        ram_data_a <= BRAM[addra];
+                        addra_r <= addra;
                     end
                 end
 
@@ -67,13 +60,28 @@ generate
                             BRAM[addrb][31:24] <= dinb[31:24];
                     end
                     else begin
-                        ram_data_b <= BRAM[addrb];
+                        addrb_r <= addrb;
                     end
                 end
-            assign douta = ram_data_a;
-            assign doutb = ram_data_b;
+            assign douta = BRAM[addra_r];
+            assign doutb = BRAM[addrb_r];
         end
+        "DP_ROM": begin
+            reg [RAM_WIDTH-1:0] addra_r;
+            reg [RAM_WIDTH-1:0] addrb_r;
+            always @(posedge clk)
+                if (ena) begin
+                    addra_r <= addra;
+                end
 
+            always @(posedge clk)
+                if (enb) begin
+                    addrb_r <= addrb;
+                end
+            assign douta = BRAM[addra_r];
+            assign doutb = BRAM[addrb_r];
+
+        end
         "SYN_DPR": begin
 /*
 请在这里例化相应FPGA平台的双端口BRAM，并与端口连接
@@ -105,6 +113,8 @@ doutb：数据输出a，位宽32
 
 
         "EG4_32K": begin
+            localparam BRAM_EN = "32K";
+            localparam INIT_FILE = "../../bsp/obj/SparrowRV.mif";
             EG_LOGIC_BRAM #( 
                 .DATA_WIDTH_A(32),
                 .DATA_WIDTH_B(32),
@@ -146,6 +156,14 @@ doutb：数据输出a，位宽32
         end
     endcase
 endgenerate
+
+`ifndef HDL_SIM
+`ifdef PROG_IN_FPGA
+initial begin
+    $readmemh (`PROG_FPGA_PATH, BRAM);
+end
+`endif
+`endif
 
 //  The following function calculates the address width based on specified RAM depth
 function integer clogb2;

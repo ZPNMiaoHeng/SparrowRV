@@ -114,10 +114,7 @@ end
 
 dpram #(
     .RAM_DEPTH(`IRamSize),
-    .RAM_SEL(`SRAM_MODEL),
-    .BRAM_EN("9K(FAST)"),
-    //.INIT_FILE("../../tb/tools/bootrom/obj/bootrom.mif")
-    .INIT_FILE("../../bsp/obj/SparrowRV.mif")
+    .RAM_SEL(`SRAM_MODEL)
 ) inst_appram (
     .clk    (clk),
     .addra  (addra[clogb2(`IRamSize-1)-1:0]),

@@ -4,7 +4,7 @@ uint32_t sm3_tmp;
 //测试
 int main()
 {
-    init_uart0_printf(25000000);
+    init_uart0_printf(115200);
     printf("%s", "Hello world SparrowRV\n");
     sm3_tmp=read_csr(mimpid);
     printf("mimpid l=%lu\n",sm3_tmp&0x0000FFFF);

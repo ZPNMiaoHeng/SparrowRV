@@ -2,16 +2,15 @@ OUTPUT_ARCH( "riscv" )
 ENTRY(_start) /*定义程序入口，_start来自启动文件*/
 
 /*以下可修改*/
-_app_in_rtl = 0; /* 程序由RTL设计导入并固化在FPGA=1；程序由串口/JTAG烧录并固化在Flash=0 */
 _cpu_iram_size = 32K; /*iram指令存储器大小*/
 _cpu_sram_size = 16K; /*sram数据存储器大小*/
 _cpu_stack_size = 4K; /*堆栈区大小*/
 /*以上可修改*/
 
-_iram_base_addr = _app_in_rtl ? 0x00000000 : 0x00002000 ; /*iram存储器基地址*/
+_iram_base_addr = 0x00000000; /*iram存储器基地址*/
 _sram_base_addr = 0x10000000; /*sram存储器基地址*/
 
-_iram_app_size = _app_in_rtl ? _cpu_iram_size : (_cpu_iram_size - 8K); /*用户程序可用空间 = _cpu_iram_size - 8K */
+_iram_app_size = _cpu_iram_size ; /*用户程序可用空间*/
 
 MEMORY
 {

@@ -3,7 +3,6 @@
 `define IRamSize (`IRam_KB*1024/4) //kB->B->4B
 `define SRamSize (`SRam_KB*1024/4) //kB->B->4B
 `define RstPC 32'h0000_0000 //复位后PC值在0000
-`define BRamSize (`BRam_KB*1024/4) //kB->B->4B
 
 //硬件实现编号 MIMPID_NUM 
 //[15:0] CPU_CLOCK_HZ / 10_000

@@ -1,5 +1,6 @@
 # drawio
 *.drawio.bkp
+*.svg.bkp
 /tb/tb
 /tb/*.lxt
 /tb/*.vcd

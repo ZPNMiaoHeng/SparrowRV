@@ -72,26 +72,70 @@ always @(*) begin
     wem = sram_axi_wstrb;
 end
 
-dpram #(
-    .RAM_DEPTH(`SRamSize),
-    .RAM_SEL(`SRAM_MODEL),
-    .BRAM_EN("32K"),
-    .MODE("SP")
-) inst_sram (
-    .clk    (clk),
-    .addra  (addr_zero0),
-    .addrb  (addr),
-    .dina   (32'h0),
-    .dinb   (din),
-    .wea    (1'b0),
-    .web    (we),
-    .wema   (4'h0),
-    .wemb   (wem),
-    .ena    (1'b0),
-    .enb    (en),
-    .douta  (),
-    .doutb  (dout)
-);
+//RTL SRAM
+parameter RAM_WIDTH = 32;//RAM数据位宽
+parameter RAM_DEPTH = `SRamSize;//RAM深度
+reg [7:0] BRAM0 [0:RAM_DEPTH-1];
+reg [7:0] BRAM1 [0:RAM_DEPTH-1];
+reg [7:0] BRAM2 [0:RAM_DEPTH-1];
+reg [7:0] BRAM3 [0:RAM_DEPTH-1];
+wire [7:0] dout0;
+wire [7:0] dout1;
+wire [7:0] dout2;
+wire [7:0] dout3;
+reg [RAM_WIDTH-1:0] addr_r0;
+reg [RAM_WIDTH-1:0] addr_r1;
+reg [RAM_WIDTH-1:0] addr_r2;
+reg [RAM_WIDTH-1:0] addr_r3;
+/*
+always @(posedge clk)
+    if (en) begin
+        if(we&wem[0])
+            BRAM0[addr] <= din[7:0];
+        if(we&wem[1])
+            BRAM1[addr] <= din[15:8];
+        if(we&wem[2])
+            BRAM2[addr] <= din[23:16];
+        if(we&wem[3])
+            BRAM3[addr] <= din[31:24];
+        addr_r <= addr;
+    end
+
+assign dout = {BRAM3[addr_r], BRAM2[addr_r], BRAM1[addr_r], BRAM0[addr_r]};
+*/
+always @(posedge clk)
+    if (en) begin
+        if(we&wem[0])
+            BRAM0[addr] <= din[7:0];
+        addr_r0 <= addr;
+    end
+assign dout0 =  BRAM0[addr_r0];
+
+always @(posedge clk)
+    if (en) begin
+        if(we&wem[1])
+            BRAM1[addr] <= din[15:8];
+        addr_r1 <= addr;
+    end
+assign dout1 =  BRAM1[addr_r1];
+
+always @(posedge clk)
+    if (en) begin
+        if(we&wem[2])
+            BRAM2[addr] <= din[23:16];
+        addr_r2 <= addr;
+    end
+assign dout2 =  BRAM2[addr_r2];
+
+always @(posedge clk)
+    if (en) begin
+        if(we&wem[3])
+            BRAM3[addr] <= din[31:24];
+        addr_r3 <= addr;
+    end
+assign dout3 =  BRAM3[addr_r3];
+
+assign dout = {dout3, dout2, dout1, dout0};
 
 function integer clogb2;
     input integer depth;

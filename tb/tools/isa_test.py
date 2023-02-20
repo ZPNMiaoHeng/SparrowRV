@@ -64,6 +64,7 @@ def 编译并仿真():
     编译命令+=r'-y ../rtl/jtag/ '#文件夹路径
     编译命令+=r'-y ../rtl/ '#文件夹路径
     编译命令+=r'-I ../rtl/ '#头文件路径
+    编译命令+=r'-D HDL_SIM '
     if sys.argv[1] == 'all_isa':
         编译命令+=r'-D ISA_TEST '
     编译命令+=r'tb_core.sv '#仿真文件
