@@ -6,7 +6,7 @@ gtkwave是一款开源、免费、跨平台的查看波形文件的工具软件�
 
 ## Windows平台
 [视频版教程](https://www.bilibili.com/video/BV1Se4y1C7sZ)  
-进入网页`http://bleyer.org/icarus/`  
+进入网页http://bleyer.org/icarus/  
 点击`iverilog-v12-20220611-x64_setup [18.2MB]`，下载并打开  
 安装路径随便选，`Add executable folder(s) to the user PATH`一定要勾选！  
 花一点时间安装  
