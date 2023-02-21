@@ -12,7 +12,7 @@
 
 //#include "nor25_flash.h"
 //系统主频
-#define CPU_FREQ_HZ   24000000UL
+#define CPU_FREQ_HZ   24000000UL //你的工作频率Hz
 #define CPU_FREQ_MHZ  (CPU_FREQ_HZ/1000000UL)
 
 #define ENABLE 1

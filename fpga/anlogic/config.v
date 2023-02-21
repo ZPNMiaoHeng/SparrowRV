@@ -2,7 +2,7 @@
  *          参数配置区           
  *--------------------------------*/
 //系统主频，根据具体场景填写
-`define CPU_CLOCK_HZ 25_000_000
+`define CPU_CLOCK_HZ 24_000_000
 
 //iram指令存储器大小，单位为KB
 `define IRam_KB 32 
