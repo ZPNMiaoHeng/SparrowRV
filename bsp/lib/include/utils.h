@@ -35,17 +35,14 @@
 uint64_t mtime_value_get();
 void mtime_value_set(uint64_t value64b);
 void mtime_en_ctr(uint8_t mtime_en);
+void mtimecmp_value_set(uint64_t value64b);
 uint64_t minstret_value_get();
 void minstret_value_set(uint64_t value64b);
 void minstret_en_ctr(uint8_t minstret_en);
-void delay_sys_wait(uint32_t us);
+void delay_mtime_us(uint32_t us);
 void core_reset_enable();
 void core_sim_end();
-uint32_t sm3_accl_in_busy();
-uint32_t sm3_accl_res_wait();
-uint32_t sm3_accl_res_data(uint32_t sm3_res_sel);
-void sm3_accl_in_lst(uint32_t sm3_lst_ctr);
-void sm3_accl_in_data(uint32_t sm3_data);
+
 
 
 

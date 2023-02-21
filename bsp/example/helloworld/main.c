@@ -10,10 +10,10 @@ uint32_t vendorid;//Vendor ID
 //测试
 int main()
 {
-    init_uart0_printf(115200);
+    init_uart0_printf(115200);//设置printf波特率
     printf("SparrowRV Core: RV32 IM\n");
     printf("Support Interrupt and CSRs\n");
-
+    //读取mumpid
     tmp=read_csr(mimpid);
     cpu_csr_freq = (tmp & 0x00007FFF) * 10000;
     cpu_iram_size = ((tmp & 0x00FF0000) >> 16)*1024;

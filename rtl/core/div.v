@@ -55,22 +55,22 @@ wire[31:0] minuend_tmp = minuend_ge_divisor? minuend_sub_res[30:0]: minuend[30:0
 always @ (posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         state <= STATE_IDLE;
-        res_valid_o <= `DivResultNotReady;
-        result_o <= `ZeroWord;
-        div_result <= `ZeroWord;
-        div_remain <= `ZeroWord;
+        res_valid_o <= 1'b0;
+        result_o <= 32'h0;
+        div_result <= 32'h0;
+        div_remain <= 32'h0;
         op_r <= 3'h0;
-        dividend_r <= `ZeroWord;
-        divisor_r <= `ZeroWord;
-        minuend <= `ZeroWord;
+        dividend_r <= 32'h0;
+        divisor_r <= 32'h0;
+        minuend <= 32'h0;
         invert_result <= 1'b0;
-        count <= `ZeroWord;
+        count <= 32'h0;
     end else begin
         case (state)
             STATE_IDLE: begin
-                if (start_i == `DivStart) begin
+                if (start_i == 1'b1) begin
                     if (res_ready_i) begin
-                        res_valid_o <= `DivResultNotReady;
+                        res_valid_o <= 1'b0;
                     end else begin
                         op_r <= op_i;
                         dividend_r <= dividend_i;
@@ -79,31 +79,31 @@ always @ (posedge clk or negedge rst_n) begin
                     end
                 end else begin
                     op_r <= 3'h0;
-                    dividend_r <= `ZeroWord;
-                    divisor_r <= `ZeroWord;
-                    res_valid_o <= `DivResultNotReady;
-                    result_o <= `ZeroWord;
+                    dividend_r <= 32'h0;
+                    divisor_r <= 32'h0;
+                    res_valid_o <= 1'b0;
+                    result_o <= 32'h0;
                 end
             end
 
             STATE_START: begin
-                if (start_i == `DivStart) begin
+                if (start_i == 1'b1) begin
                     // 除数为0
-                    if (divisor_r == `ZeroWord) begin
+                    if (divisor_r == 32'h0) begin
                         if (op_div | op_divu) begin
                             result_o <= 32'hffffffff;
                         end else begin
                             result_o <= dividend_r;
                         end
-                        res_valid_o <= `DivResultReady;
+                        res_valid_o <= 1'b1;
                         state <= STATE_IDLE;
                     // 除数不为0
                     end else begin
                         count <= 32'h40000000;
                         state <= STATE_CALC;
-                        res_valid_o <= `DivResultNotReady;
-                        div_result <= `ZeroWord;
-                        div_remain <= `ZeroWord;
+                        res_valid_o <= 1'b0;
+                        div_result <= 32'h0;
+                        div_remain <= 32'h0;
 
                         // DIV和REM这两条指令是有符号数运算指令
                         if (op_div | op_rem) begin
@@ -132,12 +132,12 @@ always @ (posedge clk or negedge rst_n) begin
                     end
                 end else begin
                     state <= STATE_IDLE;
-                    result_o <= `ZeroWord;
-                    res_valid_o <= `DivResultNotReady;
+                    result_o <= 32'h0;
+                    res_valid_o <= 1'b0;
                 end
             end
             STATE_CALC: begin
-                if (start_i == `DivStart) begin
+                if (start_i == 1'b1) begin
                     dividend_r <= {dividend_r[30:0], 1'b0};
                     div_result <= div_result_tmp;
                     count <= {1'b0, count[31:1]};
@@ -153,13 +153,13 @@ always @ (posedge clk or negedge rst_n) begin
                     end
                 end else begin
                     state <= STATE_IDLE;
-                    result_o <= `ZeroWord;
-                    res_valid_o <= `DivResultNotReady;
+                    result_o <= 32'h0;
+                    res_valid_o <= 1'b0;
                 end
             end
             STATE_END: begin
-                if (start_i == `DivStart) begin
-                    res_valid_o <= `DivResultReady;
+                if (start_i == 1'b1) begin
+                    res_valid_o <= 1'b1;
                     state <= STATE_IDLE;
                     if (op_div | op_divu) begin
                         if (invert_result) begin
@@ -176,8 +176,8 @@ always @ (posedge clk or negedge rst_n) begin
                     end
                 end else begin
                     state <= STATE_IDLE;
-                    result_o <= `ZeroWord;
-                    res_valid_o <= `DivResultNotReady;
+                    result_o <= 32'h0;
+                    res_valid_o <= 1'b0;
                 end
             end
 

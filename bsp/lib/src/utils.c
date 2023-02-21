@@ -38,6 +38,15 @@ void mtime_en_ctr(uint8_t mtime_en)
 
 }
 
+void mtimecmp_value_set(uint64_t value64b)
+{
+    uint32_t temp;
+    temp = value64b;
+    write_csr(mtimecmp, temp);
+    temp = value64b>>32;
+    write_csr(mtimecmph, temp);
+}
+
 uint64_t minstret_value_get()
 {
     uint64_t temp;
@@ -66,15 +75,17 @@ void minstret_en_ctr(uint8_t minstret_en)
 
 }
 
-void delay_sys_wait(uint32_t us)
+//使用mtime，会关闭定时器中断
+void delay_mtime_us(uint32_t us)
 {
-    uint64_t tmp;
-    uint32_t count;
-
-    count = us * CPU_FREQ_MHZ;
-    tmp = mtime_value_get();
-    mtime_en_ctr(ENABLE);
-    while (mtime_value_get() < (tmp + count));
+    uint64_t count;
+    mtime_en_ctr(DISABLE);//暂停定时器
+    trap_en_ctrl(TRAP_TCMP, DISABLE);//关闭定时器中断
+    count = us * CPU_FREQ_MHZ;//计算计数值
+    mtimecmp_value_set(count);//设置比较值
+    mtime_value_set(0);//设置定时器值
+    mtime_en_ctr(ENABLE);//启动定时器
+    while (!trap_mip_state(TRAP_TCMP));
 }
 
 void core_reset_enable()
@@ -87,49 +98,7 @@ void core_sim_end()
     write_csr(mends,1);
 }
 
-uint32_t sm3_accl_in_busy()
-{
-    uint32_t temp;
-    temp = read_csr(msm3ct);
-    temp = temp & 0b010000;
-    if(temp)
-        return 0;
-    else
-        return 1;
-}
 
-uint32_t sm3_accl_res_wait()
-{
-    uint32_t temp;
-    temp = read_csr(msm3ct);
-    temp = temp & 0b100000;
-    if(temp)
-        return 0;
-    else
-        return 1;
-}
-
-uint32_t sm3_accl_res_data(uint32_t sm3_res_sel)
-{
-    uint32_t temp;
-    write_csr(msm3ct, (sm3_res_sel & 0b000111));
-    temp = read_csr(msm3in);
-    return temp;
-}
-
-void sm3_accl_in_lst(uint32_t sm3_lst_ctr)
-{
-    if (sm3_lst_ctr == ENABLE) //EN
-        set_csr(msm3ct, 0b1000);
-    else //DIS
-        clear_csr(msm3ct, 0b1000);
-}
-
-void sm3_accl_in_data(uint32_t sm3_data)
-{
-    while(sm3_accl_in_busy());
-    write_csr(msm3in, sm3_data);
-}
 
 /*
 void inst_mem_switch(uint8_t mem_sel)

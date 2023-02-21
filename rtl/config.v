@@ -36,7 +36,7 @@
  *          开关配置区           
  *--------------------------------*/
 //将程序固化到FPGA内部，SRAM模式必须配置为"DP_ROM"或"DP_RAM"
-//`define PROG_IN_FPGA 1'b1
+`define PROG_IN_FPGA 1'b1
 //固化到FPGA内部的程序路径，仿真无效
 `define PROG_FPGA_PATH "C:/Users/xiaow/Desktop/gitee/SparrowRV/tb/inst.txt"
 
@@ -49,11 +49,9 @@
 //启用minstret指令计数器
 `define CSR_MINSTRET_EN 1'b1
 
-//启用硬件加速SM3杂凑算法
-//`define SM3_ACCL 1'b1
+//开发版本
+`define DEVELOP_REV 1'b1
 
-//启用w25模型，会降低仿真速度
-//`define Flash25 1'b1
 
 /*--------------------------------
  *          开关配置区           

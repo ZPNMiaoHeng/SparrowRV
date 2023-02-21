@@ -16,7 +16,7 @@ wire [31:0]fpioa;
 
 logic [63:0] sim_cycle_cnt = '0;//仿真周期计数器
 
-assign fpioa[3:2] = `BOOT_UART_WI;
+//assign fpioa[3:2] = 0;
 wire uart0_rx= (sim_cycle_cnt>21045 && sim_cycle_cnt<50000)?randem:1'b1;//1'b1;//fpioa[0]
 assign fpioa[0]=uart0_rx;
 wire uart0_tx=fpioa[1];//fpioa[1]
@@ -72,7 +72,7 @@ always @(posedge clk)
 initial begin
     sysrst();//复位系统
     #10;
-    //ex_trap();
+    ex_trap();//测试外部中断
 
 `ifdef ISA_TEST  //通过宏定义，控制是否是指令集测试程序
     wait(x26 == 32'b1);   // x26 == 1，结束仿真
@@ -144,11 +144,11 @@ task sysrst;//复位任务
     #10;
 endtask : sysrst
 
-task ex_trap;
+task ex_trap;//外部中断
     #15000;
     core_ex_trap_valid=1;
     #30;
-    wait(core_ex_trap_ready);
+    wait(core_ex_trap_ready);//响应后取消
     core_ex_trap_valid=0;
 endtask : ex_trap
 

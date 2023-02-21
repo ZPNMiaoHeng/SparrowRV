@@ -54,26 +54,26 @@ reg [`RegBus] mtval_gen;//生成mtval信息
 always @(*) begin
     ex_trap_ready_o = 0;
     if(trap_interrupt_en) begin//中断
-        mcause_gen[31] = 1'b1;
+        mcause_gen[31] = 1'b1;//中断位
         if(pex_trap_r) begin//优先外部中断 
-            mcause_gen[30:0] = 31'd11;
+            mcause_gen[30:0] = `MCAUSE_INTP_EX;
             ex_trap_ready_o  = 1;
         end
         else
             if(ptcmp_trap_r) begin//其次定时器中断
-                mcause_gen[30:0] = 7;
+                mcause_gen[30:0] = `MCAUSE_INTP_TCMP;
             end
             else
                 if(psoft_trap_r) begin//其次软件中断
-                    mcause_gen[30:0] = 31'd3;
+                    mcause_gen[30:0] = `MCAUSE_INTP_SOFT;
                 end
                 else begin//其他
-                    mcause_gen[30:0] = 31'd0;
+                    mcause_gen[30:0] = `MCAUSE_INTP_XXXX;
                 end
     end
     else begin//异常
         mcause_gen[31] = 1'b0;
-        mcause_gen[30:0] = 31'hffff;//异常暂不分析
+        mcause_gen[30:0] = `MCAUSE_EXCP_ALL;//异常暂不分析
     end
 end
 

@@ -4,49 +4,21 @@
 `define SRamSize (`SRam_KB*1024/4) //kB->B->4B
 `define RstPC 32'h0000_0000 //复位后PC值在0000
 
-//硬件实现编号 MIMPID_NUM 
-//[15:0] CPU_CLOCK_HZ / 10_000
-//[16] 1:启用SM3
-//[31:17] 保留
-`ifdef SM3_ACCL
-`define SM3_ACCL_EN 1'b1
+`ifdef DEVELOP_REV
+`define DEVELOP_REV 1'b1
 `else
-`define SM3_ACCL_EN 1'b0
+`define DEVELOP_REV 1'b0
 `endif
 
-`define BOOT_JP_STAR 2'b00 //直接启动
-`define BOOT_RF_STAR 2'b01 //读取Flash后启动
-`define BOOT_UART_WI 2'b10 //串口烧写appram
-`define BOOT_UART_WF 2'b11 //串口烧写Flash
 
-`define RstEnable 1'b0
-`define RstDisable 1'b1
-`define ZeroWord 32'h0
-`define ZeroReg 5'h0
-`define WriteEnable 1'b1
-`define WriteDisable 1'b0
-`define ReadEnable 1'b1
-`define ReadDisable 1'b0
-`define True 1'b1
-`define False 1'b0
-`define ChipEnable 1'b1
-`define ChipDisable 1'b0
-`define JumpEnable 1'b1
-`define JumpDisable 1'b0
-`define DivResultNotReady 1'b0
-`define DivResultReady 1'b1
-`define DivStart 1'b1
-`define DivStop 1'b0
-`define HoldEnable 1'b1
-`define HoldDisable 1'b0
-`define Stop 1'b1
-`define NoStop 1'b0
-`define RIB_ACK 1'b1
-`define RIB_NACK 1'b0
-`define RIB_REQ 1'b1
-`define RIB_NREQ 1'b0
-`define INT_ASSERT 1'b1
-`define INT_DEASSERT 1'b0
+//陷阱trap相关
+//中断
+`define MCAUSE_INTP_EX   31'd11//外部中断
+`define MCAUSE_INTP_TCMP 31'd7//定时器中断
+`define MCAUSE_INTP_SOFT 31'd3//软件中断
+`define MCAUSE_INTP_XXXX 31'd12//其他中断源
+//异常
+`define MCAUSE_EXCP_ALL 31'hffff
 
 `define INT_BUS 7:0
 `define INT_NONE 8'h0

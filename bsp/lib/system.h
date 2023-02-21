@@ -10,7 +10,7 @@
 #include "fpioa.h"
 #include "gpio.h"
 
-#include "nor25_flash.h"
+//#include "nor25_flash.h"
 //系统主频
 #define CPU_FREQ_HZ   24000000UL
 #define CPU_FREQ_MHZ  (CPU_FREQ_HZ/1000000UL)
@@ -32,9 +32,18 @@
 //[1]:minstret使能
 //[2]:mtime使能
 //[3]:soft_rst写1复位
-//[4]:
-#define msm3in     0x348  //sm3数据输入输出
-#define msm3ct     0x349  //sm3控制
+//[4]:保留
+
+//陷阱相关
+#define MCAUSE_INTERRUPT 0x80000000 //进入陷阱的原因是中断
+#define MCAUSE_INTP_EX   11//外部中断
+#define MCAUSE_INTP_TCMP 7//定时器中断
+#define MCAUSE_INTP_SOFT 3//软件中断
+#define MCAUSE_INTP_XXXX 12//其他中断源
+//异常
+#define MCAUSE_EXCP_ALL 0xffff
+
+
 
 #define SYS_RWMEM_W(addr) (*((volatile uint32_t *)(addr)))   //必须4字节对齐访问(低2位为0)
 #define SYS_RWMEM_B(addr) (*((volatile uint8_t  *)(addr)))   //允许访问4G地址空间任意字节，但是部分外设不支持字节寻址写

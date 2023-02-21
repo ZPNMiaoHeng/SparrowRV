@@ -3,7 +3,7 @@
 //串口环回
 int main()
 {
-    init_uart0_printf(115200);
+    init_uart0_printf(115200);//设置printf波特率
     printf("SparrowRV uart loopback\n");
 
     while(1)
