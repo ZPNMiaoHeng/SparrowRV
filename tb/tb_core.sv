@@ -72,8 +72,6 @@ always @(posedge clk)
 initial begin
     sysrst();//复位系统
     #10;
-    ex_trap();//测试外部中断
-
 `ifdef ISA_TEST  //通过宏定义，控制是否是指令集测试程序
     wait(x26 == 32'b1);   // x26 == 1，结束仿真
     @(posedge clk);
@@ -104,8 +102,9 @@ initial begin
         $display("x%2d = 0x%x", r, `CorePath.inst_regs.regs[r]);
     end
     $stop;//结束
+`else //不测ISA，做其他事
+    ex_trap();//测试外部中断
 `endif
-
 end
 
 initial begin
