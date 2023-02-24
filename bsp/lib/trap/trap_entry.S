@@ -25,7 +25,7 @@ trap_entry:
     sw x30, 14*RV32_BYTE(sp)
     sw x31, 15*RV32_BYTE(sp)
 
-
+/*根据ABI调用规则，a0 a1用于传递参数至下一个调用的函数*/
     csrr a0, mcause /*中断原因写入a0*/
     csrr a1, mepc   /*返回地址写入a1*/
 /*test_if_asynchronous:*/

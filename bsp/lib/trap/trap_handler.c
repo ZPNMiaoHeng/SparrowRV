@@ -24,7 +24,7 @@ __attribute__((weak)) void handler_exception()
     printf("THis is exception, SYS has error!\n");
 }
 
-//中断之后，首先执行这个函数
+//中断之后，首先执行这个函数，a0传递mcause，a1传递mepc
 void trap_handler(uint32_t mcause, uint32_t mepc)
 {
     uint32_t mcause_desc = mcause & 0x000FFFFF;//进入陷阱的原因
