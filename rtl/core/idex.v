@@ -130,7 +130,7 @@ always @ (*) begin
     ebreak_o = 0;       //指令中断使能
     wfi_o = 0;          //中断等待使能
     inst_err_o = 0;     //指令出错
-    idex_mret_o = 0;
+    idex_mret_o = 0;    //mret中断返回标志
     mult_inst_o = 0;    //当前为乘法指令
     //复用运算单元
     add1_in1 = {32{1'bx}};       //加法器1输入1
