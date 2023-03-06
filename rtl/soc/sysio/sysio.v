@@ -25,10 +25,7 @@ module sysio (
     input wire                  sysio_axi_rready //读数据准备好
 	
 );
-//外设线网
-wire [31:0] gpio_oe ;
-wire [31:0] gpio_out;
-wire [31:0] gpio_in ;
+
 //---------总线交互--------
 //写
 wire axi_whsk = sysio_axi_awvalid & sysio_axi_wvalid;//写通道、读地址握手
@@ -177,8 +174,9 @@ spi inst_spi1
     .spi_cs   (spi1_cs  ),
     .spi_clk  (spi1_clk )
 );
-//4 gpio
-gpio inst_gpio
+//4 
+/*
+AAA inst_AAA
 (
     .clk           (clk),
     .rst_n         (rst_n),
@@ -189,12 +187,9 @@ gpio inst_gpio
     .we_i          (we_en[4]),
     .raddr_i       (raddr),
     .rd_i          (rd_en[4]),
-    .data_o        (data_o[4]),
-
-    .gpio_oe       (gpio_oe ),
-    .gpio_out      (gpio_out),
-    .gpio_in       (gpio_in )
+    .data_o        (data_o[4])
 );
+*/
 //15 fpioa
 fpioa inst_fpioa
 (
@@ -221,11 +216,7 @@ fpioa inst_fpioa
     .UART0_RX  (uart0_rx),
     .UART1_TX  (uart1_tx),
     .UART1_RX  (uart1_rx),
-    //GPIO
-    .gpio_oe  (gpio_oe ),
-    .gpio_out (gpio_out),
-    .gpio_in  (gpio_in ),
-
+    //FPIOA
     .fpioa    (fpioa)
 );
 

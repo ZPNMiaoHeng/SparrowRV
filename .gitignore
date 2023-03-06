@@ -17,6 +17,7 @@
 /tb/work
 /tb/modelsim.ini
 /tb/btrm.txt
+/tb/vsim.wlf
 
 /rtl/perips/sm3/tb/tb
 /rtl/perips/sm3/tb/tb_sm3_core_top.sv
@@ -27,6 +28,9 @@
 /tools/*
 /bsp/obj/*
 /tb/tools/bootrom/obj/*
-#/rtl/W25Q128JVxIM.v
 
 /.vscode
+
+/fpga/gowin/impl
+/fpga/gowin/src
+/fpga/gowin/gowin.gprj.user

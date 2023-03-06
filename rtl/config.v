@@ -23,7 +23,7 @@
 `define DIV_MODE "HF_DIV"
 
 //SRAM模式配置，支持"DP_ROM" "DP_RAM" "SYN_DPR" "EG4_32K"
-`define SRAM_MODEL "DP_ROM"
+`define SRAM_MODEL "DP_RAM"
 
 
 

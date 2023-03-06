@@ -8,7 +8,7 @@
 #include "uart.h"
 #include "spi.h"
 #include "fpioa.h"
-#include "gpio.h"
+
 
 //#include "nor25_flash.h"
 //系统主频

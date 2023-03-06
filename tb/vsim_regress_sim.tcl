@@ -10,9 +10,7 @@ quit -sim
 # # 编译文件
 #vlog +incdir+./../rtl/  +define+MODELSIM +define+ISA_TEST ./tb_core.sv
 #vlog +incdir+./../rtl/  ./../rtl/core/*.v
-#vlog +incdir+./../rtl/  ./../rtl/soc/*.v
-#vlog +incdir+./../rtl/  ./../rtl/perips/*.v
-#vlog +incdir+./../rtl/  ./../rtl/perips/sysio/*.v
+#vlog +incdir+./../rtl/  ./../rtl/soc/sysio/*.v
 #vlog +incdir+./../rtl/  ./../rtl/jtag/*.v
 #vlog +incdir+./../rtl/  ./../rtl/*.v
 
