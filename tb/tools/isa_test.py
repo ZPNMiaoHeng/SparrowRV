@@ -95,21 +95,30 @@ def modelsim_ISA测试(测试程序):
 
 def bin文件转文本():
     待转换的文件路径=filedialog.askopenfilename()
-    if 待转换的文件路径:
-        print(待转换的文件路径)
+    if 待转换的文件路径 :
+        print('bin文件路径：'+待转换的文件路径)
         bin文件转换(待转换的文件路径, 'inst.txt', '32位')
+    else :
+        print('没有选择bin文件，inst.txt未更新')
+    return 待转换的文件路径
 
 def isp文件转文本():
     待转换的文件路径=filedialog.askopenfilename()
     if 待转换的文件路径:
-        print(待转换的文件路径)
+        print('bin文件路径：'+待转换的文件路径)
         bin文件转换(待转换的文件路径, 'btrm.txt', '32位')
+    else :
+        print('没有选择bin文件，btrm.txt未更新')
+    return 待转换的文件路径
 
 def bin文件转串口烧录():
     待转换的文件路径=filedialog.askopenfilename()
     if 待转换的文件路径:
-        print(待转换的文件路径)
+        print('bin文件路径：'+待转换的文件路径)
         bin文件转换(待转换的文件路径, 'uart.txt', '8位')
+    else :
+        print('没有选择bin文件，uart.txt未更新')
+    return 待转换的文件路径
 
 
 
@@ -171,29 +180,59 @@ def modelsim指令集测试():
 
 ##########################################################
 if __name__ == '__main__':
+
     if sys.argv[1] == 'all_isa':
-        sys.exit(iverilog指令集测试())
+        iverilog指令集测试()
+        sys.exit()
+
     elif sys.argv[1] == 'tsr_bin':
-        sys.exit(bin文件转文本())
+        bin文件转文本()
+        sys.exit()
+
     elif sys.argv[1] == 'tsr_isp':
-        sys.exit(isp文件转文本())
-    elif sys.argv[1] == 'sim_rtl':
-        sys.exit(编译并仿真())
-    elif sys.argv[1] == 'sim_bin':
-        bin文件转文本()
-        sys.exit(编译并仿真())
-    elif sys.argv[1] == 'sim_isp':
         isp文件转文本()
-        sys.exit(编译并仿真())
+        sys.exit()
+
+    elif sys.argv[1] == 'sim_rtl':
+        编译并仿真()
+        sys.exit()
+
+    elif sys.argv[1] == 'sim_bin':
+        找到了bin文件 = bin文件转文本()
+        if 找到了bin文件 :
+            编译并仿真()
+        else :
+            print('没有选择bin文件，直接结束')
+        sys.exit()
+
+    elif sys.argv[1] == 'sim_isp':
+        找到了bin文件 = isp文件转文本()
+        if 找到了bin文件 :
+            编译并仿真()
+        else :
+            print('没有选择bin文件，直接结束')
+        sys.exit()
+
     elif sys.argv[1] == 'vsim_rtl':
-        sys.exit(启动modelsim仿真())
+        启动modelsim仿真()
+        sys.exit()
+
     elif sys.argv[1] == 'vsim_bin':
-        bin文件转文本()
-        sys.exit(启动modelsim仿真())
+        找到了bin文件 = bin文件转文本()
+        if 找到了bin文件 :
+            启动modelsim仿真()
+        else :
+            print('没有选择bin文件，直接结束')
+        sys.exit()
+
     elif sys.argv[1] == 'vsim_isa':
-        sys.exit(modelsim指令集测试())
+        modelsim指令集测试()
+        sys.exit()
+
     elif sys.argv[1] == 'tsr_app':
-        sys.exit(bin文件转串口烧录())
+        bin文件转串口烧录()
+        sys.exit()
+
     else:
         print(r'isa_test.py找不到指令')
         print(sys.argv[1])
