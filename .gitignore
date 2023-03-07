@@ -31,6 +31,9 @@
 
 /.vscode
 
-/fpga/gowin/impl
+/fpga/anlogic/anlogic.bit
+/fpga/gowin/impl/gwsynthesis
+/fpga/gowin/impl/pnr
+/fpga/gowin/impl/temp
 /fpga/gowin/src
 /fpga/gowin/gowin.gprj.user
