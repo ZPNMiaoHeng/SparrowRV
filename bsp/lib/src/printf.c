@@ -41,19 +41,23 @@
  */
 void init_uart0_printf(uint32_t band)
 {
+#ifndef sim_csr_printf
   fpioa_perips_in_set(UART0_RX, 0);
   fpioa_perips_out_set(UART0_TX, 1);
   //配置波特率
   uart_band_ctr(UART0,band);
   // enable tx and rx
   uart_enable_ctr(UART0, ENABLE);
+#endif
 }
 
 //putchar
 void _putchar(char character)
 {
+#ifndef sim_csr_printf
   while (SYS_RWMEM_W(UART_STATUS(UART0)) & 0x1); //等待上一个操作结束
   SYS_RWMEM_W(UART_TXDATA(UART0)) = character;
+#endif
   write_csr(msprint, character);//msprint
 }
 
