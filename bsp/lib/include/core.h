@@ -1,6 +1,6 @@
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef _CORE_H_
+#define _CORE_H_
 #include "system.h"
 
 #define cpu_nop ({asm volatile( "nop");})

@@ -2,7 +2,7 @@
 #define SYSTEM_H_
 
 #include <stdint.h>
-#include "utils.h"
+#include "core.h"
 #include "trap.h"
 #include "printf.h"
 #include "uart.h"
@@ -11,10 +11,10 @@
 //#include "nor25_flash.h"
 
 //开启仿真模式printf。不会打印串口，只通过CSR_msprint打印至终端，极大提高速度
-#define sim_csr_printf 1
+//#define sim_csr_printf 1
 
 //系统主频
-#define CPU_FREQ_HZ   24000000UL //你的工作频率Hz
+#define CPU_FREQ_HZ   27000000UL //你的工作频率Hz
 #define CPU_FREQ_MHZ  (CPU_FREQ_HZ/1000000UL)
 
 #define ENABLE 1

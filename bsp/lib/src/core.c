@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "utils.h"
+#include "core.h"
 
 /*********************************************************************
  * @fn      mtime_value_get

@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#include "utils.h"
+#include "core.h"
 
 
 extern void trap_entry();
