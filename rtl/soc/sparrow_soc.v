@@ -3,7 +3,7 @@ module sparrow_soc (
     input wire clk,    //时钟输入
     input wire hard_rst_n,  //来自外部引脚的复位信号
 
-    output wire hx_valid,//处理器运行指示
+    output wire core_active,//处理器活动指示，以可见速度翻转
 
     input  wire JTAG_TCK,
     input  wire JTAG_TMS,
@@ -524,6 +524,37 @@ rstc inst_rstc
     .rst_n       (rst_n)
 );
 
+//处理器活动指示，只要指令流不停，灯就在闪
+reg [clogb2(`CPU_CLOCK_HZ/4)-1:0]hx_cnt;//计数器
+reg active_reg;//状态翻转
+always @(posedge clk or negedge rst_n) begin
+    if(~rst_n) begin
+        hx_cnt <= 0;
+        active_reg <= 1'b1;
+    end 
+    else begin
+        if (hx_valid==1'b1) begin
+            if(hx_cnt < `CPU_CLOCK_HZ/4) begin
+                hx_cnt = hx_cnt + 1;
+            end
+            else begin
+                hx_cnt = 0;
+                active_reg = ~active_reg;
+            end
+        end
+    end
+end
+
+//硬连线
+assign core_active = active_reg;
 assign NorFlash_WP = 1'b1;
 assign NorFlash_Hold = 1'b1;
+
+//计算log2，得到地址位宽，如clogb2(RAM_DEPTH-1)
+function integer clogb2;
+    input integer depth;
+        for (clogb2=0; depth>0; clogb2=clogb2+1)
+            depth = depth >> 1;
+endfunction
+
 endmodule
