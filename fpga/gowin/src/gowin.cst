@@ -4,7 +4,7 @@
 //GOWIN Version: 1.9.8.09 Education
 //Part Number: GW2A-LV18PG256C8/I7
 //Device: GW2A-18C
-//Created Time: Thu 03 09 17:01:37 2023
+//Created Time: Sun 03 12 12:38:00 2023
 
 IO_LOC "core_active" N16;
 IO_PORT "core_active" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
@@ -12,7 +12,8 @@ IO_LOC "fpioa[1]" M11;
 IO_PORT "fpioa[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
 IO_LOC "fpioa[0]" T13;
 IO_PORT "fpioa[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
-IO_PORT "core_ex_trap_valid" PULL_MODE=DOWN;
+IO_LOC "core_ex_trap_valid" E9;
+IO_PORT "core_ex_trap_valid" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;
 IO_LOC "hard_rst_n" T10;
 IO_PORT "hard_rst_n" IO_TYPE=LVCMOS33 PULL_MODE=UP;
 IO_LOC "clk" H11;

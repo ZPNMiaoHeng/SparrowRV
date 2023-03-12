@@ -11,7 +11,7 @@ set_pin_assignment	{ fpioa[5] }	{ LOCATION = M13; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ fpioa[6] }	{ LOCATION = H4; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ fpioa[7] }	{ LOCATION = P14; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ hard_rst_n }	{ LOCATION = J13; IOSTANDARD = LVCMOS33; }
-set_pin_assignment	{ hx_valid }	{ LOCATION = M3; IOSTANDARD = LVCMOS33; }
+set_pin_assignment	{ core_active }	{ LOCATION = M3; IOSTANDARD = LVCMOS33; }
 
 
 
