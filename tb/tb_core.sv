@@ -40,8 +40,10 @@ assign fpioa[31] = 1'b1;
 integer r;//计数工具人
 //寄存器监测
 wire [31:0] x3  = `CorePath.inst_regs.regs[3];
+`ifndef RV32E_BASE_ISA
 wire [31:0] x26 = `CorePath.inst_regs.regs[26];
 wire [31:0] x27 = `CorePath.inst_regs.regs[27];
+`endif
 wire mends = `CorePath.inst_csr.mends;//仿真结束标志
 
 // 读入程序

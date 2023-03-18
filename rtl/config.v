@@ -43,6 +43,9 @@
 //启用M扩展(乘法/除法)
 `define RV32_M_ISA 1'b1
 
+//使用更小的RV32E基本指令集，而不是默认的RV32I
+`define RV32E_BASE_ISA 1'b1
+
 //单周期乘法器，会降低最大频率
 `define SGCY_MUL 1'b1
 
