@@ -575,7 +575,7 @@ always @ (*) begin
                 `INST_CSRRW: begin
                     csr_wdata_o = reg_rdata1_i;//CSR[imm]=rs1
                     csr_we_o = 1;       //写CSR寄存器请求
-                    csr_addr_o = imm12i;    //访问CSR寄存器地址
+                    csr_addr_o = imm12i[`CsrAddrBus];    //访问CSR寄存器地址
                     reg_we_o = 1;
                     reg_waddr_o = rd;
                     reg_wdata_o = csr_rdata_i;//rd=CSR[imm]
@@ -584,7 +584,7 @@ always @ (*) begin
                 `INST_CSRRS: begin
                     csr_wdata_o = reg_rdata1_i | csr_rdata_i;//CSR[imm]=rs1|CSR[imm]
                     csr_we_o = (reg_raddr1_o==5'h0)?0:1;       //写CSR寄存器请求
-                    csr_addr_o = imm12i;    //访问CSR寄存器地址
+                    csr_addr_o = imm12i[`CsrAddrBus];    //访问CSR寄存器地址
                     reg_we_o = 1;
                     reg_waddr_o = rd;
                     reg_wdata_o = csr_rdata_i;//rd=CSR[imm]
@@ -593,7 +593,7 @@ always @ (*) begin
                 `INST_CSRRC: begin
                     csr_wdata_o = (~reg_rdata1_i) & csr_rdata_i;//CSR[imm]=~rs1&CSR[imm]
                     csr_we_o = (reg_raddr1_o==5'h0)?0:1;       //写CSR寄存器请求
-                    csr_addr_o = imm12i;    //访问CSR寄存器地址
+                    csr_addr_o = imm12i[`CsrAddrBus];    //访问CSR寄存器地址
                     reg_we_o = 1;
                     reg_waddr_o = rd;
                     reg_wdata_o = csr_rdata_i;//rd=CSR[imm]
@@ -602,7 +602,7 @@ always @ (*) begin
                 `INST_CSRRWI: begin
                     csr_wdata_o = zimm;//CSR[imm]=zimm
                     csr_we_o = 1;       //写CSR寄存器请求
-                    csr_addr_o = imm12i;    //访问CSR寄存器地址
+                    csr_addr_o = imm12i[`CsrAddrBus];    //访问CSR寄存器地址
                     reg_we_o = 1;
                     reg_waddr_o = rd;
                     reg_wdata_o = csr_rdata_i;//rd=CSR[imm]
@@ -611,7 +611,7 @@ always @ (*) begin
                 `INST_CSRRSI: begin
                     csr_wdata_o = zimm | csr_rdata_i;//CSR[imm]=zimm|CSR[imm]
                     csr_we_o = (zimm[4:0]==5'h0)?0:1;       //写CSR寄存器请求
-                    csr_addr_o = imm12i;    //访问CSR寄存器地址
+                    csr_addr_o = imm12i[`CsrAddrBus];    //访问CSR寄存器地址
                     reg_we_o = 1;
                     reg_waddr_o = rd;
                     reg_wdata_o = csr_rdata_i;//rd=CSR[imm]
@@ -620,7 +620,7 @@ always @ (*) begin
                 `INST_CSRRCI: begin
                     csr_wdata_o = (~zimm) & csr_rdata_i;//CSR[imm]=~zimm&CSR[imm]
                     csr_we_o = (zimm[4:0]==5'h0)?0:1;       //写CSR寄存器请求
-                    csr_addr_o = imm12i;    //访问CSR寄存器地址
+                    csr_addr_o = imm12i[`CsrAddrBus];    //访问CSR寄存器地址
                     reg_we_o = 1;
                     reg_waddr_o = rd;
                     reg_wdata_o = csr_rdata_i;//rd=CSR[imm]

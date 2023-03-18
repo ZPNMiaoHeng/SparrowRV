@@ -2,7 +2,7 @@
 #define _FPIOA_H_
 
 #include "system.h"
-#define SYSIO_BASE                  (0x20000000)
+#define SYSIO_BASE                  (0x40000000)
 #define FPIOA_BASE                  (SYSIO_BASE + (0xF00))
 #define FPIOA_OT_BASE               (FPIOA_BASE)
 #define FPIOA_NIO_BASE              (FPIOA_OT_BASE + (0x20))

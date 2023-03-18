@@ -13,7 +13,7 @@ void main()
     fpioa_perips_in_set(NIO, 3);
     printf("fpioa[2] set as High, fpioa[3] set as Low\n");
     fpioa_nio_mode_write(NIO_2 | NIO_3, NIO_MODE_OE_PP);
-    fpioa_nio_dout_write(0xc);
+    fpioa_nio_dout_write(0x4);
 
     //读取fpioa的输入
     printf("read all fpioa input value\n");

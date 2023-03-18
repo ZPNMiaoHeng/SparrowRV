@@ -40,13 +40,14 @@
 extern "C" {
 #endif
 
-//关闭%f浮点功能
+//注释以下宏定义，开启相应功能
+//默认禁用%f浮点功能
 #define PRINTF_DISABLE_SUPPORT_FLOAT
 
-//关闭%e%g科学计数法浮点功能
+//默认禁用%e%g科学计数法浮点功能
 #define PRINTF_DISABLE_SUPPORT_EXPONENTIAL
 
-//关闭%t数据类型ptrdiff_t功能
+//默认禁用%t数据类型ptrdiff_t功能
 #define PRINTF_DISABLE_SUPPORT_PTRDIFF_T
 
 /**

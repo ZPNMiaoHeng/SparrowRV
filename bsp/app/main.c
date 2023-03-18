@@ -10,9 +10,10 @@ int main()
     printf("mimpid l=%lu\n",sm3_tmp&0x0000FFFF);
     printf("mimpid h=%lu\n",sm3_tmp>>16);
     printf("%s", "Hello world SparrowRV\n");
+
     while(1)
     {
         printf("%s", "Hello world SparrowRV\n");
     }
-    
+
 }

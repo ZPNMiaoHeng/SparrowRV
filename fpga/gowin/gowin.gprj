@@ -22,12 +22,12 @@
         <File path="../../rtl/jtag/jtag_dm.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/jtag/jtag_driver.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/jtag/jtag_top.v" type="file.verilog" enable="1"/>
-        <File path="../../rtl/soc/axi4lite_2mt16s.v" type="file.verilog" enable="1"/>
+        <File path="../../rtl/soc/icb_2m8s.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sparrow_soc.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sram.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sysio/fpioa.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sysio/spi.v" type="file.verilog" enable="1"/>
-        <File path="../../rtl/soc/sysio/sysio.v" type="file.verilog" enable="1"/>
+        <File path="../../rtl/soc/sysio/sys_perip.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sysio/uart.v" type="file.verilog" enable="1"/>
         <File path="src/gowin.cst" type="file.cst" enable="1"/>
         <File path="src/gowin.sdc" type="file.sdc" enable="1"/>

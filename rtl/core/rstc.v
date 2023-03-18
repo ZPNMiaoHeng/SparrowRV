@@ -22,7 +22,7 @@ always @(posedge clk) begin
             rst_n <= 1'b1;
         end
         else begin//复位中
-            sys_rst_cnt <= sys_rst_cnt + 1;
+            sys_rst_cnt <= sys_rst_cnt + 4'h1;
             rst_n <= 1'b0;
         end
     end

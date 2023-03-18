@@ -8,7 +8,7 @@ _cpu_stack_size = 4K; /*堆栈区大小*/
 /*以上可修改*/
 
 _iram_base_addr = 0x00000000; /*iram存储器基地址*/
-_sram_base_addr = 0x10000000; /*sram存储器基地址*/
+_sram_base_addr = 0x20000000; /*sram存储器基地址*/
 
 _iram_app_size = _cpu_iram_size ; /*用户程序可用空间*/
 

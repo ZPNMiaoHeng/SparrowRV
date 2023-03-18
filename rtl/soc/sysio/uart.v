@@ -173,7 +173,7 @@ always @ (posedge clk) begin
         endcase
     end 
     else begin
-        data_r <= data_r;
+        //data_r <= data_r;
     end
 end
 

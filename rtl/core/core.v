@@ -14,52 +14,29 @@ module core (
     input  wire core_ex_trap_valid,//外部中断请求
     output wire core_ex_trap_ready,//外部中断被响应
 
-    //AXI4-Lite总线接口 Master core
-    //AW写地址
-    output wire [`MemAddrBus]   core_axi_awaddr ,//写地址
-    output wire [2:0]           core_axi_awprot ,//写保护类型，恒为0
-    output wire                 core_axi_awvalid,//写地址有效
-    input  wire                 core_axi_awready,//写地址准备好
-    //W写数据
-    output wire [`MemBus]       core_axi_wdata  ,//写数据
-    output wire [3:0]           core_axi_wstrb  ,//写数据选通
-    output wire                 core_axi_wvalid ,//写数据有效
-    input  wire                 core_axi_wready ,//写数据准备好
-    //B写响应
-    input  wire [1:0]           core_axi_bresp  ,//写响应
-    input  wire                 core_axi_bvalid ,//写响应有效
-    output wire                 core_axi_bready ,//写响应准备好
-    //AR读地址
-    output wire [`MemAddrBus]   core_axi_araddr ,//读地址
-    output wire [2:0]           core_axi_arprot ,//读保护类型，恒为0
-    output wire                 core_axi_arvalid,//读地址有效
-    input  wire                 core_axi_arready,//读地址准备好
-    //R读数据
-    input  wire [`MemBus]       core_axi_rdata  ,//读数据
-    input  wire [1:0]           core_axi_rresp  ,//读响应
-    input  wire                 core_axi_rvalid ,//读数据有效
-    output wire                 core_axi_rready ,//读数据准备好
+    //ICB总线接口 Master core
+    output wire                 core_icb_cmd_valid,//cmd有效
+    input  wire                 core_icb_cmd_ready,//cmd准备好
+    output wire [`MemAddrBus]   core_icb_cmd_addr ,//cmd地址
+    output wire                 core_icb_cmd_read ,//cmd读使能
+    output wire [`MemBus]       core_icb_cmd_wdata,//cmd写数据
+    output wire [3:0]           core_icb_cmd_wmask,//cmd写选通
+    input  wire                 core_icb_rsp_valid,//rsp有效
+    output wire                 core_icb_rsp_ready,//rsp准备好
+    input  wire                 core_icb_rsp_err  ,//rsp错误
+    input  wire [`MemBus]       core_icb_rsp_rdata,//rsp读数据
 
-    //AXI4-Lite Slave iram
-    input  wire [`MemAddrBus]   iram_axi_awaddr ,//写地址
-    input  wire [2:0]           iram_axi_awprot ,//写保护类型，恒为0
-    input  wire                 iram_axi_awvalid,//写地址有效
-    output wire                 iram_axi_awready,//写地址准备好
-    input  wire [`MemBus]       iram_axi_wdata  ,//写数据
-    input  wire [3:0]           iram_axi_wstrb  ,//写数据选通
-    input  wire                 iram_axi_wvalid ,//写数据有效
-    output wire                 iram_axi_wready ,//写数据准备好
-    output wire [1:0]           iram_axi_bresp  ,//写响应
-    output wire                 iram_axi_bvalid ,//写响应有效
-    input  wire                 iram_axi_bready ,//写响应准备好
-    input  wire [`MemAddrBus]   iram_axi_araddr ,//读地址
-    input  wire [2:0]           iram_axi_arprot ,//读保护类型，恒为0
-    input  wire                 iram_axi_arvalid,//读地址有效
-    output wire                 iram_axi_arready,//读地址准备好
-    output wire [`MemBus]       iram_axi_rdata  ,//读数据
-    output wire [1:0]           iram_axi_rresp  ,//读响应
-    output wire                 iram_axi_rvalid ,//读数据有效
-    input  wire                 iram_axi_rready //读数据准备好
+    //ICB Slave iram
+    input  wire                 iram_icb_cmd_valid,//cmd有效
+    output wire                 iram_icb_cmd_ready,//cmd准备好
+    input  wire [`MemAddrBus]   iram_icb_cmd_addr ,//cmd地址
+    input  wire                 iram_icb_cmd_read ,//cmd读使能
+    input  wire [`MemBus]       iram_icb_cmd_wdata,//cmd写数据
+    input  wire [3:0]           iram_icb_cmd_wmask,//cmd写选通
+    output wire                 iram_icb_rsp_valid,//rsp有效
+    input  wire                 iram_icb_rsp_ready,//rsp准备好
+    output wire                 iram_icb_rsp_err  ,//rsp错误
+    output wire [`MemBus]       iram_icb_rsp_rdata//rsp读数据
 );
 
 //-------------定义内部线网--------------
@@ -114,25 +91,17 @@ sctr inst_sctr
     .trap_jump_i      (trap_jump),
     .idex_mret_i      (idex_mret),
     .trap_stat_o      (),//中断状态指示
-    .sctr_axi_awaddr  (core_axi_awaddr ),
-    .sctr_axi_awprot  (core_axi_awprot ),
-    .sctr_axi_awvalid (core_axi_awvalid),
-    .sctr_axi_awready (core_axi_awready),
-    .sctr_axi_wdata   (core_axi_wdata  ),
-    .sctr_axi_wstrb   (core_axi_wstrb  ),
-    .sctr_axi_wvalid  (core_axi_wvalid ),
-    .sctr_axi_wready  (core_axi_wready ),
-    .sctr_axi_bresp   (core_axi_bresp  ),
-    .sctr_axi_bvalid  (core_axi_bvalid ),
-    .sctr_axi_bready  (core_axi_bready ),
-    .sctr_axi_araddr  (core_axi_araddr ),
-    .sctr_axi_arprot  (core_axi_arprot ),
-    .sctr_axi_arvalid (core_axi_arvalid),
-    .sctr_axi_arready (core_axi_arready),
-    .sctr_axi_rdata   (core_axi_rdata  ),
-    .sctr_axi_rresp   (core_axi_rresp  ),
-    .sctr_axi_rvalid  (core_axi_rvalid ),
-    .sctr_axi_rready  (core_axi_rready ),
+    .icb_err_o          (),//ICB总线出错
+    .sctr_icb_cmd_valid (core_icb_cmd_valid),
+    .sctr_icb_cmd_ready (core_icb_cmd_ready),
+    .sctr_icb_cmd_addr  (core_icb_cmd_addr),
+    .sctr_icb_cmd_read  (core_icb_cmd_read),
+    .sctr_icb_cmd_wdata (core_icb_cmd_wdata),
+    .sctr_icb_cmd_wmask (core_icb_cmd_wmask),
+    .sctr_icb_rsp_valid (core_icb_rsp_valid),
+    .sctr_icb_rsp_ready (core_icb_rsp_ready),
+    .sctr_icb_rsp_err   (core_icb_rsp_err),
+    .sctr_icb_rsp_rdata (core_icb_rsp_rdata),
     .hx_valid         (hx_valid)
 );
 
@@ -160,27 +129,17 @@ iram inst_iram
     .pc_o             (pc),
     .inst_o           (inst),
     .iram_rstn_o      (iram_rstn),
-    .iram_axi_awaddr  (iram_axi_awaddr ),
-    .iram_axi_awprot  (iram_axi_awprot ),
-    .iram_axi_awvalid (iram_axi_awvalid),
-    .iram_axi_awready (iram_axi_awready),
-    .iram_axi_wdata   (iram_axi_wdata  ),
-    .iram_axi_wstrb   (iram_axi_wstrb  ),
-    .iram_axi_wvalid  (iram_axi_wvalid ),
-    .iram_axi_wready  (iram_axi_wready ),
-    .iram_axi_bresp   (iram_axi_bresp  ),
-    .iram_axi_bvalid  (iram_axi_bvalid ),
-    .iram_axi_bready  (iram_axi_bready ),
-    .iram_axi_araddr  (iram_axi_araddr ),
-    .iram_axi_arprot  (iram_axi_arprot ),
-    .iram_axi_arvalid (iram_axi_arvalid),
-    .iram_axi_arready (iram_axi_arready),
-    .iram_axi_rdata   (iram_axi_rdata  ),
-    .iram_axi_rresp   (iram_axi_rresp  ),
-    .iram_axi_rvalid  (iram_axi_rvalid ),
-    .iram_axi_rready  (iram_axi_rready )
+    .iram_icb_cmd_valid (iram_icb_cmd_valid),
+    .iram_icb_cmd_ready (iram_icb_cmd_ready),
+    .iram_icb_cmd_addr  (iram_icb_cmd_addr ),
+    .iram_icb_cmd_read  (iram_icb_cmd_read ),
+    .iram_icb_cmd_wdata (iram_icb_cmd_wdata),
+    .iram_icb_cmd_wmask (iram_icb_cmd_wmask),
+    .iram_icb_rsp_valid (iram_icb_rsp_valid),
+    .iram_icb_rsp_ready (iram_icb_rsp_ready),
+    .iram_icb_rsp_err   (iram_icb_rsp_err  ),
+    .iram_icb_rsp_rdata (iram_icb_rsp_rdata)
 );
-
 
 idex inst_idex
 (

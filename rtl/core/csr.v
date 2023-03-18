@@ -350,10 +350,11 @@ end
 
 wire printf_valid = idex_csr_we_i && (idex_csr_addr_i == `CSR_MPRINTS);
 //printf -> 仿真器
+`ifdef HDL_SIM
 always @(posedge clk) begin
     if(printf_valid)
         $write("%c", idex_csr_wdata_i);
 end
-
+`endif
 
 endmodule

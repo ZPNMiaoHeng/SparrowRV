@@ -9,31 +9,17 @@ module iram (
 
     output reg iram_rstn_o,//iram模块阻塞
 
-    //AXI4-Lite总线接口 Slave
-    //AW写地址
-    input wire [`MemAddrBus]    iram_axi_awaddr ,//写地址
-    input wire [2:0]            iram_axi_awprot ,//写保护类型，恒为0
-    input wire                  iram_axi_awvalid,//写地址有效
-    output reg                  iram_axi_awready,//写地址准备好
-    //W写数据
-    input wire [`MemBus]        iram_axi_wdata  ,//写数据
-    input wire [3:0]            iram_axi_wstrb  ,//写数据选通
-    input wire                  iram_axi_wvalid ,//写数据有效
-    output reg                  iram_axi_wready ,//写数据准备好
-    //B写响应
-    output reg [1:0]            iram_axi_bresp  ,//写响应
-    output reg                  iram_axi_bvalid ,//写响应有效
-    input wire                  iram_axi_bready ,//写响应准备好
-    //AR读地址
-    input wire [`MemAddrBus]    iram_axi_araddr ,//读地址
-    input wire [2:0]            iram_axi_arprot ,//读保护类型，恒为0
-    input wire                  iram_axi_arvalid,//读地址有效
-    output reg                  iram_axi_arready,//读地址准备好
-    //R读数据
-    output reg [`MemBus]        iram_axi_rdata  ,//读数据
-    output reg [1:0]            iram_axi_rresp  ,//读响应
-    output reg                  iram_axi_rvalid ,//读数据有效
-    input wire                  iram_axi_rready //读数据准备好
+    //ICB Slave iram
+    input  wire                 iram_icb_cmd_valid,//cmd有效
+    output wire                 iram_icb_cmd_ready,//cmd准备好
+    input  wire [`MemAddrBus]   iram_icb_cmd_addr ,//cmd地址
+    input  wire                 iram_icb_cmd_read ,//cmd读使能
+    input  wire [`MemBus]       iram_icb_cmd_wdata,//cmd写数据
+    input  wire [3:0]           iram_icb_cmd_wmask,//cmd写选通
+    output reg                  iram_icb_rsp_valid,//rsp有效
+    input  wire                 iram_icb_rsp_ready,//rsp准备好
+    output wire                 iram_icb_rsp_err  ,//rsp错误
+    output wire [`MemBus]       iram_icb_rsp_rdata//rsp读数据
 );
 /* iram是指令存储器，位于处理器内核，由2部分构成
  * 
@@ -54,13 +40,13 @@ wire [`MemBus]douta,doutia;
 assign inst_o = douta;
 
 //AXI4L总线交互
-reg [`MemAddrBus]addrb;
-reg web,enb;
-reg [3:0] wemb;
+wire  [`MemAddrBus]addrb;
+wire  web,enb;
+wire  [3:0] wemb;
 wire [`MemBus]doutb,doutib;
-reg [`MemBus]dinb;
-wire axi_whsk = iram_axi_awvalid & iram_axi_wvalid;//写通道握手
-wire axi_rhsk = iram_axi_arvalid & (~iram_axi_rvalid | (iram_axi_rvalid & iram_axi_rready)) & ~axi_whsk;//读通道握手,没有读响应
+wire [`MemBus]dinb;
+wire icb_whsk = iram_icb_cmd_valid & ~iram_icb_cmd_read;//写握手
+wire icb_rhsk = iram_icb_cmd_valid & iram_icb_cmd_read;//读握手
 
 //PC复位
 always @(posedge clk or negedge rst_n) begin
@@ -81,37 +67,24 @@ end
 
 always @(posedge clk or negedge rst_n)//读响应控制
 if (~rst_n)
-    iram_axi_rvalid <=1'b0;
+    iram_icb_rsp_valid <=1'b0;
 else begin
-    if (axi_rhsk)
-        iram_axi_rvalid <=1'b1;
-    else if (iram_axi_rvalid & iram_axi_rready)
-        iram_axi_rvalid <=1'b0;
+    if (icb_rhsk)
+        iram_icb_rsp_valid <=1'b1;
+    else if (iram_icb_rsp_valid & iram_icb_rsp_ready)
+        iram_icb_rsp_valid <=1'b0;
     else
-        iram_axi_rvalid <= iram_axi_rvalid;
+        iram_icb_rsp_valid <= iram_icb_rsp_valid;
 end
 
-always @(*) begin
-    iram_axi_awready = axi_whsk;//写地址数据同时准备好
-    iram_axi_wready = axi_whsk;//写地址数据同时准备好
-    iram_axi_rdata = doutb;//读数据
-    iram_axi_arready = axi_rhsk;//读地址握手
-    iram_axi_bvalid = 1'b1;
-    iram_axi_bresp = 2'b00;//响应
-    iram_axi_rresp = 2'b00;//响应
-    dinb = iram_axi_wdata;
-    enb = axi_whsk | axi_rhsk;
-    wemb = iram_axi_wstrb;
-    if(axi_whsk) begin//写握手
-        addrb = iram_axi_awaddr[31:2];
-        web = 1'b1;//AXI写iram
-    end
-    else begin
-        web = 0;
-        addrb = iram_axi_araddr[31:2];
-    end
-end
-
+assign iram_icb_cmd_ready = 1'b1;
+assign iram_icb_rsp_err = addrb > (`IRamSize-1);
+assign iram_icb_rsp_rdata = doutb;
+assign addrb = iram_icb_cmd_addr[31:2];
+assign web = icb_whsk;
+assign wemb = iram_icb_cmd_wmask;
+assign dinb = iram_icb_cmd_wdata;
+assign enb = iram_icb_cmd_valid;
 dpram #(
     .RAM_DEPTH(`IRamSize),
 `ifdef HDL_SIM
