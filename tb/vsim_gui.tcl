@@ -22,7 +22,7 @@ vmap work work
 vlog +incdir+./../rtl/  +define+MODELSIM    ./tb_core.sv
 vlog +incdir+./../rtl/  +define+HDL_SIM     ./../rtl/core/*.v
 vlog +incdir+./../rtl/                      ./../rtl/soc/*.v
-vlog +incdir+./../rtl/                      ./../rtl/soc/sysio/*.v
+vlog +incdir+./../rtl/                      ./../rtl/soc/sys_perip/*.v
 vlog +incdir+./../rtl/                      ./../rtl/jtag/*.v
 vlog +incdir+./../rtl/                      ./../rtl/*.v
 

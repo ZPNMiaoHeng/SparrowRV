@@ -130,7 +130,7 @@
                     <Attr Name="CompileOrder" Val="15"/>
                 </FileInfo>
             </File>
-            <File Path="../../rtl/soc/sysio/fpioa.v">
+            <File Path="../../rtl/soc/sys_perip/fpioa.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
@@ -138,7 +138,7 @@
                     <Attr Name="CompileOrder" Val="16"/>
                 </FileInfo>
             </File>
-            <File Path="../../rtl/soc/sysio/spi.v">
+            <File Path="../../rtl/soc/sys_perip/spi.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
@@ -146,7 +146,7 @@
                     <Attr Name="CompileOrder" Val="18"/>
                 </FileInfo>
             </File>
-            <File Path="../../rtl/soc/sysio/sysio.v">
+            <File Path="../../rtl/soc/sys_perip/sys_perip.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
@@ -154,7 +154,7 @@
                     <Attr Name="CompileOrder" Val="19"/>
                 </FileInfo>
             </File>
-            <File Path="../../rtl/soc/sysio/uart.v">
+            <File Path="../../rtl/soc/sys_perip/uart.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>

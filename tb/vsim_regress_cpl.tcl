@@ -12,7 +12,7 @@ vlog +incdir+./../rtl/  +define+MODELSIM +define+ISA_TEST ./tb_core.sv
 vlog +incdir+./../rtl/                                    ./../rtl/*.v
 vlog +incdir+./../rtl/  +define+HDL_SIM                   ./../rtl/core/*.v
 vlog +incdir+./../rtl/                                    ./../rtl/soc/*.v
-vlog +incdir+./../rtl/                                    ./../rtl/soc/sysio/*.v
+vlog +incdir+./../rtl/                                    ./../rtl/soc/sys_perip/*.v
 vlog +incdir+./../rtl/                                    ./../rtl/jtag/*.v
 
 #vsim -voptargs=+acc work.tb_core
