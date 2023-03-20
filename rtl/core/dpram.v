@@ -30,38 +30,32 @@ generate
         "DP_RAM": begin
             reg [RAM_WIDTH-1:0] addra_r;
             reg [RAM_WIDTH-1:0] addrb_r;
+            wire [3:0] ram_wea = {4{wea}} & wema;
+            wire [3:0] ram_web = {4{web}} & wemb;
             always @(posedge clk)
                 if (ena) begin
-                    if (wea) begin
-                        if(wema[0])
-                            BRAM[addra][7:0] <= dina[7:0];
-                        if(wema[1])
-                            BRAM[addra][15:8] <= dina[15:8];
-                        if(wema[2])
-                            BRAM[addra][23:16] <= dina[23:16];
-                        if(wema[3])
-                            BRAM[addra][31:24] <= dina[31:24];
-                    end
-                    else begin
-                        addra_r <= addra;
-                    end
+                	addra_r <= addra;
+                    if(ram_wea[0])
+                        BRAM[addra][7:0] <= dina[7:0];
+                    if(ram_wea[1])
+                        BRAM[addra][15:8] <= dina[15:8];
+                    if(ram_wea[2])
+                        BRAM[addra][23:16] <= dina[23:16];
+                    if(ram_wea[3])
+                        BRAM[addra][31:24] <= dina[31:24];
                 end
 
             always @(posedge clk)
                 if (enb) begin
-                    if (web) begin
-                        if(wemb[0])
+                	addrb_r <= addrb;
+                        if(ram_web[0])
                             BRAM[addrb][7:0] <= dinb[7:0];
-                        if(wemb[1])
+                        if(ram_web[1])
                             BRAM[addrb][15:8] <= dinb[15:8];
-                        if(wemb[2])
+                        if(ram_web[2])
                             BRAM[addrb][23:16] <= dinb[23:16];
-                        if(wemb[3])
+                        if(ram_web[3])
                             BRAM[addrb][31:24] <= dinb[31:24];
-                    end
-                    else begin
-                        addrb_r <= addrb;
-                    end
                 end
             assign douta = BRAM[addra_r];
             assign doutb = BRAM[addrb_r];
