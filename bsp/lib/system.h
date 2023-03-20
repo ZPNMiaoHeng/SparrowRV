@@ -1,17 +1,25 @@
 #ifndef SYSTEM_H_
 #define SYSTEM_H_
 
+//标准库 stdxx.h
 #include <stdint.h>
+
+//外设库 perip
 #include "core.h"
 #include "trap.h"
-#include "printf.h"
 #include "uart.h"
 #include "spi.h"
 #include "fpioa.h"
+
+//驱动库 driver
+#include "printf.h"
 //#include "nor25_flash.h"
 
+//------ 上FPGA，必须注释掉此宏 ------
 //开启仿真模式printf。不会打印串口，只通过CSR_msprint打印至终端，极大提高速度
 #define sim_csr_printf 1
+//---------------------------------
+
 
 //系统主频
 #define CPU_FREQ_HZ   27000000UL //你的工作频率Hz
