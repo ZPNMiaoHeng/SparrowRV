@@ -39,13 +39,14 @@ SoC RTL
  │   ├─中断控制 (Debug 95%)
  │   └─多周期指令控制 (OK)
  ├─外设 (30%)
- └─调试 (未测试)
+ └─调试 (75%)
 
 软件部分
  ├─指令仿真 (完成)
  └─BSP (随设计扩展驱动程序)
 ```
 **当前任务**  
+- JTAG修复  
 - 向量化的中断系统  
 
 **未来任务**  
@@ -57,7 +58,7 @@ SoC RTL
 - 处理器RTL验证采用System Verilog-2005。此版本充分满足仿真需求，并且受到仿真器的广泛支持。   
 - 数字逻辑仿真采用iverilog/Modelsim。可根据使用平台与具体需求选择合适工具。  
 - 脚本采用 Batchfile批处理(Win)/Makefile(Linux) + Python3。发挥各种脚本语言的优势，最大程度地简化操作。  
-- 板级支持包采用Makefile/MRS + gcc交叉编译可根据喜好选择命令行/图形化开发环境。  
+- 板级支持包采用MRS(MounRiver Studio)图形化集成开发环境，做到开箱即用。  
 - 所有文本采用UTF-8编码，具备良好的多语言和跨平台支持。  
 
 ## 仿真
@@ -133,59 +134,20 @@ iverilog是仿真工具，gtkwave用于查看波形。
 
 
 ## 板级支持包BSP
-位于`/bsp/`文件夹下  
-BSP支持3种开发方式   
-1. Linux+Makefile  
-2. Windows+Makefile  
-3. MRS图形化界面开发   
-
-`1` `2`的操作流程大致相同，Win/Linux双平台支持，适合老司机，环境配置与使用说明见[Makefile开发](#makefile开发)。  
-`3`有图形化界面，仅限Win系统，适合习惯用keil的开发者，环境配置与使用说明见[图形化界面开发](#图形化界面开发)。  
-
-### Makefile开发
-**支持Linux和Windows**  
-通过makefile脚本，仅需终端输入make，即可执行自动化编译。虽然写脚本有点麻烦，但是后期用得爽。    
-使用流程：  
-1. 下载并解压GCC工具链至`/tools/`目录，GCC请根据操作系统(Win/Linux)进行选择：  
-百度网盘：https://pan.baidu.com/s/1thofSUOS5Mg0Fu-38qPeag?pwd=dj8b  
-Github：https://github.com/xiaowuzxc/SparrowRV/releases/tag/v0.8   
-请确保解压后文件目录为以下形式，否则无法正常make   
-```
-SparrowRV
-  ├─bsp
-  ├─doc
-  ├─pic
-  ├─rtl
-  ├─tb
-  └─tools
-      └─RISC-V_Embedded_GCC
-         ├─bin
-         ├─distro-info
-         ├─doc
-         ├─include
-         ├─lib
-         ├─libexec
-         ├─riscv-none-embed
-         └─share
-```
-2. (Linux或已安装make的windows用户可跳过)下载上方GCC工具链中的make.exe，将make.exe所在的路径添加至环境变量`Path`，添加环境变量的步骤自行百度。  
-3. 进入`/bsp/app/`，终端输入`make`，执行编译，此目录下会输出文件  
-4. 进入`/bsp/app/`，终端输入`make clean`，清理编译文件  
-
-### 图形化界面开发
-**仅支持Windows**  
-本工程使用MRS(MounRiver Studio)作为图形化开发环境。MRS基于Eclipse GNU版本，支持中文界面，配置了完善的GCC工具链，可以做到开箱即用。  
+位于`/bsp/`文件夹下   
+本工程使用MRS(MounRiver Studio)作为图形化集成开发环境。MRS基于Eclipse开发，支持中文界面和帮助信息，配置了完善的GCC工具链，可以做到开箱即用。  
 官网链接http://www.mounriver.com/  
 使用流程：  
 1. 下载并安装MRS  
 2. 切换中文界面。打开MRS主界面，`Help`->`Language`->`Simplified Chinese`  
-3. 打开工程。`文件`->`加载`->`选定'工程'`->`浏览..`->`选择bsp目录下的SparrowRV.wvproj`
+3. 双击打开`/bsp/SparrowRV.wvproj`
 4. 点击`构建项目`，编译并生成bin文件
 
 ## 致谢
 本项目借鉴了[tinyriscv](https://gitee.com/liangkangnan/tinyriscv)的RTL设计和Python脚本。tinyriscv使用[Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)协议。    
 本项目借鉴了[SM3_core](https://gitee.com/ljgibbs/sm3_core)的设计内容。SM3_core使用MIT协议。    
 本项目使用了[printf](https://github.com/mpaland/printf)的轻量化printf实现。printf使用MIT协议。    
+本项目使用了[蜂鸟E203](https://gitee.com/riscv-mcu/e203_hbirdv2)的ICB总线。蜂鸟E203使用[Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)协议。  
 感谢先驱者为我们提供的灵感  
 感谢众多开源软件提供的好用的工具  
 感谢MRS开发工具提供的便利   

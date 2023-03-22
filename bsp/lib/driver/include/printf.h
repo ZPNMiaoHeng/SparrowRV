@@ -40,7 +40,7 @@
 extern "C" {
 #endif
 
-//启用以下宏定义，禁用相应功能，节省代码空间
+//开启以下宏定义，禁用相应功能，节省代码空间
 //禁用%f浮点功能
 #define PRINTF_DISABLE_SUPPORT_FLOAT
 
