@@ -121,7 +121,7 @@ always @ (*) begin
     csr_we_o = 0;       //写CSR寄存器请求
     csr_addr_o = {12{1'bx}};     //访问CSR寄存器地址
     mem_wdata_o = {32{1'bx}};    //写内存数据
-    mem_addr_o = {32{1'bx}};     //访问内存地址，复用读
+    mem_addr_o = reg_rdata1_i + imm12i;//访问内存地址，读写共用
     mem_we_o = 0;       //写内存使能
     mem_wem_o = 4'h0;   //写内存掩码
     mem_en_o = 0;       //访问内存使能，复用读
@@ -371,7 +371,6 @@ always @ (*) begin
         end
 
         `INST_TYPE_L: begin
-            mem_addr_o = reg_rdata1_i + imm12i;//访问内存地址，复用读
             case (funct3)
                 `INST_LB: begin//多周期，等数据
                     mem_we_o = 0;//写内存使能
@@ -388,7 +387,7 @@ always @ (*) begin
                         2'b10: begin
                             reg_wdata_o = {{24{mem_rdata_i[23]}}, mem_rdata_i[23:16]};
                         end
-                        default: begin
+                        2'b11: begin
                             reg_wdata_o = {{24{mem_rdata_i[31]}}, mem_rdata_i[31:24]};
                         end
                     endcase
@@ -429,7 +428,7 @@ always @ (*) begin
                         2'b10: begin
                             reg_wdata_o = {24'h0, mem_rdata_i[23:16]};
                         end
-                        default: begin
+                        2'b11: begin
                             reg_wdata_o = {24'h0, mem_rdata_i[31:24]};
                         end
                     endcase
@@ -563,12 +562,6 @@ always @ (*) begin
             reg_wdata_o = add1_res;
             pc_n_o = pc_n4;//PC+4
         end
-        `INST_NOP_OP: begin
-            pc_n_o = pc_n4;//PC+4
-        end
-        `INST_FENCE: begin
-            pc_n_o = pc_n4;//PC+4
-        end
 
         `INST_SYS: begin
             case (funct3)
@@ -628,6 +621,7 @@ always @ (*) begin
                 end
                 `INST_SI: begin
                     case (inst_i[31:15])
+                        /*
                         `INST_ECALL: begin
                             ecall_o = 1;
                             pc_n_o = pc_i;
@@ -636,6 +630,7 @@ always @ (*) begin
                             ebreak_o = 1;
                             pc_n_o = pc_i;
                         end
+                        */
                         `INST_MRET: begin//中断返回
                             csr_wdata_o = {csr_rdata_i[31:8],1'b0,csr_rdata_i[6:4],csr_rdata_i[7],csr_rdata_i[2:0]};//MIE=MPIE,MPIE=0
                             csr_we_o = 1;       //写CSR寄存器请求

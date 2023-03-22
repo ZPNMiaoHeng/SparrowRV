@@ -22,22 +22,22 @@ module sys_perip (
 
 //---------总线交互--------
 //写
-
+wire icb_whsk = sysp_icb_cmd_valid & ~sysp_icb_cmd_read;//写握手
+wire icb_rhsk = sysp_icb_cmd_valid & sysp_icb_cmd_read;//读握手
 wire [7:0] waddr = {sysp_icb_cmd_addr[7:2], 2'b00};//写地址，屏蔽低位，字节选通替代
 wire [7:0] raddr = {sysp_icb_cmd_addr[7:2], 2'b00};//读地址，屏蔽低位，译码执行部分替代
 wire [`MemBus]din = sysp_icb_cmd_wdata;//写数据
 wire [3:0]sel = sysp_icb_cmd_wmask;//写选通
 wire we = ~sysp_icb_cmd_read;//写使能
+wire rd = icb_rhsk;//读使能
+wire [`MemBus]dout;//读数据
 assign sysp_icb_cmd_ready = 1'b1;
 assign sysp_icb_rsp_err   = 1'b0;
 assign sysp_icb_rsp_rdata = dout;
 
 
-wire icb_whsk = sysp_icb_cmd_valid & ~sysp_icb_cmd_read;//写握手
-wire icb_rhsk = sysp_icb_cmd_valid & sysp_icb_cmd_read;//读握手
 
-wire rd = icb_rhsk;//读使能
-wire [`MemBus]dout;//读数据
+
 always @(posedge clk or negedge rst_n)//读响应控制
 if (~rst_n)
     sysp_icb_rsp_valid <=1'b0;
