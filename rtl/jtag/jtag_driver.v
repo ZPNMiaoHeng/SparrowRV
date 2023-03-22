@@ -1,52 +1,39 @@
-module jtag_driver #(
+module jtag_driver #(//本模块完成JTAG TAP维护，输出DMI
     parameter DMI_ADDR_BITS = 6,
     parameter DMI_DATA_BITS = 32,
-    parameter DMI_OP_BITS = 2)(
-
-    rst_n,
-
-    jtag_TCK,
-    jtag_TDI,
-    jtag_TMS,
-    jtag_TDO,
-
-    // rx
-    dm_resp_i,
-    dm_resp_data_i,
-    dtm_ack_o,
-
-    // tx
-    dm_ack_i,
-    dtm_req_valid_o,
-    dtm_req_data_o
-
+    parameter DMI_OP_BITS = 2,
+    parameter DM_RESP_BITS = 40,
+    parameter DTM_REQ_BITS = 40
+)(
+    input  wire rst_n,
+    //JTAG
+    input  wire jtag_TCK,
+    input  wire jtag_TDI,
+    input  wire jtag_TMS,
+    output reg  jtag_TDO,
+    //dm->dtm
+    input  wire dm_resp_i,
+    input  wire [DM_RESP_BITS - 1:0] dm_resp_data_i,
+    output wire dtm_ack_o,
+    //dtm->dm
+    input  wire dm_ack_i,
+    output wire dtm_req_valid_o,
+    output wire [DTM_REQ_BITS - 1:0] dtm_req_data_o
 );
 
-localparam IDCODE_VERSION  = 4'h1;
-localparam IDCODE_PART_NUMBER = 16'he200;
-localparam IDCODE_MANUFLD = 11'h537;
 
-localparam DTM_VERSION  = 4'h1;
-localparam IR_BITS = 5;
+localparam IDCODE_VERSION  = 4'h1;//IDCODE[31:28]
+localparam IDCODE_PART_NUMBER = 16'he200;//IDCODE[27:12]
+localparam IDCODE_MANUFLD = 11'h537;//IDCODE[11:1]
+//IDCODE[1]=1
 
-localparam DM_RESP_BITS = DMI_ADDR_BITS + DMI_DATA_BITS + DMI_OP_BITS;
-localparam DTM_REQ_BITS = DMI_ADDR_BITS + DMI_DATA_BITS + DMI_OP_BITS;
-localparam SHIFT_REG_BITS = DTM_REQ_BITS;
+localparam IR_BITS = 5;//IR寄存器位宽，最多可寻址2^5=32个DR
+localparam DTM_VERSION  = 4'h1;//dtmcs[3:0]spec 0.13版本
 
-// input and output
-input wire rst_n;
-input wire jtag_TCK;
-input wire jtag_TDI;
-input wire jtag_TMS;
-output reg jtag_TDO;
-input wire dm_resp_i;
-input wire[DM_RESP_BITS - 1:0] dm_resp_data_i;
-output wire dtm_ack_o;
-input wire dm_ack_i;
-output wire dtm_req_valid_o;
-output wire[DTM_REQ_BITS - 1:0] dtm_req_data_o;
 
-// JTAG StateMachine
+localparam SHIFT_REG_BITS = DTM_REQ_BITS;//移位寄存器位宽
+
+//JTAG TAP状态机
 localparam TEST_LOGIC_RESET  = 4'h0;
 localparam RUN_TEST_IDLE     = 4'h1;
 localparam SELECT_DR         = 4'h2;
@@ -64,21 +51,21 @@ localparam PAUSE_IR          = 4'hD;
 localparam EXIT2_IR          = 4'hE;
 localparam UPDATE_IR         = 4'hF;
 
-// DTM regs
+//DTM DR 地址
 localparam REG_BYPASS       = 5'b11111;
 localparam REG_IDCODE       = 5'b00001;
 localparam REG_DMI          = 5'b10001;
 localparam REG_DTMCS        = 5'b10000;
 
-reg[IR_BITS - 1:0] ir_reg;
+reg[IR_BITS - 1:0] ir_reg;//IR寄存器
 reg[SHIFT_REG_BITS - 1:0] shift_reg;
 reg[3:0] jtag_state;
 wire is_busy;
-reg sticky_busy;
-reg dtm_req_valid;
+reg sticky_busy;//清除出错
+reg dtm_req_valid;//dmi请求
 reg[DTM_REQ_BITS - 1:0] dtm_req_data;
 reg[DM_RESP_BITS - 1:0] dm_resp_data;
-reg dm_is_busy;
+reg dm_is_busy;//dmi繁忙
 
 wire[5:0] addr_bits = DMI_ADDR_BITS[5:0];
 wire [SHIFT_REG_BITS - 1:0] busy_response;
@@ -99,17 +86,17 @@ assign dtmcs = {14'b0,
                 1'b0,  // dmihardreset
                 1'b0,  // dmireset
                 1'b0,
-                3'h5,  // idle
+                3'h5,  // idle，在Run-Test-Idle状态停留的时钟周期数
                 dmi_stat,      // dmistat
-                addr_bits,    // abits
-                DTM_VERSION}; // version
+                addr_bits,    // abits，dmi寄存器的address域位宽
+                DTM_VERSION}; // spec version 0.13
 
 assign busy_response = {{(DMI_ADDR_BITS + DMI_DATA_BITS){1'b0}}, {(DMI_OP_BITS){1'b1}}};  // op = 2'b11
 assign none_busy_response = dm_resp_data;
 assign is_busy = sticky_busy | dm_is_busy;
 assign dmi_stat = is_busy ? 2'b01 : 2'b00;
 
-// state switch
+//TAP状态转移
 always @(posedge jtag_TCK or negedge rst_n) begin
     if (!rst_n) begin
         jtag_state <= TEST_LOGIC_RESET;
@@ -161,7 +148,7 @@ always @(posedge jtag_TCK) begin
     endcase
 end
 
-// start access DM module
+//开始访问DM
 always @(posedge jtag_TCK or negedge rst_n) begin
     if (!rst_n) begin
         dtm_req_valid <= 1'b0;
@@ -184,7 +171,7 @@ end
 assign tx_valid = dtm_req_valid;
 assign tx_data = dtm_req_data;
 
-// DTM reset
+//清除出错
 always @ (posedge jtag_TCK or negedge rst_n) begin
     if (!rst_n) begin
         sticky_busy <= 1'b0;
@@ -201,7 +188,7 @@ always @ (posedge jtag_TCK or negedge rst_n) begin
     end
 end
 
-// receive DM response data
+//接收DM返回的数据
 always @ (posedge jtag_TCK or negedge rst_n) begin
     if (!rst_n) begin
         dm_resp_data <= {DM_RESP_BITS{1'b0}};
@@ -212,7 +199,7 @@ always @ (posedge jtag_TCK or negedge rst_n) begin
     end
 end
 
-// tx busy
+//DM发送繁忙
 always @ (posedge jtag_TCK or negedge rst_n) begin
     if (!rst_n) begin
         dm_is_busy <= 1'b0;
@@ -225,7 +212,7 @@ always @ (posedge jtag_TCK or negedge rst_n) begin
     end
 end
 
-// TAP reset
+//TAP复位
 always @(negedge jtag_TCK) begin
     if (jtag_state == TEST_LOGIC_RESET) begin
         ir_reg <= REG_IDCODE;
@@ -234,7 +221,7 @@ always @(negedge jtag_TCK) begin
     end
 end
 
-// TDO output
+//TDO输出
 always @(negedge jtag_TCK) begin
     if (jtag_state == SHIFT_IR) begin
         jtag_TDO <= shift_reg[0];
@@ -245,6 +232,7 @@ always @(negedge jtag_TCK) begin
     end
 end
 
+//跨时钟域的DMI
 full_handshake_tx #(
     .DW(DTM_REQ_BITS)
 ) tx(

@@ -8,7 +8,7 @@
 此项目处于开发阶段，master分支更新频繁，稳定版请参阅[release发行版](https://gitee.com/xiaowuzxc/SparrowRV/releases)  
 **设计指标：**  
 - 顺序两级流水线结构(IF -> ID+EX+MEM+WB)  
-- 兼容RV32I基础指令集和M、Zicsr、Zifencei扩展  
+- 兼容RV32I基础指令集和M、Zicsr扩展  
 - 支持固定入口中断，仅支持机器模式  
 - 哈佛结构，指令存储器映射至存储器空间  
 - 支持C语言，有配套BSP  
