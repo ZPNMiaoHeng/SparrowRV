@@ -75,7 +75,7 @@ extern "C" {
 /**
  * 初始化printf必要外设 UART0 FPIOA
  */
-void init_uart0_printf(uint32_t band);
+void init_uart0_printf(uint32_t band, uint8_t uart_tx_fpioa_port);
 
 
 /**

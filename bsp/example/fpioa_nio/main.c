@@ -5,7 +5,7 @@
 void main()
 {
     uint32_t tmp;
-    init_uart0_printf(115200);//设置printf波特率
+    init_uart0_printf(115200,1);//设置printf波特率
 
     //通过NIO，让fpioa[2]输出1，fpioa[3]输出0
     printf("fpioa[3:2]set as push-pull mode\n");

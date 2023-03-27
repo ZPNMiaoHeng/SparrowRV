@@ -25,7 +25,9 @@ module fpioa (
     input  wire UART1_TX ,
     output wire UART1_RX ,
 
-    //
+    output wire [3:0]irq_fpioa_eli,    //FPIOA端口外部连线中断
+
+    //FPIOA
     inout wire [31:0] fpioa//处理器FPIOA接口
 );
 
@@ -48,6 +50,7 @@ localparam FPIOA_NIO_DIN = 5'h0;//输入数据
 localparam FPIOA_NIO_OPT = 5'h4;//输出数据
 localparam FPIOA_NIO_MD0 = 5'h8;//模式位0(MODE0)
 localparam FPIOA_NIO_MD1 = 5'hc;//模式位1(MODE1)
+localparam FPIOA_IRQ_SET = 5'h10;
 
 /*
  * 输出配置寄存器，针对FPIOA，地址0x00-0x07
@@ -68,7 +71,7 @@ reg [31:0] fpioa_nio_opt;
 
 /* 端口模式，读写
  * fpioa_nio_md0(MODE0)与fpioa_nio_md1(MODE1)共同决定GPIOx端口模式
- * | MODE0[x] | MODE1[x] | GPIOx  
+ * | MODE1[x] | MODE0[x] | GPIOx  
  * |----------|----------|---------------
  * |    0     |    0     | 高阻输入
  * |    0     |    1     | 保留
@@ -78,7 +81,17 @@ reg [31:0] fpioa_nio_opt;
 reg [31:0] fpioa_nio_md0;//0x28
 reg [31:0] fpioa_nio_md1;//0x2c
 
-
+/*
+ * 外部连线中断触发模式寄存器，地址0x30
+ * 仅低16位有效
+ * 支持4个外部连线中断通道ELI0-ELI3 (Extern Line Interrupt)
+ * 每个通道独立设置4种触发模式，支持多种模式同时启用
+ * |                              对于中断通道ELI[x]                                     |
+ * | fpioa_eli_md[x*4+3] | fpioa_eli_md[x*4+2] | fpioa_eli_md[x*4+1] | fpioa_eli_md[x*4] |
+ * |---------------------|---------------------|---------------------|-------------------|
+ * |    下降沿触发        |      上升沿触发     |      低电平触发      |      高电平触发    |
+ * |---------------------|---------------------|---------------------|-------------------|*/
+reg [15:0] fpioa_eli_md;
 
 /*
  * 输入配置寄存器，地址0x80-0xFF
@@ -95,6 +108,8 @@ reg [31:0]fpioa_nio_out;//普通IO实际输出数据
 
 wire [31:0]fpioa_in,fpioa_oe,fpioa_ot;//FPIOA输入数据，输出使能，输出数据
 wire [127:0]perips_in,perips_oe,perips_ot;//外设端口输入数据，输出使能，输出数据
+
+wire [3:0]ELI_CH;//外部连线中断输入通道，支持4路
 
 //外设端口perips_in/oe数据输入
 localparam Enable = 1'b1;//开启
@@ -139,6 +154,7 @@ always @ (posedge clk or negedge rst_n) begin
         fpioa_ot_reg[31] <= 7'h0;
         fpioa_nio_md0 <= 32'h0;
         fpioa_nio_md1 <= 32'h0;
+        fpioa_eli_md <= 16'h0;
     end else begin
         if (we_i == 1'b1) begin
             if (waddr_i[7] == 1'b0) begin//0x00-0x7F
@@ -158,6 +174,7 @@ always @ (posedge clk or negedge rst_n) begin
                         FPIOA_NIO_OPT: fpioa_nio_opt <= data_i;
                         FPIOA_NIO_MD0: fpioa_nio_md0 <= data_i;
                         FPIOA_NIO_MD1: fpioa_nio_md1 <= data_i;
+                        FPIOA_IRQ_SET: fpioa_eli_md  <= data_i[15:0];
                         default: ;
                     endcase
                 end
@@ -192,6 +209,7 @@ always @ (posedge clk) begin
                     FPIOA_NIO_OPT: data_o <= fpioa_nio_opt;
                     FPIOA_NIO_MD0: data_o <= fpioa_nio_md0;
                     FPIOA_NIO_MD1: data_o <= fpioa_nio_md1;
+                    FPIOA_IRQ_SET: data_o <= {16'hffff, fpioa_eli_md};
                     default: ;
                 endcase
             end
@@ -235,7 +253,7 @@ end
 generate
 for (i=0; i<32; i=i+1) begin
     always @(*) begin
-        case ({fpioa_nio_md0[i], fpioa_nio_md1[i]})
+        case ({fpioa_nio_md1[i], fpioa_nio_md0[i]})
             2'b00: begin
                 fpioa_nio_oe [i] = 1'b0;
                 fpioa_nio_out[i] = 1'bx;
@@ -434,10 +452,10 @@ assign perips_ot[127:64] = 0;
  * | 1        | SPI1_MISO       | SPI1 MISO 数据输入
  * | 2        | UART0_RX        | UART0 Rx 串口数据输入
  * | 3        | UART1_RX        | UART1 Rx 串口数据输入
- * | 4        |                 | 
- * | 5        |                 | 
- * | 6        |                 | 
- * | 7        |                 | 
+ * | 4        | ELI_CH0         | 外部连线中断通道0
+ * | 5        | ELI_CH1         | 外部连线中断通道1
+ * | 6        | ELI_CH2         | 外部连线中断通道2
+ * | 7        | ELI_CH3         | 外部连线中断通道3
  * | 8        |                 | 
  * | 9        |                 | 
  * | 10       |                 | 
@@ -565,8 +583,36 @@ assign SPI0_MISO = perips_in[0];
 assign SPI1_MISO = perips_in[1];
 assign UART0_RX  = perips_in[2];
 assign UART1_RX  = perips_in[3];
+assign ELI_CH    = perips_in[7:4];
 
+//外部连线中断仲裁
+reg [3:0]eli_r,eli_rr;
+always @(posedge clk or negedge rst_n) begin
+    if(~rst_n) begin
+        eli_r <= 4'h0;
+        eli_rr <= 4'h0;
+    end
+    else begin
+        eli_r <= ELI_CH;
+        eli_rr <= eli_r;
+    end
+end
+/*
+ * 外部连线中断触发模式寄存器，地址0x30
+ * 仅低16位有效
+ * 支持4个外部连线中断通道ELI0-ELI3 (Extern Line Interrupt)
+ * 每个通道独立设置4种触发模式，支持多种模式同时启用
+ * |                              对于中断通道ELI[x]                                     |
+ * | fpioa_eli_md[x*4+3] | fpioa_eli_md[x*4+2] | fpioa_eli_md[x*4+1] | fpioa_eli_md[x*4] |
+ * |---------------------|---------------------|---------------------|-------------------|
+ * |    下降沿触发        |      上升沿触发     |      低电平触发      |      高电平触发    |
+ * |---------------------|---------------------|---------------------|-------------------|
+ reg [15:0] fpioa_eli_md;
+ */
 
-
-
+generate//ELI仲裁
+for ( i=0 ; i<4 ; i=i+1 ) begin
+    assign irq_fpioa_eli[i] = (fpioa_eli_md[i*4] & eli_rr[i]) | (fpioa_eli_md[i*4+1] & ~eli_rr[i]) | (fpioa_eli_md[i*4+2] & (eli_r[i] & ~eli_rr[i])) | (fpioa_eli_md[i*4+3] & (~eli_r[i] & eli_rr[i]));
+end
+endgenerate
 endmodule

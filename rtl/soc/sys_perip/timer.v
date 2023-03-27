@@ -1,5 +1,5 @@
 `include "defines.v"
-module uart(
+module timer(
 
     input wire clk,
     input wire rst_n,
@@ -12,11 +12,16 @@ module uart(
     input wire rd_i,
     output wire[`MemBus] data_o,
 
-	output wire tx_pin,
-    input wire rx_pin,
+	output wire timer_cmpo_p,//比较输出+
+	output wire timer_cmpo_n,//比较输出-
+    input  wire timer_capi,//输入捕获
 
-    output reg irq_uart_tx,  //uart tx发送完成中断
-    output reg irq_uart_rx   //uart rx接收数据中断
+    output reg irq_timer_cmp0,   //定时器触发比较值0中断
+    output reg irq_timer_cmp1,   //定时器触发比较值0中断
+    output reg irq_timer_cap0,   //定时器捕获0中断
+    output reg irq_timer_cap1,   //定时器捕获1中断
+    output reg irq_timer_wdg,    //定时器看门狗中断
+    output reg irq_timer_of      //定时器溢出中断
 
 );
 

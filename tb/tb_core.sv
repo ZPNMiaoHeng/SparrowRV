@@ -23,7 +23,7 @@ logic [sim_printf_line_length*8-1:0] sim_printf_line = '0;//仿真csr printf的�
 
 //assign fpioa[3:2] = 0;
 
-wire uart0_rx= (sim_cycle_cnt>21045 && sim_cycle_cnt<50000)?randem:1'b1;//测试uart rx
+wire uart0_rx= randem;//测试uart rx
 assign fpioa[0]=uart0_rx;
 
 wire uart0_tx=fpioa[1];//fpioa[1]

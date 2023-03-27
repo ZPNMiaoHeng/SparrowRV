@@ -56,7 +56,6 @@ void uart_send_date(uint32_t UARTx, uint8_t uart_send)
 {
     while (SYS_RWMEM_W(UART_STATUS(UARTx)) & 0x1); //等待上一个操作结束
     SYS_RWMEM_W(UART_TXDATA(UARTx)) = uart_send;
-    write_csr(msprint, uart_send);//msprint
 }
 
 

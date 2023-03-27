@@ -1,16 +1,11 @@
 #include "system.h"
 volatile uint32_t cnt;
 uint32_t tmp;
-uint32_t adc_data;
-uint32_t cpu_csr_freq;//处理器频率Hz
-uint32_t cpu_iram_size;//指令存储器大小kb
-uint32_t cpu_sram_size;//数据存储器大小kb
-uint32_t vendorid;//Vendor ID
 
 //测试
 int main()
 {
-    init_uart0_printf(115200);//设置printf波特率
+    init_uart0_printf(115200,1);//设置printf波特率
     printf("SparrowRV SPI Flash\n");
 
     uint8_t nor25_id_data[3];

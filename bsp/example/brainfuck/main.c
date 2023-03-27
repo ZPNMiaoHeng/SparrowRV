@@ -16,7 +16,7 @@ void BFCI();
 
 int main()
 {
-    init_uart0_printf(115200);//设置printf波特率
+    init_uart0_printf(115200,1);//设置printf波特率
     printf("Brainfuck C Interpreter\n");
     BFCI();
     printf("\nBrainfuck C Interpreter END\n");

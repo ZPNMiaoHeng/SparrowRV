@@ -16,7 +16,9 @@ module spi(
     output reg spi_mosi,             // spi控制器输出、spi设备输入信号
     input wire spi_miso,             // spi控制器输入、spi设备输出信号
     output wire spi_cs,              // spi设备片选
-    output reg spi_clk               // spi设备时钟，最大频率为输入clk的一半
+    output reg spi_clk,              // spi设备时钟，最大频率为输入clk的一半
+
+    output reg irq_spi_end           //SPI收发8bit结束中断
 
 );
 
@@ -115,14 +117,19 @@ end
 // 传输期间一直有效
 always @ (posedge clk or negedge rst_n) begin
     if (~rst_n) begin
-        en <= 1'b0;
-    end else begin
+        en <= 1'b0;      
+    end 
+    else begin
         if (spi_ctrl[0] == 1'b1) begin
             en <= 1'b1;
-        end else if (done == 1'b1) begin
-            en <= 1'b0;
-        end else begin
-            en <= en;
+        end 
+        else begin
+            if (done == 1'b1) begin
+                en <= 1'b0;
+            end 
+            else begin
+                en <= en;
+            end
         end
     end
 end
@@ -220,11 +227,15 @@ end
 always @ (posedge clk or negedge rst_n) begin
     if (~rst_n) begin
         done <= 1'b0;
+        irq_spi_end <= 1'b0;
     end else begin
         if (en && spi_clk_edge_cnt == 5'd17) begin
             done <= 1'b1;
-        end else begin
+            irq_spi_end <= 1'b1;
+        end 
+        else begin
             done <= 1'b0;
+            irq_spi_end <= 1'b0;
         end
     end
 end

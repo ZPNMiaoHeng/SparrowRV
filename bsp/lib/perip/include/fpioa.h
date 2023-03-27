@@ -12,6 +12,7 @@
 #define FPIOA_NIO_OPT              (FPIOA_NIO_BASE + (0x04))
 #define FPIOA_NIO_MD0              (FPIOA_NIO_BASE + (0x08))
 #define FPIOA_NIO_MD1              (FPIOA_NIO_BASE + (0x0c))
+#define FPIOA_ELI_MD               (FPIOA_NIO_BASE + (0x10))
 
 //定义NIO模式
 #define NIO_MODE_HIGHZ      0x00  //高阻输入
@@ -30,6 +31,7 @@ uint32_t fpioa_nio_dout_read();
 void fpioa_nio_mode_write(uint32_t NIO_x, uint8_t nio_mode);
 uint64_t fpioa_nio_mode_read();
 
+uint32_t fpioa_eli_mode_set(uint32_t ELI_CHx, uint32_t eli_mode, uint32_t set_en);
 
 //定义fpioa_perips_o参数
 #define  NIO           0 
@@ -48,10 +50,16 @@ uint64_t fpioa_nio_mode_read();
 #define  SPI1_MISO     1
 #define  UART0_RX      2
 #define  UART1_RX      3
+#define  ELI_CH0       4
+#define  ELI_CH1       5
+#define  ELI_CH2       6
+#define  ELI_CH3       7
 
-
-
-
+//选择设置哪一个ELI通道
+#define  ELI_CH0_SEL    0
+#define  ELI_CH1_SEL    1
+#define  ELI_CH2_SEL    2
+#define  ELI_CH3_SEL    3
 
 //定义GPIO端口
 #define NIO_0    0b1
@@ -87,5 +95,10 @@ uint64_t fpioa_nio_mode_read();
 #define NIO_30   0b1000000000000000000000000000000
 #define NIO_31   0b10000000000000000000000000000000
 
+//定义中断触发模式配置
+#define ELI_TRIG_HL    0b0001 //高电平
+#define ELI_TRIG_LL    0b0010 //低电平
+#define ELI_TRIG_PE    0b0100 //上升沿
+#define ELI_TRIG_NE    0b1000 //下降沿
 
 #endif

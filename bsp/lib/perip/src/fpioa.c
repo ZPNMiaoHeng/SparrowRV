@@ -121,8 +121,8 @@ void fpioa_nio_mode_write(uint32_t NIO_x, uint8_t nio_mode)
         tmp_md1 = ~NIO_x & tmp_md0;
         break;
     case NIO_MODE_OE_PP://10
-        tmp_md0 =  NIO_x | tmp_md0;
-        tmp_md1 = ~NIO_x & tmp_md1;
+        tmp_md0 = ~NIO_x & tmp_md1;
+        tmp_md1 =  NIO_x | tmp_md0;
         break;
     case NIO_MODE_OE_OD://11
         tmp_md0 =  NIO_x | tmp_md0;
@@ -147,4 +147,37 @@ uint64_t fpioa_nio_mode_read()
     temp = (uint64_t)SYS_RWMEM_W(FPIOA_NIO_MD1) << 32;
     temp |= (uint64_t)SYS_RWMEM_W(FPIOA_NIO_MD0);
     return temp;
+}
+
+/*********************************************************************
+ * @fn      fpioa_eli_mode_set
+ *
+ * @brief   读写外部连线中断触发模式寄存器
+ *
+ * @param   ELI_CHx_SEL - x为[0,3]，选择需要配置外部中断通道
+ * @param   eli_mode - 配置中断触发方式
+ *            ELI_TRIG_HL - 高电平触发
+ *            ELI_TRIG_LL - 低电平触发
+ *            ELI_TRIG_PE - 上升沿触发
+ *            ELI_TRIG_NE - 下降沿触发
+ * @param   set_en - 选择是否配置
+ *            ENABLE - 将中断触发方式写入寄存器，并读取最新的触发方式
+ *            DISABLE - 仅读取触发方式
+ * 
+ * @return  中断触发方式，低4bit有效
+ */
+uint32_t fpioa_eli_mode_set(uint32_t ELI_CHx_SEL, uint32_t eli_mode, uint32_t set_en)
+{
+    uint32_t tmp,eli_mode_reg;
+    eli_mode_reg = SYS_RWMEM_W(FPIOA_ELI_MD);//先读取寄存器状态
+    if(set_en)
+    {
+        tmp = ~(0b1111 << (ELI_CHx_SEL*4));
+        eli_mode_reg = tmp & eli_mode_reg;//需操作的位清0，其他不变
+        tmp = eli_mode << (ELI_CHx_SEL*4);
+        eli_mode_reg = tmp | eli_mode_reg;
+        SYS_RWMEM_W(FPIOA_ELI_MD) = eli_mode_reg;//写入设置
+    }
+    return (0x0000000F & (eli_mode_reg >> (ELI_CHx_SEL*4)));
+
 }

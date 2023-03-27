@@ -10,7 +10,7 @@ uint32_t vendorid;//Vendor ID
 //测试
 int main()
 {
-    init_uart0_printf(115200);//设置printf波特率
+    init_uart0_printf(115200,1);//设置printf波特率
     printf("SparrowRV Core: RV32 IM\n");
     printf("Support Interrupt and CSRs\n");
     //读取mumpid

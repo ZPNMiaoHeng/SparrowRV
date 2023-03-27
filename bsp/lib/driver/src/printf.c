@@ -39,11 +39,10 @@
 /**
  * 初始化printf必要外设 UART0 FPIOA
  */
-void init_uart0_printf(uint32_t band)
+void init_uart0_printf(uint32_t band, uint8_t uart_tx_fpioa_port)
 {
 #ifndef sim_csr_printf
-  fpioa_perips_in_set(UART0_RX, 0);
-  fpioa_perips_out_set(UART0_TX, 1);
+  fpioa_perips_out_set(UART0_TX, uart_tx_fpioa_port);
   //配置波特率
   uart_band_ctr(UART0,band);
   // enable tx and rx
