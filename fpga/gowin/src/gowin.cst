@@ -4,13 +4,13 @@
 //GOWIN Version: 1.9.8.09 Education
 //Part Number: GW2AR-LV18QN88PC8/I7
 //Device: GW2AR-18C
-//Created Time: Wed 03 22 19:14:48 2023
+//Created Time: Wed 04 05 16:48:52 2023
 
 IO_LOC "core_active" 15;
 IO_PORT "core_active" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
 IO_LOC "fpioa[1]" 69;
 IO_PORT "fpioa[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
-IO_LOC "fpioa[0]" 70;
+IO_LOC "fpioa[0]" 73;
 IO_PORT "fpioa[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
 IO_LOC "core_ex_trap_valid" 87;
 IO_PORT "core_ex_trap_valid" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;

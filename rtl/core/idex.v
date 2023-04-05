@@ -55,10 +55,10 @@ module idex(
 );
 
 //指令
-wire [6:0] opcode = inst_i[6:0];
+wire [6:0] opcode ={inst_i[6:2], 2'b11};//RV32I指令的低2位永远是2'b11
 wire [2:0] funct3 = inst_i[14:12];
 wire [6:0] funct7 = inst_i[31:25];
-wire [4:0] rd = inst_i[11:7];//访问地址
+wire [4:0] rd = inst_i[11:7];//写回地址
 wire [`RegBus] zimm = {27'h0 , inst_i[19:15]};//用于CSR的立即数扩展
 wire signed[`RegBus] imm12i= {{20{inst_i[31]}} , inst_i[31:20]};//有符号12位立即数扩展，I type，addi,lb,lh,jalr
 wire signed[`RegBus] imm12s= {{20{inst_i[31]}} , inst_i[31:25] , inst_i[11:7]};//有符号12位立即数扩展，S type，sb,sh
@@ -622,6 +622,7 @@ always @ (*) begin
                 `INST_SI: begin
                     case (inst_i[31:15])
                         /*
+                        //不会用到的指令
                         `INST_ECALL: begin
                             ecall_o = 1;
                             pc_n_o = pc_i;
@@ -656,6 +657,7 @@ always @ (*) begin
     endcase
 end
 
+//提前开始乘法，增加时序裕度
 always @(*) begin
     case (funct3)
 `ifdef RV32_M_ISA

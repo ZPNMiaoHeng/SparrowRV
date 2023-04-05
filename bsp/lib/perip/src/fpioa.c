@@ -179,5 +179,4 @@ uint32_t fpioa_eli_mode_set(uint32_t ELI_CHx_SEL, uint32_t eli_mode, uint32_t se
         SYS_RWMEM_W(FPIOA_ELI_MD) = eli_mode_reg;//写入设置
     }
     return (0x0000000F & (eli_mode_reg >> (ELI_CHx_SEL*4)));
-
 }

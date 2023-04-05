@@ -52,14 +52,7 @@ localparam FPIOA_NIO_MD0 = 5'h8;//模式位0(MODE0)
 localparam FPIOA_NIO_MD1 = 5'hc;//模式位1(MODE1)
 localparam FPIOA_IRQ_SET = 5'h10;
 
-/*
- * 输出配置寄存器，针对FPIOA，地址0x00-0x07
- * 一个FPIOA端口对应一个7bit空间，可以连接至128个外设输出端口
- * 有如下映射关系：
- * 接口fpioa[x] 对应 fpioa_ot_reg[x] 
- * 选择当前fpioa[x]的输出信号来自哪一个外设 
- * 占用地址0x00-0x1F */
-reg [6:0]fpioa_ot_reg[0:31];
+
 
 // 输入数据，只读，0x20
 // [31:0]对应GPIO0-31的当前的高低电平
@@ -94,20 +87,29 @@ reg [31:0] fpioa_nio_md1;//0x2c
 reg [15:0] fpioa_eli_md;
 
 /*
- * 输入配置寄存器，地址0x80-0xFF
+ * 输出配置寄存器
+ * 一个FPIOA端口对应一个5bit空间，可以连接至32个外设输出端口
+ * 有如下映射关系：
+ * 接口fpioa[x] 对应 fpioa_ot_reg[x] 
+ * 选择当前fpioa[x]的输出信号来自哪一个外设 
+ * 占用地址0x00-0x1F */
+reg [4:0]fpioa_ot_reg[0:31];
+
+/*
+ * 输入配置寄存器
  * 一个外设输入端口对应一个5bit空间，可以连接至32个FPIOA
  * 有如下映射关系：
  * 外设输入端口[x] 对应 fpioa_in_reg[x]
  * 选择当前外设输入端口[x]的信号来自哪一个fpioa
  * 占用地址0x80-0xFF */
-reg [4:0]fpioa_in_reg[0:127];
+reg [4:0]fpioa_in_reg[0:31];
 
 
 reg [31:0]fpioa_nio_oe ;//普通IO输出使能
 reg [31:0]fpioa_nio_out;//普通IO实际输出数据
 
 wire [31:0]fpioa_in,fpioa_oe,fpioa_ot;//FPIOA输入数据，输出使能，输出数据
-wire [127:0]perips_in,perips_oe,perips_ot;//外设端口输入数据，输出使能，输出数据
+wire [31:0]perips_in,perips_oe,perips_ot;//外设端口输入数据，输出使能，输出数据
 
 wire [3:0]ELI_CH;//外部连线中断输入通道，支持4路
 
@@ -160,13 +162,13 @@ always @ (posedge clk or negedge rst_n) begin
             if (waddr_i[7] == 1'b0) begin//0x00-0x7F
                 if (waddr_i[5] == 1'b0) begin//0x00-0x1F
                     if(sel_i[0])
-                        fpioa_ot_reg[waddr_i[4:0]  ] <= data_i[6:0];
+                        fpioa_ot_reg[waddr_i[4:0]  ] <= data_i[4:0];
                     if(sel_i[1])
-                        fpioa_ot_reg[waddr_i[4:0]+1] <= data_i[14:8];
+                        fpioa_ot_reg[waddr_i[4:0]+1] <= data_i[12:8];
                     if(sel_i[2])
-                        fpioa_ot_reg[waddr_i[4:0]+2] <= data_i[22:16];
+                        fpioa_ot_reg[waddr_i[4:0]+2] <= data_i[20:16];
                     if(sel_i[3])
-                        fpioa_ot_reg[waddr_i[4:0]+3] <= data_i[30:24];
+                        fpioa_ot_reg[waddr_i[4:0]+3] <= data_i[28:24];
                 end
                 else begin//0x20-0x3F
                     case (waddr_i[4:0])
@@ -179,15 +181,15 @@ always @ (posedge clk or negedge rst_n) begin
                     endcase
                 end
             end
-            else begin//0x80-0xFF
+            else begin//0x80-0x9F
                 if(sel_i[0])
-                    fpioa_in_reg[waddr_i[6:0]  ] <= data_i[4:0];
+                    fpioa_in_reg[waddr_i[4:0]  ] <= data_i[4:0];
                 if(sel_i[1])
-                    fpioa_in_reg[waddr_i[6:0]+1] <= data_i[12:8];
+                    fpioa_in_reg[waddr_i[4:0]+1] <= data_i[12:8];
                 if(sel_i[2])
-                    fpioa_in_reg[waddr_i[6:0]+2] <= data_i[20:16];
+                    fpioa_in_reg[waddr_i[4:0]+2] <= data_i[20:16];
                 if(sel_i[3])
-                    fpioa_in_reg[waddr_i[6:0]+3] <= data_i[28:24];
+                    fpioa_in_reg[waddr_i[4:0]+3] <= data_i[28:24];
             end
         end 
 		else begin
@@ -201,7 +203,7 @@ always @ (posedge clk) begin
     if (rd_i == 1'b1) begin
         if (waddr_i[7] == 1'b0) begin
             if (waddr_i[5] == 1'b0) begin
-                data_o <= {fpioa_ot_reg[raddr_i[4:0]+3],fpioa_ot_reg[raddr_i[4:0]+2],fpioa_ot_reg[raddr_i[4:0]+1],fpioa_ot_reg[raddr_i[4:0]]};
+                data_o <= {3'h0, fpioa_ot_reg[raddr_i[4:0]+3], 3'h0, fpioa_ot_reg[raddr_i[4:0]+2], 3'h0, fpioa_ot_reg[raddr_i[4:0]+1], 3'h0, fpioa_ot_reg[raddr_i[4:0]]};
             end
             else begin
                 case (raddr_i[4:0])
@@ -215,7 +217,7 @@ always @ (posedge clk) begin
             end
         end
         else begin
-            data_o <= {fpioa_in_reg[raddr_i[6:0]+3],fpioa_in_reg[raddr_i[6:0]+2],fpioa_in_reg[raddr_i[6:0]+1],fpioa_in_reg[raddr_i[6:0]]};
+            data_o <= {3'h0, fpioa_in_reg[raddr_i[4:0]+3], 3'h0, fpioa_in_reg[raddr_i[4:0]+2], 3'h0, fpioa_in_reg[raddr_i[4:0]+1], 3'h0, fpioa_in_reg[raddr_i[4:0]]};
         end
             
     end
@@ -236,7 +238,7 @@ endgenerate
 
 assign fpioa_in = fpioa;//数据输入
 generate//fpioa_in连接至perips_in
-for ( i=0 ; i<128 ; i=i+1 ) begin
+for ( i=0 ; i<32 ; i=i+1 ) begin
     assign perips_in[i] = fpioa_in[fpioa_in_reg[i]];
 end
 endgenerate
@@ -314,102 +316,6 @@ endgenerate
  * | 29       |                 | 
  * | 30       |                 | 
  * | 31       |                 | 
- * | 32       |                 | 
- * | 33       |                 | 
- * | 34       |                 | 
- * | 35       |                 | 
- * | 36       |                 | 
- * | 37       |                 | 
- * | 38       |                 | 
- * | 39       |                 | 
- * | 40       |                 | 
- * | 41       |                 | 
- * | 42       |                 | 
- * | 43       |                 | 
- * | 44       |                 | 
- * | 45       |                 | 
- * | 46       |                 | 
- * | 47       |                 | 
- * | 48       |                 | 
- * | 49       |                 | 
- * | 50       |                 | 
- * | 51       |                 | 
- * | 52       |                 | 
- * | 53       |                 | 
- * | 54       |                 | 
- * | 55       |                 | 
- * | 56       |                 | 
- * | 57       |                 | 
- * | 58       |                 | 
- * | 59       |                 | 
- * | 60       |                 | 
- * | 61       |                 | 
- * | 62       |                 | 
- * | 63       |                 | 
- * | 64       |                 | 
- * | 65       |                 | 
- * | 66       |                 | 
- * | 67       |                 | 
- * | 68       |                 | 
- * | 69       |                 | 
- * | 70       |                 | 
- * | 71       |                 | 
- * | 72       |                 | 
- * | 73       |                 | 
- * | 74       |                 | 
- * | 75       |                 | 
- * | 76       |                 | 
- * | 77       |                 | 
- * | 78       |                 | 
- * | 79       |                 | 
- * | 80       |                 | 
- * | 81       |                 | 
- * | 82       |                 | 
- * | 83       |                 | 
- * | 84       |                 | 
- * | 85       |                 | 
- * | 86       |                 | 
- * | 87       |                 | 
- * | 88       |                 | 
- * | 89       |                 | 
- * | 90       |                 | 
- * | 91       |                 | 
- * | 92       |                 | 
- * | 93       |                 | 
- * | 94       |                 | 
- * | 95       |                 | 
- * | 96       |                 | 
- * | 97       |                 | 
- * | 98       |                 | 
- * | 99       |                 | 
- * | 100      |                 | 
- * | 101      |                 | 
- * | 102      |                 | 
- * | 103      |                 | 
- * | 104      |                 | 
- * | 105      |                 | 
- * | 106      |                 | 
- * | 107      |                 | 
- * | 108      |                 | 
- * | 109      |                 | 
- * | 110      |                 | 
- * | 111      |                 | 
- * | 112      |                 | 
- * | 113      |                 | 
- * | 114      |                 | 
- * | 115      |                 | 
- * | 116      |                 | 
- * | 117      |                 | 
- * | 118      |                 | 
- * | 119      |                 | 
- * | 120      |                 | 
- * | 121      |                 | 
- * | 122      |                 | 
- * | 123      |                 | 
- * | 124      |                 | 
- * | 125      |                 | 
- * | 126      |                 | 
- * | 127      |                 | 
  * |----------|-----------------|------------------------------------
  */
 
@@ -424,8 +330,6 @@ assign perips_oe[6]  = Enable;
 assign perips_oe[7]  = Enable;
 assign perips_oe[8]  = Enable;
 assign perips_oe[31:9] = 0;
-assign perips_oe[63:32] = 0;
-assign perips_oe[127:64] = 0;
 
 
 //外设端口perips_out输出数据
@@ -439,8 +343,6 @@ assign perips_ot[6]  = SPI1_CS  ;
 assign perips_ot[7]  = UART0_TX ;
 assign perips_ot[8]  = UART1_TX ;
 assign perips_ot[31:9] = 0;
-assign perips_ot[63:32] = 0;
-assign perips_ot[127:64] = 0;
 
 /*------------------------------
  * 外设输入端口布局
@@ -480,102 +382,6 @@ assign perips_ot[127:64] = 0;
  * | 29       |                 | 
  * | 30       |                 | 
  * | 31       |                 | 
- * | 32       |                 | 
- * | 33       |                 | 
- * | 34       |                 | 
- * | 35       |                 | 
- * | 36       |                 | 
- * | 37       |                 | 
- * | 38       |                 | 
- * | 39       |                 | 
- * | 40       |                 | 
- * | 41       |                 | 
- * | 42       |                 | 
- * | 43       |                 | 
- * | 44       |                 | 
- * | 45       |                 | 
- * | 46       |                 | 
- * | 47       |                 | 
- * | 48       |                 | 
- * | 49       |                 | 
- * | 50       |                 | 
- * | 51       |                 | 
- * | 52       |                 | 
- * | 53       |                 | 
- * | 54       |                 | 
- * | 55       |                 | 
- * | 56       |                 | 
- * | 57       |                 | 
- * | 58       |                 | 
- * | 59       |                 | 
- * | 60       |                 | 
- * | 61       |                 | 
- * | 62       |                 | 
- * | 63       |                 | 
- * | 64       |                 | 
- * | 65       |                 | 
- * | 66       |                 | 
- * | 67       |                 | 
- * | 68       |                 | 
- * | 69       |                 | 
- * | 70       |                 | 
- * | 71       |                 | 
- * | 72       |                 | 
- * | 73       |                 | 
- * | 74       |                 | 
- * | 75       |                 | 
- * | 76       |                 | 
- * | 77       |                 | 
- * | 78       |                 | 
- * | 79       |                 | 
- * | 80       |                 | 
- * | 81       |                 | 
- * | 82       |                 | 
- * | 83       |                 | 
- * | 84       |                 | 
- * | 85       |                 | 
- * | 86       |                 | 
- * | 87       |                 | 
- * | 88       |                 | 
- * | 89       |                 | 
- * | 90       |                 | 
- * | 91       |                 | 
- * | 92       |                 | 
- * | 93       |                 | 
- * | 94       |                 | 
- * | 95       |                 | 
- * | 96       |                 | 
- * | 97       |                 | 
- * | 98       |                 | 
- * | 99       |                 | 
- * | 100      |                 | 
- * | 101      |                 | 
- * | 102      |                 | 
- * | 103      |                 | 
- * | 104      |                 | 
- * | 105      |                 | 
- * | 106      |                 | 
- * | 107      |                 | 
- * | 108      |                 | 
- * | 109      |                 | 
- * | 110      |                 | 
- * | 111      |                 | 
- * | 112      |                 | 
- * | 113      |                 | 
- * | 114      |                 | 
- * | 115      |                 | 
- * | 116      |                 | 
- * | 117      |                 | 
- * | 118      |                 | 
- * | 119      |                 | 
- * | 120      |                 | 
- * | 121      |                 | 
- * | 122      |                 | 
- * | 123      |                 | 
- * | 124      |                 | 
- * | 125      |                 | 
- * | 126      |                 | 
- * | 127      |                 | 
  * |----------|-----------------|------------------------------------
  */
 //assign = perips_in[0];

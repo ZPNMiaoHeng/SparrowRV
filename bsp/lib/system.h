@@ -15,9 +15,9 @@
 #include "printf.h"
 #include "nor25_flash.h"
 
-//------ 上FPGA，必须注释掉此宏 ------
+//------ 上FPGA，必须注释掉此宏，就像这样 //#define sim_csr_printf 1
 //开启仿真模式printf。不会打印串口，只通过CSR_msprint打印至终端，极大提高速度
-#define sim_csr_printf 1
+//#define sim_csr_printf 1
 //---------------------------------
 
 
