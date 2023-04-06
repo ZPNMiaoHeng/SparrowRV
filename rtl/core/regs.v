@@ -22,10 +22,10 @@ module regs(
     );
 
 //根据ISA定义GPR数量
-`ifdef RV32E_BASE_ISA
-reg[`RegBus] regs[15:0];
-`else 
+`ifdef RV32I_BASE_ISA
 reg[`RegBus] regs[31:0];
+`else 
+reg[`RegBus] regs[15:0];
 `endif
 
 // 写寄存器
@@ -47,7 +47,7 @@ always @ (posedge clk or negedge rst_n) begin
         regs[13] <= 32'h0;
         regs[14] <= 32'h0;
         regs[15] <= 32'h0;
-`ifndef RV32E_BASE_ISA
+`ifdef RV32I_BASE_ISA
         regs[16] <= 32'h0;
         regs[17] <= 32'h0;
         regs[18] <= 32'h0;
@@ -119,7 +119,7 @@ wire [31:0] a2  = regs[12];
 wire [31:0] a3  = regs[13];
 wire [31:0] a4  = regs[14];
 wire [31:0] a5  = regs[15];
-`ifndef RV32E_BASE_ISA
+`ifdef RV32I_BASE_ISA
 wire [31:0] a6  = regs[16];
 wire [31:0] a7  = regs[17];
 wire [31:0] s2  = regs[18];

@@ -1,21 +1,20 @@
 `include "defines.v"
 module sparrow_soc (
     input wire clk,    //时钟输入
-    input wire hard_rst_n,  //来自外部引脚的复位信号，低电平有效
+    input wire hard_rst_n,  //来自外部的复位信号，低电平有效
 
-    output wire core_active,//处理器活动指示，以可见速度翻转
+    output wire core_active,//处理器活动指示，以肉眼可见速度翻转
 
+`ifdef JTAG_DBG_MODULE
     input  wire JTAG_TCK,
     input  wire JTAG_TMS,
     input  wire JTAG_TDI,
     output wire JTAG_TDO,
+`endif
 
-    inout wire [31:0] fpioa,//处理器IO接口
+    inout wire [`FPIOA_PORT_NUM-1:0] fpioa,//处理器IO接口
 
-    output wire NorFlash_WP,//25Flash WP引脚拉高，可不接
-    output wire NorFlash_Hold,//25Flash Hold引脚拉高，可不接
-
-    input wire core_ex_trap_valid,//外部中断，外部下拉
+    input wire core_ex_trap_valid,//外部中断，需外部下拉，高电平有效
     output wire core_ex_trap_ready
 );
 
@@ -78,6 +77,10 @@ wire                 sysp_icb_rsp_ready;
 wire                 sysp_icb_rsp_err  ;
 wire [`MemBus]       sysp_icb_rsp_rdata;
 
+//其他信号
+wire halt_req;
+wire jtag_rst_en;
+
 //
 //           定义线网
 //*********************************
@@ -116,6 +119,7 @@ core inst_core
     .iram_icb_rsp_rdata (iram_icb_rsp_rdata)
 );
 
+`ifdef JTAG_DBG_MODULE
 //JTAG模块
 jtag_top inst_jtag_top
 (
@@ -143,6 +147,17 @@ jtag_top inst_jtag_top
     .halt_req_o       (halt_req),
     .reset_req_o      (jtag_rst_en)
 );
+`else
+    assign halt_req = 1'b0;
+    assign jtag_rst_en = 1'b0;
+    assign jtag_icb_cmd_valid = 1'b0;
+    assign jtag_icb_cmd_addr  = 32'b0;
+    assign jtag_icb_cmd_read  = 1'b0;
+    assign jtag_icb_cmd_wdata = 32'b0;
+    assign jtag_icb_cmd_wmask = 4'b0;
+    assign jtag_icb_rsp_ready = 1'b1;
+
+`endif
 
 //s1 sram外设
 sram inst_sram
@@ -329,11 +344,7 @@ always @(posedge clk or negedge rst_n) begin
         end
     end
 end
-
-//硬连线
-assign core_active = active_reg;
-assign NorFlash_WP = 1'b1;
-assign NorFlash_Hold = 1'b1;
+assign core_active = active_reg;//硬连线
 
 //计算log2，得到地址位宽，如clogb2(RAM_DEPTH-1)
 function integer clogb2;

@@ -29,6 +29,6 @@ int main()
         printf("cpu_iram_size = %lu Byte\n",cpu_iram_size);
         printf("cpu_sram_size = %lu Byte\n",cpu_sram_size);
         printf("Vendor ID = %lx \n\n",vendorid);
-        delay_mtime_us(1000);
+        delay_mtime_us(1000000);//延迟一秒
     }
 }

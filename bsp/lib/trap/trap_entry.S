@@ -6,7 +6,11 @@
 
 trap_entry:
     /*SP压栈*/
-    addi sp, sp, -16*4
+#ifdef __riscv_32e /*RV32E*/
+    addi sp, sp, -10*RV32_BYTE
+#else               /*RV32I*/
+	addi sp, sp, -16*RV32_BYTE
+#endif
     /*保存16个寄存器*/
     sw x1 , 0*RV32_BYTE(sp)
     sw x5 , 1*RV32_BYTE(sp)
@@ -18,14 +22,15 @@ trap_entry:
     sw x13, 7*RV32_BYTE(sp)
     sw x14, 8*RV32_BYTE(sp)
     sw x15, 9*RV32_BYTE(sp)
-//#ifndef __riscv_32e
+#ifndef __riscv_32e
+    /*RV32I*/
     sw x16, 10*RV32_BYTE(sp)
     sw x17, 11*RV32_BYTE(sp)
     sw x28, 12*RV32_BYTE(sp)
     sw x29, 13*RV32_BYTE(sp)
     sw x30, 14*RV32_BYTE(sp)
     sw x31, 15*RV32_BYTE(sp)
-//#endif
+#endif
 /*根据ABI调用规则，a0 a1用于传递参数至下一个调用的函数*/
     csrr a0, mcause /*中断原因写入a0*/
     csrr a1, mepc   /*返回地址写入a1*/
@@ -54,16 +59,21 @@ asynchronous_return:
     lw x13, 7*RV32_BYTE(sp)
     lw x14, 8*RV32_BYTE(sp)
     lw x15, 9*RV32_BYTE(sp)
+#ifndef __riscv_32e
+    /*RV32I*/
     lw x16, 10*RV32_BYTE(sp)
     lw x17, 11*RV32_BYTE(sp)
     lw x28, 12*RV32_BYTE(sp)
     lw x29, 13*RV32_BYTE(sp)
     lw x30, 14*RV32_BYTE(sp)
     lw x31, 15*RV32_BYTE(sp)
+#endif
 
-
-    addi sp, sp, 16*RV32_BYTE
-
+#ifdef __riscv_32e      /*RV32E*/
+    addi sp, sp, 10*RV32_BYTE
+#else                   /*RV32I*/
+	addi sp, sp, 16*RV32_BYTE
+#endif
     mret  /*中断返回*/
 
 

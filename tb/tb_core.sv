@@ -12,7 +12,7 @@ logic rst_n;//复位
 logic core_ex_trap_valid, core_ex_trap_ready;//外部中断线
 logic JTAG_TCK,JTAG_TMS,JTAG_TDI,JTAG_TDO;//jtag
 wire spi0_miso;
-wire [31:0]fpioa;
+wire [`FPIOA_PORT_NUM-1:0]fpioa;
 
 //仿真显示信号
 logic [63:0] sim_cycle_cnt = '0;//仿真周期计数器
@@ -28,14 +28,8 @@ assign fpioa[0]=uart0_rx;
 
 wire uart0_tx=fpioa[1];//fpioa[1]
 
-//spi
-assign fpioa[4]=spi0_miso;
-wire spi0_mosi=fpioa[5];
-wire spi0_clk=fpioa[6];
-wire spi0_cs=fpioa[7];
-
 //测试信号
-assign fpioa[31] = 1'b1;
+assign fpioa[7] = 1'b1;
 
 integer r;//计数工具人
 //寄存器监测
@@ -165,7 +159,7 @@ endtask : ex_trap
 
 genvar i;//计数工具人
 generate
-    for ( i=0; i <32 ; i++) begin//fpioa信号弱下拉
+    for ( i=0; i<`FPIOA_PORT_NUM ; i++) begin//fpioa信号弱下拉，防止出现不定态
         assign (weak1,weak0) fpioa[i] = 1'b0;
     end
 endgenerate
@@ -199,30 +193,18 @@ sparrow_soc inst_sparrow_soc (
     .clk               (clk), 
     .hard_rst_n        (rst_n), 
     .core_active       (),
-
+`ifdef JTAG_DBG_MODULE
     .JTAG_TCK          (JTAG_TCK),
     .JTAG_TMS          (JTAG_TMS),
     .JTAG_TDI          (JTAG_TDI),
     .JTAG_TDO          (JTAG_TDO),
-
+`endif
     .fpioa             (fpioa),//处理器IO接口
 
     .core_ex_trap_valid(core_ex_trap_valid),
     .core_ex_trap_ready(core_ex_trap_ready)
 );
 
-`ifdef Flash25
-pullup(WPn);
-pullup(HOLDn);
-W25Q128JVxIM inst_W25Q128JVxIM (
-    .CSn   (spi0_cs),
-    .CLK   (spi0_clk),
-    .DIO   (spi0_mosi),
-    .DO    (spi0_miso),
-    .WPn   (WPn),
-    .HOLDn (HOLDn)
-);
-`endif
 
 //输出波形
 initial begin

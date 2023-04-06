@@ -4,7 +4,7 @@ module sys_perip (
 	input clk,
 	input rst_n,
 
-    inout wire [31:0] fpioa,//处理器IO接口
+    inout wire [`FPIOA_PORT_NUM-1:0] fpioa,//处理器IO接口
 
     //ICB Slave sysp
     input  wire                 sysp_icb_cmd_valid,//cmd有效
@@ -34,9 +34,6 @@ wire [`MemBus]dout;//读数据
 assign sysp_icb_cmd_ready = 1'b1;
 assign sysp_icb_rsp_err   = 1'b0;
 assign sysp_icb_rsp_rdata = dout;
-
-
-
 
 always @(posedge clk or negedge rst_n)//读响应控制
 if (~rst_n)
@@ -95,6 +92,17 @@ assign dout = {32{rd_en_r[0]}} & data_o[0]
             | {32{rd_en_r[14]}} & data_o[14]
             | {32{rd_en_r[15]}} & data_o[15];
 
+//-------全局中断信号-------
+wire irq_uart0_tx;
+wire irq_uart0_rx;
+wire irq_uart1_tx;
+wire irq_uart1_rx;
+wire irq_spi_end ;
+wire [3:0]irq_fpioa_eli;
+//从外设拉到PLIC
+
+
+
 //0 uart0
 uart inst_uart0
 (
@@ -110,7 +118,10 @@ uart inst_uart0
     .data_o  (data_o[0]),
 
     .tx_pin  (uart0_tx),
-    .rx_pin  (uart0_rx)
+    .rx_pin  (uart0_rx),
+
+    .irq_uart_tx (irq_uart0_tx),
+    .irq_uart_rx (irq_uart0_rx)
 );
 //1 uart1
 uart inst_uart1
@@ -127,7 +138,10 @@ uart inst_uart1
     .data_o  (data_o[1]),
 
     .tx_pin  (uart1_tx),
-    .rx_pin  (uart1_rx)
+    .rx_pin  (uart1_rx),
+
+    .irq_uart_tx (irq_uart1_tx),
+    .irq_uart_rx (irq_uart1_rx)
 );
 //2 spi0
 spi inst_spi0
@@ -146,28 +160,12 @@ spi inst_spi0
     .spi_mosi (spi0_mosi),
     .spi_miso (spi0_miso),
     .spi_cs   (spi0_cs  ),
-    .spi_clk  (spi0_clk )
-);
-//3 spi1
-spi inst_spi1
-(
-    .clk      (clk),
-    .rst_n    (rst_n),
+    .spi_clk  (spi0_clk ),
 
-    .waddr_i  (waddr),
-    .data_i   (din),
-    .sel_i    (sel),
-    .we_i     (we_en[3]),
-    .raddr_i  (raddr),
-    .rd_i     (rd_en[3]),
-    .data_o   (data_o[3]),
-
-    .spi_mosi (spi1_mosi),
-    .spi_miso (spi1_miso),
-    .spi_cs   (spi1_cs  ),
-    .spi_clk  (spi1_clk )
+    .irq_spi_end (irq_spi_end)
 );
-//4 
+
+//3
 /*
 AAA inst_AAA
 (
@@ -177,12 +175,13 @@ AAA inst_AAA
     .waddr_i       (waddr),
     .data_i        (din),
     .sel_i         (sel),
-    .we_i          (we_en[4]),
+    .we_i          (we_en[3]),
     .raddr_i       (raddr),
-    .rd_i          (rd_en[4]),
-    .data_o        (data_o[4])
+    .rd_i          (rd_en[3]),
+    .data_o        (data_o[3])
 );
 */
+assign data_o[3]=0;
 assign data_o[4]=0;
 assign data_o[5]=0;
 assign data_o[6]=0;
@@ -212,16 +211,13 @@ fpioa inst_fpioa
     .SPI0_MOSI (spi0_mosi),
     .SPI0_MISO (spi0_miso),
     .SPI0_CS   (spi0_cs),
-    .SPI1_SCK  (spi1_clk),
-    .SPI1_MOSI (spi1_mosi),
-    .SPI1_MISO (spi1_miso),
-    .SPI1_CS   (spi1_cs),
     .UART0_TX  (uart0_tx),
     .UART0_RX  (uart0_rx),
     .UART1_TX  (uart1_tx),
     .UART1_RX  (uart1_rx),
     //FPIOA
-    .fpioa    (fpioa)
+    .fpioa     (fpioa),
+    .irq_fpioa_eli (irq_fpioa_eli)
 );
 
 endmodule

@@ -24,7 +24,7 @@
 |-|-|
 |CPU_CLOCK_HZ|处理器在FPGA上的主频|
 |SRAM_MODEL|"DP_ROM"|
-|PROG_IN_FPGA|打开宏定义|
+|PROG_IN_FPGA|打开宏定义，综合阶段导入程序|
 |PROG_FPGA_PATH|设置为inst.txt的路径，斜杠方向必须为/|
 
 ## 逻辑综合
