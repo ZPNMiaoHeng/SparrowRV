@@ -27,14 +27,15 @@ reg [RAM_WIDTH-1:0] BRAM [0:RAM_DEPTH-1];
 
 generate
     case(RAM_SEL)
+
         "DP_RAM": begin
-            reg [RAM_WIDTH-1:0] addra_r;
-            reg [RAM_WIDTH-1:0] addrb_r;
+            reg [RAM_WIDTH-1:0] douta_r;
+            reg [RAM_WIDTH-1:0] doutb_r;
             wire [3:0] ram_wea = {4{wea}} & wema;
             wire [3:0] ram_web = {4{web}} & wemb;
             always @(posedge clk)
                 if (ena) begin
-                	addra_r <= addra;
+                	douta_r <= BRAM[addra];
                     if(ram_wea[0])
                         BRAM[addra][7:0] <= dina[7:0];
                     if(ram_wea[1])
@@ -47,19 +48,20 @@ generate
 
             always @(posedge clk)
                 if (enb) begin
-                	addrb_r <= addrb;
-                        if(ram_web[0])
-                            BRAM[addrb][7:0] <= dinb[7:0];
-                        if(ram_web[1])
-                            BRAM[addrb][15:8] <= dinb[15:8];
-                        if(ram_web[2])
-                            BRAM[addrb][23:16] <= dinb[23:16];
-                        if(ram_web[3])
-                            BRAM[addrb][31:24] <= dinb[31:24];
+                	doutb_r <= BRAM[addrb];
+                    if(ram_web[0])
+                        BRAM[addrb][7:0] <= dinb[7:0];
+                    if(ram_web[1])
+                        BRAM[addrb][15:8] <= dinb[15:8];
+                    if(ram_web[2])
+                        BRAM[addrb][23:16] <= dinb[23:16];
+                    if(ram_web[3])
+                        BRAM[addrb][31:24] <= dinb[31:24];
                 end
-            assign douta = BRAM[addra_r];
-            assign doutb = BRAM[addrb_r];
+            assign douta = douta_r;
+            assign doutb = doutb_r;
         end
+
         "DP_ROM": begin
             reg [RAM_WIDTH-1:0] addra_r;
             reg [RAM_WIDTH-1:0] addrb_r;
@@ -76,6 +78,7 @@ generate
             assign doutb = BRAM[addrb_r];
 
         end
+
         "SYN_DPR": begin
 /*
 请在这里例化相应FPGA平台的双端口BRAM，并与端口连接
