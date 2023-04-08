@@ -1,4 +1,4 @@
-## Coremark跑分
+# Coremark跑分
 **系统配置**  
 - SGCY_MUL
 - DIV_MODE "HF_DIV"
