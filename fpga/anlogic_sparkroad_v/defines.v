@@ -86,11 +86,7 @@
 
 `define INST_LUI    7'b0110111
 `define INST_AUIPC  7'b0010111
-`define INST_NOP    32'h00000001
-`define INST_NOP_OP 7'b0000001
 `define INST_RET    32'h00008067
-`define INST_FENCE  7'b0001111
-
 
 // J type inst
 `define INST_TYPE_B 7'b1100011

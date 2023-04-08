@@ -1,8 +1,5 @@
-set_pin_assignment	{ NorFlash_Hold }	{ LOCATION = L13; IOSTANDARD = LVCMOS33; }
-set_pin_assignment	{ NorFlash_WP }	{ LOCATION = J11; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ clk }	{ LOCATION = K14; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ core_ex_trap_valid }	{ LOCATION = G11; IOSTANDARD = LVCMOS33; }
-set_pin_assignment	{ fpioa[0] }	{ LOCATION = F16; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ fpioa[1] }	{ LOCATION = E16; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ fpioa[2] }	{ LOCATION = T4; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ fpioa[3] }	{ LOCATION = R5; IOSTANDARD = LVCMOS33; }

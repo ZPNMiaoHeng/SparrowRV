@@ -32,10 +32,17 @@
 /.vscode
 
 /fpga/anlogic/anlogic.bit
+
 /fpga/gowin_tang_nano_20k/impl/gwsynthesis
 /fpga/gowin_tang_nano_20k/impl/pnr
 /fpga/gowin_tang_nano_20k/impl/temp
 /fpga/gowin_tang_nano_20k/gowin_tang_nano_20k.gprj.user
+
+/fpga/gowin_tang_primer_20k
+#/fpga/gowin_tang_primer_20k/impl/gwsynthesis
+#/fpga/gowin_tang_primer_20k/impl/pnr
+#/fpga/gowin_tang_primer_20k/impl/temp
+#/fpga/gowin_tang_primer_20k/gowin_tang_primer_20k.gprj.user
 
 /fpga/gowin_gw1n_lv9qn48/impl/gwsynthesis
 /fpga/gowin_gw1n_lv9qn48/impl/pnr
