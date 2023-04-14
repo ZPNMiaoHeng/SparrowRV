@@ -5,7 +5,7 @@ uint32_t tmp;
 int main()
 {
     init_uart0_printf(115200,0);//设置波特率
-    printf("%s", "Hello world SparrowRV\n");
+    printf("%s", "Timer cmp out and capture in\n");
     printf("%s", "--------------\n");
     fpioa_perips_out_set(TIMER0_CMPO_N, 10);
     fpioa_perips_out_set(TIMER0_CMPO_P, 11);

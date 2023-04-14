@@ -5,7 +5,7 @@ uint32_t tmp;
 //测试
 int main()
 {
-    init_uart0_printf(115200,1);//设置printf波特率
+    init_uart0_printf(115200,0);//设置printf波特率
     printf("SparrowRV SPI Flash\n");
 
     uint8_t nor25_id_data[3];

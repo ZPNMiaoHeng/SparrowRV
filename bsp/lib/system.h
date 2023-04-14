@@ -10,14 +10,14 @@
 #include "uart.h"
 #include "spi.h"
 #include "fpioa.h"
-
+#include "timer.h"
 //驱动库 driver
 #include "printf.h"
 #include "nor25_flash.h"
 
 //------ 上FPGA，必须注释掉此宏，就像这样 //#define sim_csr_printf 1
 //开启仿真模式printf。不会打印串口，只通过CSR_msprint打印至终端，极大提高速度
-//#define sim_csr_printf 1
+#define sim_csr_printf 1
 //---------------------------------
 
 
@@ -56,6 +56,7 @@
 
 
 #define SYS_RWMEM_W(addr) (*((volatile uint32_t *)(addr)))   //必须4字节对齐访问(低2位为0)
+#define SYS_RWMEM_H(addr) (*((volatile uint16_t *)(addr)))   //半字(16bit)访问，但是部分外设不支持半字寻址写
 #define SYS_RWMEM_B(addr) (*((volatile uint8_t  *)(addr)))   //允许访问4G地址空间任意字节，但是部分外设不支持字节寻址写
 
 #endif

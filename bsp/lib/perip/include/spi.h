@@ -5,7 +5,6 @@
 #define SYSIO_BASE           (0x40000000)
 #define SPI_BASE             (SYSIO_BASE + (0x200))
 #define SPI0_BASE            (SPI_BASE  + (0x000))
-#define SPI1_BASE            (SPI_BASE  + (0x100))
 
 #define SPI_CTRL(SPIx)       (SPIx + (0x00))
 #define SPI_DATA(SPIx)       (SPIx + (0x04))
@@ -17,7 +16,6 @@
 #define SPI_CP_MODEL_3 0b0110 //CPOL = 1, CPHA = 1
 
 #define SPI0 SPI0_BASE
-#define SPI1 SPI1_BASE
 
 
 void spi_cp_model(uint32_t SPIx, uint32_t spi_cpmodel);//SPI相位控制

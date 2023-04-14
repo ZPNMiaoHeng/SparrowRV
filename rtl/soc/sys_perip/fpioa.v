@@ -20,6 +20,9 @@ module fpioa (
     output wire UART0_RX ,
     input  wire UART1_TX ,
     output wire UART1_RX ,
+    input  wire TIMER0_CMPO_N,
+    input  wire TIMER0_CMPO_P,
+    output wire TIMER0_CAPI  ,
 
     output wire [3:0]irq_fpioa_eli,    //FPIOA端口外部连线中断
 
@@ -290,8 +293,8 @@ endgenerate
  * | 6        |                 | 
  * | 7        | UART0_TX        | UART0 Tx 串口数据输出
  * | 8        | UART1_TX        | UART1 Tx 串口数据输出
- * | 9        |                 | 
- * | 10       |                 | 
+ * | 9        | TIMER0_CMPO_N   | 定时器0比较输出-
+ * | 10       | TIMER0_CMPO_P   | 定时器0比较输出+
  * | 11       |                 | 
  * | 12       |                 | 
  * | 13       |                 | 
@@ -324,7 +327,9 @@ assign perips_oe[3]  = Enable;
 assign perips_oe[6:4] = 0;
 assign perips_oe[7]  = Enable;
 assign perips_oe[8]  = Enable;
-assign perips_oe[31:9] = 0;
+assign perips_oe[9]  = Enable;
+assign perips_oe[10] = Enable;
+assign perips_oe[31:11] = 0;
 
 
 //外设端口perips_out输出数据
@@ -335,7 +340,10 @@ assign perips_ot[3]  = SPI0_CS  ;
 assign perips_ot[6:4] = 0;
 assign perips_ot[7]  = UART0_TX ;
 assign perips_ot[8]  = UART1_TX ;
-assign perips_ot[31:9] = 0;
+assign perips_ot[9]  = TIMER0_CMPO_N;
+assign perips_ot[10] = TIMER0_CMPO_P;
+assign perips_ot[31:11] = 0;
+
 
 /*------------------------------
  * 外设输入端口布局
@@ -351,7 +359,7 @@ assign perips_ot[31:9] = 0;
  * | 5        | ELI_CH1         | 外部连线中断通道1
  * | 6        | ELI_CH2         | 外部连线中断通道2
  * | 7        | ELI_CH3         | 外部连线中断通道3
- * | 8        |                 | 
+ * | 8        | TIMER0_CAPI     | 定时器0输入捕获
  * | 9        |                 | 
  * | 10       |                 | 
  * | 11       |                 | 
@@ -382,6 +390,7 @@ assign SPI0_MISO = perips_in[0];
 assign UART0_RX  = perips_in[2];
 assign UART1_RX  = perips_in[3];
 assign ELI_CH    = perips_in[7:4];
+assign TIMER0_CAPI = perips_in[8];
 
 //外部连线中断仲裁
 reg [3:0]eli_r,eli_rr;

@@ -4,7 +4,7 @@ uint32_t tmp;
 //测试
 int main()
 {
-    init_uart0_printf(115200,1);//设置波特率
+    init_uart0_printf(115200,0);//设置波特率
     printf("%s", "ELI CH0-4 lian jie dao FPIOA[0]\n");
     printf("%s", "--------------\n");
     fpioa_perips_in_set(ELI_CH0, 0);

@@ -50,6 +50,6 @@ secs_ret time_in_secs(CORE_TICKS ticks)
 
 void portable_init(core_portable *p, int *argc, char *argv[])
 {
-    init_uart0_printf(115200,1);
+    init_uart0_printf(115200,0);
     ee_printf("Start Coremark\n");
 }

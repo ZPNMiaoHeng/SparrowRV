@@ -18,7 +18,7 @@ module sram (
 );
 
 
-//AXI4L总线交互
+//ICB总线交互
 wire [clogb2(`SRamSize-1)-1:0]addr;
 wire we,en;
 wire [3:0] wem;

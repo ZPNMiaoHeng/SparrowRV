@@ -38,22 +38,22 @@ uint32_t fpioa_eli_mode_set(uint32_t ELI_CHx, uint32_t eli_mode, uint32_t set_en
 #define  SPI0_SCK      1 
 #define  SPI0_MOSI     2 
 #define  SPI0_CS       3 
-#define  SPI1_SCK      4 
-#define  SPI1_MOSI     5 
-#define  SPI1_CS       6 
+
 #define  UART0_TX      7 
 #define  UART1_TX      8 
-
+#define  TIMER0_CMPO_N 9
+#define  TIMER0_CMPO_P 10
 
 //定义fpioa_perips_i参数
 #define  SPI0_MISO     0
-#define  SPI1_MISO     1
+
 #define  UART0_RX      2
 #define  UART1_RX      3
 #define  ELI_CH0       4
 #define  ELI_CH1       5
 #define  ELI_CH2       6
 #define  ELI_CH3       7
+#define  TIMER0_CAPI   8
 
 //选择设置哪一个ELI通道
 #define  ELI_CH0_SEL    0

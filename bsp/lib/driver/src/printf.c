@@ -42,7 +42,6 @@
 void init_uart0_printf(uint32_t band, uint8_t uart_tx_fpioa_port)
 {
 #ifndef sim_csr_printf
-  fpioa_perips_out_set(UART0_TX, 0);//fpioa[0]永远用于printf
   fpioa_perips_out_set(UART0_TX, uart_tx_fpioa_port);//也可以自定义
   //配置波特率
   uart_band_ctr(UART0,band);

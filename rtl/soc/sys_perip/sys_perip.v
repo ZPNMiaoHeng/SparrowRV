@@ -162,10 +162,34 @@ spi inst_spi0
     .spi_cs   (spi0_cs  ),
     .spi_clk  (spi0_clk ),
 
-    .irq_spi_end (irq_spi_end)
+    .irq_spi_end (irq_spi0_end)
 );
 
 //3
+timer inst_timer0
+(
+    .clk            (clk),
+    .rst_n          (rst_n),
+
+    .waddr_i        (waddr),
+    .data_i         (din),
+    .sel_i          (sel),
+    .we_i           (we_en[3]),
+    .raddr_i        (raddr),
+    .rd_i           (rd_en[3]),
+    .data_o         (data_o[3]),
+
+    .timer_cmpo_p   (timer0_cmpo_p),
+    .timer_cmpo_n   (timer0_cmpo_n),
+    .timer_capi     (timer0_capi),
+
+    .irq_timer_cmp0 (irq_timer0_cmp0),
+    .irq_timer_cmp1 (irq_timer0_cmp1),
+    .irq_timer_cap0 (irq_timer0_cap0),
+    .irq_timer_cap1 (irq_timer0_cap1),
+    .irq_timer_of   (irq_timer0_of)
+);
+
 /*
 AAA inst_AAA
 (
@@ -181,7 +205,6 @@ AAA inst_AAA
     .data_o        (data_o[3])
 );
 */
-assign data_o[3]=0;
 assign data_o[4]=0;
 assign data_o[5]=0;
 assign data_o[6]=0;
@@ -206,7 +229,7 @@ fpioa inst_fpioa
     .raddr_i  (raddr),
     .rd_i     (rd_en[15]),
     .data_o   (data_o[15]),
-    //通信接口
+    //外设接口
     .SPI0_SCK  (spi0_clk),
     .SPI0_MOSI (spi0_mosi),
     .SPI0_MISO (spi0_miso),
@@ -215,8 +238,12 @@ fpioa inst_fpioa
     .UART0_RX  (uart0_rx),
     .UART1_TX  (uart1_tx),
     .UART1_RX  (uart1_rx),
+    .TIMER0_CMPO_N  (timer0_cmpo_p),
+    .TIMER0_CMPO_P  (timer0_cmpo_n),
+    .TIMER0_CAPI    (timer0_capi),
     //FPIOA
     .fpioa     (fpioa),
+
     .irq_fpioa_eli (irq_fpioa_eli)
 );
 
