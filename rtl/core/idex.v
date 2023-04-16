@@ -44,8 +44,6 @@ module idex(
         //PC
     output reg[`InstAddrBus] pc_n_o,        //下一条指令地址
         //trap
-    output reg ecall_o,                     //指令中断使能
-    output reg ebreak_o,                    //指令中断使能
     output reg wfi_o,                       //中断等待使能
     output reg inst_err_o,                  //指令出错
     output reg idex_mret_o,                 //mret中断返回标志
@@ -126,8 +124,6 @@ always @ (*) begin
     mem_wem_o = 4'h0;   //写内存掩码
     mem_en_o = 0;       //访问内存使能，复用读
     pc_n_o = 0;         //下一条指令地址
-    ecall_o = 0;        //指令中断使能
-    ebreak_o = 0;       //指令中断使能
     wfi_o = 0;          //中断等待使能
     inst_err_o = 0;     //指令出错
     idex_mret_o = 0;    //mret中断返回标志

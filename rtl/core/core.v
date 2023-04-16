@@ -5,14 +5,15 @@ module core (
 
 
     input  wire halt_req_i,//jtag停住cpu
-
     output wire hx_valid,//处理器运行指示
-
     output wire soft_rst,//mcctr[3]软件复位
 
     //外部中断
     input  wire core_ex_trap_valid,//外部中断请求
-    output wire core_ex_trap_ready,//外部中断被响应
+    input  wire [4:0]core_ex_trap_id,//外部中断源ID
+    output wire core_ex_trap_ready,//外部中断响应
+    output wire core_ex_trap_cplet,//外部中断完成
+    output wire [4:0]core_ex_trap_cplet_id,//外部中断完成的中断源ID
 
     //ICB总线接口 Master core
     output wire                 core_icb_cmd_valid,//cmd有效
@@ -69,29 +70,27 @@ wire [`InstAddrBus] mepc;//CSR mepc寄存器
 //-------------定义内部线网--------------
 sctr inst_sctr
 (
-    .clk              (clk),
-    .rst_n            (rst_n),
-    .reg_we_i         (reg_we_idex),
-    .csr_we_i         (csr_we_idex),
-    .mem_wdata_i      (mem_wdata),
-    .mem_addr_i       (mem_addr),
-    .mem_we_i         (mem_we),//存储空间写使能
-    .mem_wem_i        (mem_wem),
-    .mem_en_i         (mem_en),
-    .mem_rdata_o      (mem_rdata),
-    .reg_we_o         (reg_we_sctr),
-    .csr_we_o         (csr_we_sctr),
-    .iram_rd_o        (iram_rd),
-    .div_start_i      (div_start),
-    .div_ready_i      (div_ready),
-    .mult_inst_i      (mult_inst),
-    .iram_rstn_i      (iram_rstn),
-    .halt_req_i       (halt_req_i),
-    .trap_in_i        (trap_in),
-    .trap_jump_i      (trap_jump),
-    .idex_mret_i      (idex_mret),
-    .trap_stat_o      (),//中断状态指示
-    .icb_err_o          (),//ICB总线出错
+    .clk                (clk),
+    .rst_n              (rst_n),
+    .reg_we_i           (reg_we_idex),
+    .csr_we_i           (csr_we_idex),
+    .mem_wdata_i        (mem_wdata),
+    .mem_addr_i         (mem_addr),
+    .mem_we_i           (mem_we),//存储空间写使能
+    .mem_wem_i          (mem_wem),
+    .mem_en_i           (mem_en),
+    .mem_rdata_o        (mem_rdata),
+    .reg_we_o           (reg_we_sctr),
+    .csr_we_o           (csr_we_sctr),
+    .iram_rd_o          (iram_rd),
+    .div_start_i        (div_start),
+    .div_ready_i        (div_ready),
+    .mult_inst_i        (mult_inst),
+    .iram_rstn_i        (iram_rstn),
+    .halt_req_i         (halt_req_i),
+    .trap_in_i          (trap_in),
+    .trap_jump_i        (trap_jump),
+    .icb_err_o          (icb_err),//ICB总线出错
     .sctr_icb_cmd_valid (core_icb_cmd_valid),
     .sctr_icb_cmd_ready (core_icb_cmd_ready),
     .sctr_icb_cmd_addr  (core_icb_cmd_addr),
@@ -170,8 +169,6 @@ idex inst_idex
     .mem_wem_o    (mem_wem),
     .mem_en_o     (mem_en),
     .pc_n_o       (idex_pc_n),
-    .ecall_o      (ecall_trap),
-    .ebreak_o     (ebreak_trap),
     .wfi_o        (wfi_trap),
     .inst_err_o   (inst_err_trap),
     .idex_mret_o  (idex_mret),
@@ -223,19 +220,23 @@ trap inst_trap
     .csr_wdata_o        (trap_csr_wdata),
     .csr_we_o           (trap_csr_we),
     .csr_addr_o         (trap_csr_addr),
-    .ex_trap_ready_o    (core_ex_trap_ready),
-    .ecall_i            (ecall_trap),
-    .ebreak_i           (ebreak_trap),
     .wfi_i              (wfi_trap),
     .inst_err_i         (inst_err_trap),
     .mem_err_i          (1'b0),//访存错误
-    .ex_trap_valid_i    (ex_trap_valid),
     .tcmp_trap_valid_i  (tcmp_trap_valid),
     .soft_trap_valid_i  (soft_trap_valid),
     .mstatus_MIE3       (mstatus_MIE3),
     .pc_i               (pc),
     .inst_i             (inst),
     .mem_addr_i         (mem_addr),
+    //外部中断接口
+    .ex_trap_valid_i       (ex_trap_valid),//外部中断有效
+    .ex_trap_id_i          (core_ex_trap_id),//外部中断源ID
+    .ex_trap_ready_o       (core_ex_trap_ready),//外部中断响应
+    .ex_trap_cplet_o       (core_ex_trap_cplet),//外部中断完成
+    .ex_trap_cplet_id_o    (core_ex_trap_cplet_id),//外部中断完成的中断源ID
+    .idex_mret_i           (idex_mret),//中断返回
+
     .pc_n_i             (idex_pc_n),
     .pc_n_o             (trap_pc_n),
     .trap_jump_o        (trap_jump),

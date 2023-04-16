@@ -46,14 +46,9 @@
 
 //陷阱相关
 #define MCAUSE_INTERRUPT 0x80000000 //进入陷阱的原因是中断
-#define MCAUSE_INTP_EX   11//外部中断
-#define MCAUSE_INTP_TCMP 7//定时器中断
-#define MCAUSE_INTP_SOFT 3//软件中断
-#define MCAUSE_INTP_XXXX 12//其他中断源
-//异常
-#define MCAUSE_EXCP_ALL 0xffff
-
-
+#define MCAUSE_INTP_EX   4//外部中断
+#define MCAUSE_INTP_TCMP 3//定时器中断
+#define MCAUSE_INTP_SOFT 2//软件中断
 
 #define SYS_RWMEM_W(addr) (*((volatile uint32_t *)(addr)))   //必须4字节对齐访问(低2位为0)
 #define SYS_RWMEM_H(addr) (*((volatile uint16_t *)(addr)))   //半字(16bit)访问，但是部分外设不支持半字寻址写

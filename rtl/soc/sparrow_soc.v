@@ -1,20 +1,23 @@
 `include "defines.v"
 module sparrow_soc (
+    //公共接口
     input wire clk,    //时钟输入
     input wire hard_rst_n,  //来自外部的复位信号，低电平有效
-
     output wire core_active,//处理器活动指示，以肉眼可见速度翻转
 
+    //JTAG接口
 `ifdef JTAG_DBG_MODULE
-    input  wire JTAG_TCK,
     input  wire JTAG_TMS,
     input  wire JTAG_TDI,
     output wire JTAG_TDO,
 `endif
+    input  wire JTAG_TCK, //即使没有JTAG，也保留这个接口，使得约束可以通用
 
+    //FPIOA
     inout wire [`FPIOA_PORT_NUM-1:0] fpioa,//处理器IO接口
 
     input wire core_ex_trap_valid,//外部中断，需外部下拉，高电平有效
+    input  wire [4:0]core_ex_trap_id,//外部中断源ID
     output wire core_ex_trap_ready
 );
 
@@ -93,8 +96,14 @@ core inst_core
     .halt_req_i       (halt_req),
     .hx_valid         (hx_valid),
     .soft_rst         (soft_rst_en),
+
+//外部中断
     .core_ex_trap_valid  (core_ex_trap_valid),
+    .core_ex_trap_id     (core_ex_trap_id),
     .core_ex_trap_ready  (core_ex_trap_ready),
+    .core_ex_trap_cplet  (),
+    .core_ex_trap_cplet_id(),
+
 //m1 内核
     .core_icb_cmd_valid (core_icb_cmd_valid),
     .core_icb_cmd_ready (core_icb_cmd_ready),

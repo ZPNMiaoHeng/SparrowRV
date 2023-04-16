@@ -43,8 +43,23 @@ _start:
 loop:  /*无限循环*/
 	j loop
 
-trap_vector_base:/*备用中断向量表*/
-	j _start
+.global trap_vector_tab
+trap_vector_tab:/*中断向量表*/
+	/*trap编码0*/
+	.word   HardFault_Handler /*trap编码1*/
+	.word   SW_Handler /*trap编码2*/
+	.word   SysTick_Handler /*trap编码3*/
+	.word   EX_PLIC0_Handler /*trap编码4，以此类推*/
 	.word   0
-	.word   0
-	.word   0
+
+.section  .text;
+	.weak   HardFault_Handler
+	.weak   SW_Handler
+	.weak   SysTick_Handler
+	.weak   EX_PLIC0_Handler
+
+HardFault_Handler:        1: j 1b
+SW_Handler:               1: j 1b
+SysTick_Handler:          1: j 1b
+EX_PLIC0_Handler:         1: j 1b
+

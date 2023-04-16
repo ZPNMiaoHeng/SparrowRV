@@ -54,7 +54,7 @@
 `define SGCY_MUL 1'b1
 
 //启用minstret指令计数器
-`define CSR_MINSTRET_EN 1'b1
+//`define CSR_MINSTRET_EN 1'b1
 
 //开发版本
 `define DEVELOP_REV 1'b1

@@ -46,7 +46,7 @@ reg mstatus_MPIE7;//mstatus状态寄存器
     wire[`RegBus] misa=32'b01_0000_0000000000000_0_000_1_00000000;//RV32I ISA寄存器
 `endif
 reg mie_MEIE11, mie_MTIE7, mie_MSIE3;//中断屏蔽，1使能，0屏蔽
-reg [`RegBus] mtvec;//[32:2]中断入口,[1:0]=0
+reg [`RegBus] mtvec;//[32:2]中断入口,[1:0]=2'b01
 reg [`RegBus] mscratch;//mscratch寄存器
 reg [`RegBus] mcause;//中断原因，[31]:1中断,0异常，[30:0]:编号
 reg [`RegBus] mtval;//异常原因寄存器
@@ -139,17 +139,14 @@ always @ (posedge clk or negedge rst_n) begin
         mtime <= 64'h0;
     end 
     else begin
-        if(idex_csr_we_i & (idex_csr_addr_i==`CSR_MTIME | idex_csr_addr_i==`CSR_MTIMEH))
-            if(idex_csr_addr_i==`CSR_MTIME)
+            if(idex_csr_we_i & idex_csr_addr_i==`CSR_MTIME)
                 mtime <= {mtime[63:32] , idex_csr_wdata_i};
             else 
-                if(idex_csr_addr_i==`CSR_MTIMEH)
+                if(idex_csr_we_i & idex_csr_addr_i==`CSR_MTIMEH)
                     mtime <= {idex_csr_wdata_i , mtime[31:0]};
                 else
-                    mtime <= mtime + 64'b1;
-        else
-            if(mcctr[2])
-                mtime <= mtime + 64'b1;
+                    if(mcctr[2])
+                        mtime <= mtime + 64'b1;
     end
 end
 
@@ -162,7 +159,7 @@ always @ (posedge clk or negedge rst_n) begin
         mie_MEIE11 <= 1'b0;
         mie_MTIE7 <= 1'b0;
         mie_MSIE3 <= 1'b0;
-        mtvec <= 32'h0;
+        mtvec <= 32'h1;
         mscratch <= 0;
         mepc <= 0;
         mcause <= 0;
@@ -185,19 +182,13 @@ always @ (posedge clk or negedge rst_n) begin
                     mie_MSIE3 <= idex_csr_wdata_i[3];
                 end
                 `CSR_MTVEC: begin
-                    mtvec <= idex_csr_wdata_i;
+                    mtvec[31:2] <= idex_csr_wdata_i[31:2];
                 end
                 `CSR_MSCRATCH: begin
                     mscratch <= idex_csr_wdata_i;
                 end
                 `CSR_MEPC: begin
                     mepc <= idex_csr_wdata_i;
-                end
-                `CSR_MCAUSE: begin
-                    mcause <= idex_csr_wdata_i;
-                end
-                `CSR_MTVAL: begin
-                    mtval <= idex_csr_wdata_i;
                 end
                 `CSR_MSIP: begin
                     msip <= idex_csr_wdata_i[0];
@@ -227,9 +218,6 @@ always @ (posedge clk or negedge rst_n) begin
                 `CSR_MSTATUS: begin
                     mstatus_MIE3 <= trap_csr_wdata_i[3];
                     mstatus_MPIE7 <= trap_csr_wdata_i[7];
-                end
-                `CSR_MTVEC: begin
-                    mtvec <= trap_csr_wdata_i;
                 end
                 `CSR_MEPC: begin
                     mepc <= trap_csr_wdata_i;

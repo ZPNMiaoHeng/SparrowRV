@@ -167,7 +167,7 @@ endgenerate
 always @(posedge clk) begin
     if(`CorePath.inst_csr.printf_valid) begin
         sim_printf_ascii = `CorePath.inst_csr.idex_csr_wdata_i[7:0];//读取printf的内容
-        if(sim_printf_ascii=="\n" || sim_printf_ascii=="\r") begin
+        if(sim_printf_ascii==8'h0A || sim_printf_ascii==8'h0D) begin
             sim_printf_p = sim_printf_line_length;
             sim_printf_line = '0;
         end
@@ -201,6 +201,7 @@ sparrow_soc inst_sparrow_soc (
     .fpioa             (fpioa),//处理器IO接口
 
     .core_ex_trap_valid(core_ex_trap_valid),
+    .core_ex_trap_id   (5'd0),
     .core_ex_trap_ready(core_ex_trap_ready)
 );
 

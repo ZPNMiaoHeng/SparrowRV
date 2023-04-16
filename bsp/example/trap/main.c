@@ -12,3 +12,4 @@ int main()
     delay_mtime_us(10);
     printf("exit_trap=%lu\n",trap_mip_state(TRAP_EXTI));//已经响应了，返回0
 }
+

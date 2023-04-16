@@ -30,8 +30,6 @@ module sctr (
     //中断相关
     input wire trap_in_i,//进中断指示
     input wire trap_jump_i,//中断跳转指示，进中断最后一步
-    input wire idex_mret_i,//中断返回
-    output reg trap_stat_o,//中断状态指示
     output wire icb_err_o,//ICB总线出错
 
     //ICB总线接口
@@ -119,20 +117,6 @@ assign sctr_icb_cmd_wmask = mem_wem_i;//写数据选通
 assign sctr_icb_cmd_valid = (sta_p == 1'b0)? (mem_en_i & ~trap_in_i & ~halt_req_i) : 1'b0;
 assign icb_err_o = sctr_icb_rsp_err;
 
-always @(posedge clk or negedge rst_n) begin
-    if(~rst_n) begin
-        trap_stat_o <= 0;
-    end 
-    else begin
-        if(~trap_stat_o)//未处于中断
-            if(trap_jump_i)//若跳转到中断入口
-                trap_stat_o <= 1;//切换到中断状态
-            else begin end
-        else//处于中断
-            if(idex_mret_i & hx_valid)//遇到mret指令且写回使能
-                trap_stat_o <= 0;//退出中断状态
-            else begin end
-    end
-end
+
 
 endmodule

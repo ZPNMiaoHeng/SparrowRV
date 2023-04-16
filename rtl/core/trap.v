@@ -10,13 +10,10 @@ module trap (
     output reg[`CsrAddrBus] csr_addr_o,     //访问CSR寄存器地址
 
     //异常输入接口
-    input wire ecall_i,//ecall指令中断
-    input wire ebreak_i,//ebreak指令中断
     input wire inst_err_i,//指令解码错误中断
-    input wire mem_err_i,//访存错误-------未使用
+    input wire mem_err_i,//访存错误
 
-    //中断输入接口
-    input wire ex_trap_valid_i,//外部中断，需锁存
+    //核内中断输入接口
     input wire tcmp_trap_valid_i,//定时器中断，需锁存
     input wire soft_trap_valid_i,//软件中断，需锁存
 
@@ -27,53 +24,74 @@ module trap (
     input wire[`InstBus] inst_i,              //指令内容
     input wire [`MemAddrBus] mem_addr_i,      //访存地址
 
-    //中断响应接口
-    output reg ex_trap_ready_o  ,//外部中断响应
+    //外部中断响应接口，由PLIC统一管理并送入核内
+    input wire ex_trap_valid_i,//外部中断有效，需锁存
+    input wire [4:0]ex_trap_id_i,//外部中断源ID
+    output reg ex_trap_ready_o,//外部中断响应
+    output reg ex_trap_cplet_o,//外部中断完成
+    output reg [4:0]ex_trap_cplet_id_o,//外部中断完成的中断源ID
 
     //下一个PC控制
     input wire[`InstAddrBus] pc_n_i,          //idex提供的下一条指令地址
     output reg[`InstAddrBus] pc_n_o,          //仲裁后的下一条指令地址
     output reg trap_jump_o,                   //中断跳转指示
 
+    //MRET中断返回
+    input wire idex_mret_i,//中断返回
+
     //进中断指示
     output reg trap_in_o//即将进入中断的时候，持续拉高
-
 );
+/*
+Trap编码表，关联mcause
+| Number | 原因 |
+|--------|------|
+| 0      | 保留          |
+| 1      | 异常，不可屏蔽 |
+| 2      | 软件中断       |
+| 3      | 定时器中断     |
+| 4-34   | PLIC外部中断  |
+| 35-63  | 保留          |
+来自PLIC外部中断的编码为 中断源ID + 4
+
+*/
+//外部中断状态机
+reg ex_trap_state;
+
+
 //-------进中断需要锁存的信息-----
 reg pex_trap_r;//外部中断
 reg ptcmp_trap_r;//定时器中断
 reg psoft_trap_r;//软件中断
 
 //-------进入陷阱使能-----
-wire trap_exception_en = ecall_i | ebreak_i | inst_err_i | mem_err_i;//有异常到达，不可屏蔽
+wire trap_exception_en = inst_err_i | mem_err_i;//有异常到达，不可屏蔽
 wire trap_interrupt_en = ex_trap_valid_i | tcmp_trap_valid_i | soft_trap_valid_i;//有中断到达，可屏蔽
 
 reg [`RegBus] mcause_gen;//生成mcause信息
 reg [`RegBus] mtval_gen;//生成mtval信息
+wire [5:0] trap_number = mcause_gen[5:0];//Trap编码，用于生成中断向量
 
 always @(*) begin
     ex_trap_ready_o = 0;
     if(trap_interrupt_en) begin//中断
         mcause_gen[31] = 1'b1;//中断位
         if(pex_trap_r) begin//优先外部中断 
-            mcause_gen[30:0] = `MCAUSE_INTP_EX;
+            mcause_gen[30:0] = ex_trap_id_i + 31'd4;
             ex_trap_ready_o  = 1;
         end
         else
             if(ptcmp_trap_r) begin//其次定时器中断
-                mcause_gen[30:0] = `MCAUSE_INTP_TCMP;
+                mcause_gen[30:0] = 31'd3;
             end
             else
-                if(psoft_trap_r) begin//其次软件中断
-                    mcause_gen[30:0] = `MCAUSE_INTP_SOFT;
-                end
-                else begin//其他
-                    mcause_gen[30:0] = `MCAUSE_INTP_XXXX;
-                end
+            begin//其次软件中断
+                mcause_gen[30:0] = 31'd2;
+            end
     end
     else begin//异常
         mcause_gen[31] = 1'b0;
-        mcause_gen[30:0] = `MCAUSE_EXCP_ALL;//异常暂不分析
+        mcause_gen[30:0] = 31'h1;//异常统一入口
     end
 end
 
@@ -214,7 +232,7 @@ always @(*) begin //输出
             trap_jump_o=1;//PC跳转
             csr_we_o=0;
             csr_addr_o=`CSR_MTVEC;
-            pc_n_o={csr_rdata_i[31:2],2'b00};
+            pc_n_o={csr_rdata_i[31:2],2'b00}+{trap_number,2'b00};
         end
         default: ;
     endcase
@@ -234,6 +252,22 @@ always @(posedge clk) begin
     end
 end
 
-
+always @(posedge clk or negedge rst_n) begin
+    if (~rst_n) begin
+        ex_trap_state <= 1'b0;
+        ex_trap_cplet_o <= 1'b0;
+    end
+    else begin
+        ex_trap_cplet_o <= 1'b0;
+        if(pex_trap_r && ex_trap_ready_o) begin//进入外部中断
+            ex_trap_cplet_id_o <= ex_trap_id_i;//锁存ID
+            ex_trap_state <= 1'b1;//进入中断状态
+        end
+        if(idex_mret_i && ex_trap_state) begin//外部中断返回
+            ex_trap_cplet_o <= 1'b1;//中断完成
+            ex_trap_state <= 1'b0;//脱离中断状态
+        end
+    end
+end
 
 endmodule

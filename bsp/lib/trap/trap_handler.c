@@ -1,52 +1,33 @@
 #include "system.h"
 
-//外部中断服务程序
-__attribute__((weak)) void handler_interrupt_ex()
+void EX_PLIC0_Handler() __attribute__((interrupt));
+__attribute__((weak)) void SysTick_Handler() __attribute__((interrupt));
+__attribute__((weak)) void SW_Handler() __attribute__((interrupt));
+__attribute__((weak)) void HardFault_Handler() __attribute__((interrupt));
+//外部中断 PLIC ID0 服务程序，仅供测试
+void EX_PLIC0_Handler()
 {
-    printf("interrupt ex in original function\n");
+    printf("PLIC ID:0 interrupt\n");
 }
 
 //定时器中断服务程序
-__attribute__((weak)) void handler_interrupt_tcmp()
+void SysTick_Handler()
 {
-    printf("interrupt tcmp in original function\n");
+    //printf("interrupt tcmp in original function\n");
 }
 
 //软件中断服务程序
-__attribute__((weak)) void handler_interrupt_soft()
+
+void SW_Handler()
 {
-    printf("interrupt soft in original function\n");
+    //printf("interrupt soft in original function\n");
 }
 
-//异常服务程序
-__attribute__((weak)) void handler_exception()
+//硬件错误引发异常
+void HardFault_Handler()
 {
-    printf("THis is exception, SYS has error!\n");
+    //printf("HardFault,Sys err!\n");
+    while(1);
 }
 
-//中断之后，首先执行这个函数，a0传递mcause，a1传递mepc
-void trap_handler(uint32_t mcause, uint32_t mepc)
-{
-    uint32_t mcause_desc = mcause & 0x000FFFFF;//进入陷阱的原因
-    if(mcause & MCAUSE_INTERRUPT)//中断interrupt
-    {
-        switch (mcause_desc) {
-            case MCAUSE_INTP_EX://外部中断
-                handler_interrupt_ex();
-                break;
-            case MCAUSE_INTP_TCMP://定时器中断
-                handler_interrupt_tcmp();
-                break;
-            case MCAUSE_INTP_SOFT://软件中断
-                handler_interrupt_soft();
-                break;
-            default://未知中断
-                printf("Unknow interrupt mcause\n");
-                break;
-        }
-    }
-    else//异常exception
-    {
-        printf("THis is exception, SYS has error!\n");
-    }
-}
+
