@@ -55,23 +55,26 @@ localparam UART_BAUD    = 8'h8;
 localparam UART_TXDATA  = 8'hc;
 localparam UART_RXDATA  = 8'h10;
 
-// UART控制寄存器，可读可写
-// bit[0]: UART TX使能, 1: enable, 0: disable
-// bit[1]: UART RX使能, 1: enable, 0: disable
-reg [1:0] uart_ctrl;
+/* UART控制寄存器，可读可写，0x00
+ * [0]: UART Tx使能, 1有效
+ * [1]: UART Rx使能, 1有效
+ * [2]: UART Tx发送完成中断使能, 1有效
+ * [3]: UART Rx接收数据中断使能, 1有效
+ */
+reg [3:0] uart_ctrl;
 
-// UART状态寄存器
+// UART状态寄存器，0x04
 // 只读，bit[0]: TX空闲状态标志, 1: busy, 0: idle
 // 可读可写，bit[1]: RX接收完成标志, 1: over, 0: receiving
 reg [1:0] uart_status;
 
-// UART波特率寄存器(分频系数)，可读可写
+// UART波特率寄存器(分频系数)，可读可写，0x08
 reg [15:0] uart_div;
 
-// UART发送数据寄存器，可读可写
+// UART发送数据寄存器，可读可写，0x0c
 reg [15:0] uart_tx;
 
-// UART接收数据寄存器，只读
+// UART接收数据寄存器，只读，0x10
 reg [7:0] uart_rx;
 
 wire wen = we_i;
@@ -130,12 +133,12 @@ always @ (posedge clk or negedge rst_n) begin
             // 发送完成时，清TX忙标志
             end else if ((state == S_STOP) & (cycle_cnt == uart_div[15:0])) begin
                 uart_status[0] <= 1'b0;
-                irq_uart_tx <= 1'b1;//发送完成，发出中断请求
+                irq_uart_tx <= uart_ctrl[2];//发送完成，发出中断请求
             // 接收完成，置位接收完成标志
             end
             if (rx_recv_over) begin
                 uart_status[1] <= 1'b1;
-                irq_uart_rx <= 1'b1;//接收完成，发出中断请求
+                irq_uart_rx <= uart_ctrl[3];//接收完成，发出中断请求
             end
         end
     end
@@ -144,10 +147,10 @@ end
 // 写uart_ctrl
 always @ (posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        uart_ctrl <= 2'h0;
+        uart_ctrl <= 4'h0;
     end else begin
         if (write_reg_ctrl_en & sel_i[0]) begin
-            uart_ctrl <= data_i[1:0];
+            uart_ctrl <= data_i[3:0];
         end
     end
 end
@@ -174,7 +177,7 @@ reg[31:0] data_r;
 always @ (posedge clk) begin
     if (ren) begin
         case (raddr_i[7:0])
-            UART_CTRL:   data_r <= {30'h0, uart_ctrl};
+            UART_CTRL:   data_r <= {28'h0, uart_ctrl};
             UART_STATUS: data_r <= {30'h0, uart_status};
             UART_BAUD:   data_r <= {16'h0, uart_div};
             UART_RXDATA: data_r <= {24'h0, uart_rx};

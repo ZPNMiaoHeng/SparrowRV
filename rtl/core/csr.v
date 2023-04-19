@@ -320,16 +320,6 @@ always @ (*) begin
         `CSR_MTVEC: begin
             trap_csr_rdata_o = mtvec;
         end
-        `CSR_MEPC: begin
-            trap_csr_rdata_o = mepc;
-        end
-        `CSR_MCAUSE: begin
-            trap_csr_rdata_o = mcause;
-        end
-        `CSR_MTVAL: begin
-            trap_csr_rdata_o = mtval;
-        end
-
         default: begin
             trap_csr_rdata_o = 32'h0;
         end

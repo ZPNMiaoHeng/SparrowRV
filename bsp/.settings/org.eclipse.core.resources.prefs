@@ -4,7 +4,6 @@ encoding//example/coremark/core_main.c=UTF-8
 encoding//example/coremark/core_portme.c=UTF-8
 encoding//example/coremark/core_portme.h=UTF-8
 encoding//example/coremark/coremark.h=UTF-8
-encoding//lib/perip/include/timer.h=GBK
 encoding//lib/system.h=UTF-8
 encoding//lib/trap/trap_handler.c=UTF-8
 encoding/<project>=UTF-8

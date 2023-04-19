@@ -10,10 +10,10 @@
 #define SPI_DATA(SPIx)       (SPIx + (0x04))
 #define SPI_STATUS(SPIx)     (SPIx + (0x08))
 
-#define SPI_CP_MODEL_0 0b0000 //CPOL = 0, CPHA = 0
-#define SPI_CP_MODEL_1 0b0100 //CPOL = 0, CPHA = 1
-#define SPI_CP_MODEL_2 0b0010 //CPOL = 1, CPHA = 0
-#define SPI_CP_MODEL_3 0b0110 //CPOL = 1, CPHA = 1
+#define SPI_CP_MODEL_0 0b0000u //CPOL = 0, CPHA = 0
+#define SPI_CP_MODEL_1 0b0100u //CPOL = 0, CPHA = 1
+#define SPI_CP_MODEL_2 0b0010u //CPOL = 1, CPHA = 0
+#define SPI_CP_MODEL_3 0b0110u //CPOL = 1, CPHA = 1
 
 #define SPI0 SPI0_BASE
 
@@ -26,5 +26,6 @@ uint8_t spi_sdrv_byte(uint32_t SPIx, uint32_t data);//SPI发送1字节接收1字
 uint32_t spi_busy_chk(uint32_t SPIx);//SPI状态检查
 void spi_send_bytes(uint32_t SPIx, uint8_t data[], uint32_t len);
 void spi_read_bytes(uint32_t SPIx, uint8_t data[], uint32_t len);
+void spi_irq_ctrl(uint32_t SPIx, uint32_t spi_irq_en);
 
 #endif

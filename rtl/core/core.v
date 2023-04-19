@@ -9,11 +9,11 @@ module core (
     output wire soft_rst,//mcctr[3]软件复位
 
     //外部中断
-    input  wire core_ex_trap_valid,//外部中断请求
-    input  wire [4:0]core_ex_trap_id,//外部中断源ID
-    output wire core_ex_trap_ready,//外部中断响应
-    output wire core_ex_trap_cplet,//外部中断完成
-    output wire [4:0]core_ex_trap_cplet_id,//外部中断完成的中断源ID
+    input  wire core_ex_trap_valid_i,//外部中断请求
+    input  wire [4:0]core_ex_trap_id_i,//外部中断源ID
+    output wire core_ex_trap_ready_o,//外部中断响应
+    output wire core_ex_trap_cplet_o,//外部中断完成
+    output wire [4:0]core_ex_trap_cplet_id_o,//外部中断完成的中断源ID
 
     //ICB总线接口 Master core
     output wire                 core_icb_cmd_valid,//cmd有效
@@ -203,12 +203,11 @@ csr inst_csr
     .trap_csr_rdata_o (trap_csr_rdata),
     .mepc             (mepc),
     .soft_rst         (soft_rst),
-    .ex_trap_valid_i  (core_ex_trap_valid),
+    .ex_trap_valid_i  (core_ex_trap_valid_i),
     .ex_trap_valid_o  (ex_trap_valid),
     .tcmp_trap_valid_o(tcmp_trap_valid),
     .soft_trap_valid_o(soft_trap_valid),
     .mstatus_MIE3     (mstatus_MIE3),
-
     .hx_valid         (hx_valid)
 );
 
@@ -231,10 +230,10 @@ trap inst_trap
     .mem_addr_i         (mem_addr),
     //外部中断接口
     .ex_trap_valid_i       (ex_trap_valid),//外部中断有效
-    .ex_trap_id_i          (core_ex_trap_id),//外部中断源ID
-    .ex_trap_ready_o       (core_ex_trap_ready),//外部中断响应
-    .ex_trap_cplet_o       (core_ex_trap_cplet),//外部中断完成
-    .ex_trap_cplet_id_o    (core_ex_trap_cplet_id),//外部中断完成的中断源ID
+    .ex_trap_id_i          (core_ex_trap_id_i),//外部中断源ID
+    .ex_trap_ready_o       (core_ex_trap_ready_o),//外部中断响应
+    .ex_trap_cplet_o       (core_ex_trap_cplet_o),//外部中断完成
+    .ex_trap_cplet_id_o    (core_ex_trap_cplet_id_o),//外部中断完成的中断源ID
     .idex_mret_i           (idex_mret),//中断返回
 
     .pc_n_i             (idex_pc_n),

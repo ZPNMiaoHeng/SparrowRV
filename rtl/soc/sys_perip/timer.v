@@ -12,14 +12,10 @@ module timer(
     input wire rd_i,
     output reg[`MemBus] data_o,
 
-	output wire timer_cmpo_p,//比较输出+
-	output wire timer_cmpo_n,//比较输出-
+    output wire timer_cmpo_p,//比较输出+
+    output wire timer_cmpo_n,//比较输出-
     input  wire timer_capi,//输入捕获
 
-    output reg irq_timer_cmp0,   //定时器触发比较值0中断
-    output reg irq_timer_cmp1,   //定时器触发比较值1中断
-    output reg irq_timer_cap0,   //定时器捕获0中断
-    output reg irq_timer_cap1,   //定时器捕获1中断
     output reg irq_timer_of      //定时器溢出中断
 
 );
@@ -34,9 +30,10 @@ localparam TIMER_TCOF = 8'hc;
  * TIMER_CTRL定时器控制寄存器，0x00
  * [0]：RW，计数器使能，1使能，0停止并清零计数器
  * [1]：RW，比较输出初始极性
- * [3:2]：RW，捕获0触发配置位
- * [5:4]：RW，捕获1触发配置位
- * [15:6]：RO，读恒为0
+ * [3:2]：RW，捕获0触发配置位，触发后自动清零
+ * [5:4]：RW，捕获1触发配置位，触发后自动清零
+ * [6]: RW，定时器溢出中断使能
+ * [15:7]：RO，读恒为0
  * [31:16]: RW，预分频器
  * 捕获触发模式配置位：
  * 00：不触发      01：上升沿触发
@@ -46,6 +43,7 @@ reg timer_ctrl;//[0]计数器使能
 reg timer_cmpol;//[1]比较输出初始极性
 reg [1:0]timer_trig0;//[3:2]捕获0触发配置位
 reg [1:0]timer_trig1;//[5:4]捕获1触发配置位
+reg irq_timer_of_en;//中断使能
 reg [15:0]timer_diver;//[31:16]预分频器
 
 /* 
@@ -81,6 +79,7 @@ always @ (posedge clk or negedge rst_n) begin
         timer_trig1 <= 2'b00;
         timer_diver <= 16'h0;
         timer_of <= 16'hFFFF;
+        irq_timer_of_en   <= 1'b0;
     end 
     else begin
         if (we_i == 1'b1) begin
@@ -90,6 +89,7 @@ always @ (posedge clk or negedge rst_n) begin
                     timer_cmpol <= data_i[1];
                     timer_trig0 <= data_i[3:2];
                     timer_trig1 <= data_i[5:4];
+                    irq_timer_of_en <= data_i[6];
                     timer_diver <= data_i[31:16];
                 end
                 TIMER_CMPO: begin
@@ -102,6 +102,12 @@ always @ (posedge clk or negedge rst_n) begin
             endcase
         end 
         else begin
+            if (capi_trig0) begin
+                timer_trig0 <= 2'b00;
+            end
+            if (capi_trig1) begin
+                timer_trig1 <= 2'b00;
+            end
         end
     end
 end
@@ -111,7 +117,13 @@ always @ (posedge clk) begin
     if (rd_i == 1'b1) begin
         case (raddr_i)
             TIMER_CTRL: begin
-                data_o <= {timer_diver, 10'h0, timer_trig1, timer_trig0, timer_cmpol, timer_ctrl};
+                data_o[0] <= timer_ctrl ;
+                data_o[1] <= timer_cmpol;
+                data_o[3:2] <= timer_trig0;
+                data_o[5:4] <= timer_trig1;
+                data_o[6] <= irq_timer_of_en ;
+                data_o[15:7] <= 9'h0;
+                data_o[31:16] <= timer_diver;
             end
             TIMER_CMPO: begin
                 data_o <= {timer_cmpo1, timer_cmpo0};
@@ -158,7 +170,7 @@ always @(posedge clk) begin
             end
             else begin //计数器溢出了
                 timer_cnt <= 16'h0;//计数器清零
-                irq_timer_of <= 1'b1;//溢出中断
+                irq_timer_of <= irq_timer_of_en;//溢出中断
             end
         end
         else begin //分频器计数还没有溢出
@@ -184,17 +196,6 @@ end
 assign timer_cmpo_p = cmp_out_p;//直接输出
 assign timer_cmpo_n = ~cmp_out_p;//反相信号
 
-//输出中断
-always @(posedge clk) begin
-    if(timer_cnt == timer_cmpo0)
-        irq_timer_cmp0 <= 1'b1;
-    else
-        irq_timer_cmp0 <= 1'b0;
-    if(timer_cnt == timer_cmpo1)
-        irq_timer_cmp1 <= 1'b1;
-    else
-        irq_timer_cmp1 <= 1'b0;
-end
 
 //捕获输入打拍
 always @(posedge clk) begin
@@ -221,15 +222,11 @@ end
 
 //捕获+中断
 always @(posedge clk) begin
-    irq_timer_cap0 <= 1'b0;
-    irq_timer_cap1 <= 1'b0;
     if(capi_trig0) begin
         timer_capi0 <= timer_cnt;
-        irq_timer_cap0 <= 1'b1;
     end  
     if(capi_trig1) begin
         timer_capi1 <= timer_cnt;
-        irq_timer_cap1 <= 1'b1;
     end
 end
 

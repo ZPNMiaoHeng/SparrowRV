@@ -25,8 +25,8 @@
 #define CPU_FREQ_HZ   27000000UL //你的工作频率Hz
 #define CPU_FREQ_MHZ  (CPU_FREQ_HZ/1000000UL)
 
-#define ENABLE 1
-#define DISABLE 0
+#define ENABLE  1u
+#define DISABLE 0u
 
 //自定义CSR
 #define msprint    0x346  //仿真打印

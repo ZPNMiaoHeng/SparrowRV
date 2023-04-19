@@ -43,15 +43,21 @@ _start:
 loop:  /*无限循环*/
 	j loop
 
-.global trap_vector_tab
-trap_vector_tab:/*中断向量表*/
-	/*trap编码0*/
+.global trap_vector_tab /*声明trap_vector_tab是全局的，初始化阶段配置mtvec*/
+/* 中断向量表
+入口基地址可以在程序存储器的任何地方，但必须32bit对齐，初始化阶段需要写入CSR_mtvec
+每个异常和中断都有独立的trap编码，每个trap编码对应中断向量表的一个32bit表项，每个表项必须按照trap编码在内存上连续分布
+发生中断后，跳转至中断向量表的对应表项，即PC = 入口基地址 + trap编码*4 
+每个表项存放了一条指令，可以跳转至中断服务程序，也可以是其他指令，但必须是RV32I指令。 */
+trap_vector_tab: 
+	/*trap编码0保留*/
 	.word   HardFault_Handler /*trap编码1*/
 	.word   SW_Handler /*trap编码2*/
 	.word   SysTick_Handler /*trap编码3*/
-	.word   EX_PLIC0_Handler /*trap编码4，以此类推*/
+	.word   EX_PLIC0_Handler /*trap编码4，往下以此类推*/
 	.word   0
 
+/*.weak弱定义了每个中断服务程序，可使用同名函数取代，具体见trap_handler.c*/
 .section  .text;
 	.weak   HardFault_Handler
 	.weak   SW_Handler

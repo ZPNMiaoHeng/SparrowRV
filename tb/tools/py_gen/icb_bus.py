@@ -15,7 +15,7 @@ while i<8:
     print(r'    input  wire [`MemBus]       s'+str(i)+'_icb_rsp_'+'rdata'+',')
     i+=1
 '''
-
+'''
 i=0
 while i<8:
     print(r'assign s'+str(i)+'_icb_cmd_valid = {1{cmd_sel['+str(i)+']}} & master_icb_cmd_valid;')
@@ -40,4 +40,8 @@ i=0
 while i<8:
     print(r'assign s'+str(i)+'_icb_cmd_wmask = master_icb_cmd_wmask;')
     i+=1
-
+'''
+i=0
+while i<32 :
+    print("plic_int_source_priority["+str(i)+"] <= 2'b0;")
+    i=i+1

@@ -18,7 +18,7 @@ module spi(
     output wire spi_cs,              // spi设备片选
     output reg spi_clk,              // spi设备时钟，最大频率为输入clk的一半
 
-    output reg irq_spi_end           //SPI收发8bit结束中断
+    output reg irq_spi_end           //SPI收发结束中断
 
 );
 
@@ -26,20 +26,23 @@ localparam SPI_CTRL   = 4'h0;    // spi_ctrl寄存器地址偏移
 localparam SPI_DATA   = 4'h4;    // spi_data寄存器地址偏移
 localparam SPI_STATUS = 4'h8;    // spi_status寄存器地址偏移
 
-// spi控制寄存器
-// addr: 0x00
-// [0]: 1: enable, 0: disable
-// [1]: CPOL
-// [2]: CPHA
-// [3]: select slave, 1: select, 0: deselect
-// [15:8]: clk div
+/* 
+ * spi控制寄存器，0x00
+ * [0]: SPI使能，1: enable, 0: disable
+ * [1]: CPOL
+ * [2]: CPHA
+ * [3]: CS片选, 1: select, 0: deselect
+ * [4]: SPI收发结束中断使能，1有效
+ * [7:5]: 保留，读恒为0
+ * [15:8]: clk div
+ */
 reg[15:0] spi_ctrl;
-// spi数据寄存器
-// addr: 0x04
+
+// spi数据寄存器，0x04
 // [7:0] cmd or inout data
 reg[15:0] spi_data;
-// spi状态寄存器
-// addr: 0x08
+
+// spi状态寄存器，0x08
 // [0]: 1: busy, 0: idle
 reg spi_status;
 
@@ -69,12 +72,12 @@ always @ (posedge clk or negedge rst_n) begin
             case (waddr_i[3:0])
                 SPI_CTRL: begin
                     if(sel_i[0])
-                        spi_ctrl[7:0] <= data_i[7:0];
+                        spi_ctrl[7:0] <= {3'h0, data_i[4:0]};
                     if(sel_i[1])
                         spi_ctrl[15:8] <= data_i[15:8];
                 end
                 SPI_DATA: begin
-                    spi_data <= data_i[15:0];
+                    spi_data <= {8'h0, data_i[7:0]};
                 end
                 default: begin
 
@@ -231,7 +234,7 @@ always @ (posedge clk or negedge rst_n) begin
     end else begin
         if (en && spi_clk_edge_cnt == 5'd17) begin
             done <= 1'b1;
-            irq_spi_end <= 1'b1;
+            irq_spi_end <= spi_ctrl[4];
         end 
         else begin
             done <= 1'b0;

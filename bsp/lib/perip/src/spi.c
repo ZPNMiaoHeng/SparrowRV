@@ -96,7 +96,7 @@ uint8_t spi_sdrv_byte(uint32_t SPIx, uint32_t data)//SPI发送1字节接收1字�
  *
  * @brief   SPI工作状态检查
  *
- * @param   SPIx - x可以为0,1 ，去选择操作的SPI，如SPI0
+ * @param   SPIx - x可以为0,1 ，选择操作的SPI，如SPI0
  *
  * @return  1:SPI工作中; 0:SPI空闲
  */
@@ -104,6 +104,36 @@ uint32_t spi_busy_chk(uint32_t SPIx)//SPI状态检查
 {
     return (SYS_RWMEM_W(SPI_STATUS(SPIx)) & 0x1);
 }
+
+
+/*********************************************************************
+ * @fn      spi_irq_ctrl
+ *
+ * @brief   SPI中断使能控制
+ *
+ * @param   SPIx - x可以为0,1 ，选择操作的SPI，如SPI0
+ * @param   spi_irq_en - 中断使能选择位
+ *                 ENABLE  - 使能
+ *                 DISABLE - 关闭
+ *
+ * @return  无
+ */
+void spi_irq_ctrl(uint32_t SPIx, uint32_t spi_irq_en)
+{
+    uint32_t tmp;
+    tmp = SYS_RWMEM_W(SPI_CTRL(SPIx));
+    if(spi_irq_en == ENABLE)
+    {
+        tmp = tmp | (1 << 4);
+    }
+    else
+    {
+        tmp = tmp & (~(1 << 4));
+    }
+    SYS_RWMEM_W(SPI_CTRL(SPIx)) = tmp;
+}
+
+
 
 void spi_send_bytes(uint32_t SPIx, uint8_t data[], uint32_t len)
 {
