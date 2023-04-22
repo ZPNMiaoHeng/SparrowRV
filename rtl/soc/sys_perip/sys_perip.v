@@ -183,10 +183,6 @@ timer inst_timer0
     .timer_cmpo_n   (timer0_cmpo_n),
     .timer_capi     (timer0_capi),
 
-    .irq_timer_cmp0 (irq_timer0_cmp0),
-    .irq_timer_cmp1 (irq_timer0_cmp1),
-    .irq_timer_cap0 (irq_timer0_cap0),
-    .irq_timer_cap1 (irq_timer0_cap1),
     .irq_timer_of   (irq_timer0_of)
 );
 

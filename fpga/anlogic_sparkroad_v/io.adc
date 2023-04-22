@@ -1,6 +1,6 @@
 set_pin_assignment	{ clk }	{ LOCATION = K14; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ core_ex_trap_valid }	{ LOCATION = G11; IOSTANDARD = LVCMOS33; }
-set_pin_assignment	{ fpioa[1] }	{ LOCATION = E16; IOSTANDARD = LVCMOS33; }
+set_pin_assignment	{ fpioa[0] }	{ LOCATION = E16; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ fpioa[2] }	{ LOCATION = T4; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ fpioa[3] }	{ LOCATION = R5; IOSTANDARD = LVCMOS33; }
 set_pin_assignment	{ fpioa[4] }	{ LOCATION = K11; IOSTANDARD = LVCMOS33; }

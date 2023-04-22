@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Project Version="1" Path="C:/Users/xiaow/Desktop/gitee/SparrowRV/fpga/anlogic">
-    <Project_Created_Time>2023-02-21 16:04:53</Project_Created_Time>
+<Project Version="1" Path="C:/Users/wu/Desktop/gitee/SparrowRV/fpga/anlogic_sparkroad_v">
+    <Project_Created_Time></Project_Created_Time>
     <TD_Version>5.0.38657</TD_Version>
     <UCode>00100000</UCode>
     <Name>anlogic</Name>
@@ -143,7 +143,7 @@
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="18"/>
+                    <Attr Name="CompileOrder" Val="17"/>
                 </FileInfo>
             </File>
             <File Path="../../rtl/soc/sys_perip/sys_perip.v">
@@ -151,7 +151,7 @@
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="19"/>
+                    <Attr Name="CompileOrder" Val="18"/>
                 </FileInfo>
             </File>
             <File Path="../../rtl/soc/sys_perip/uart.v">
@@ -159,15 +159,7 @@
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="20"/>
-                </FileInfo>
-            </File>
-            <File Path="../../rtl/soc/axi4lite_2mt16s.v">
-                <FileInfo>
-                    <Attr Name="UsedInSyn" Val="true"/>
-                    <Attr Name="UsedInP&R" Val="true"/>
-                    <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="21"/>
+                    <Attr Name="CompileOrder" Val="19"/>
                 </FileInfo>
             </File>
             <File Path="../../rtl/soc/sram.v">
@@ -175,7 +167,7 @@
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="22"/>
+                    <Attr Name="CompileOrder" Val="20"/>
                 </FileInfo>
             </File>
             <File Path="../../rtl/soc/sparrow_soc.v">
@@ -183,7 +175,7 @@
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="23"/>
+                    <Attr Name="CompileOrder" Val="21"/>
                 </FileInfo>
             </File>
             <File Path="../../rtl/config.v">
@@ -191,10 +183,26 @@
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
                     <Attr Name="BelongTo" Val="design_1"/>
-                    <Attr Name="CompileOrder" Val="24"/>
+                    <Attr Name="CompileOrder" Val="22"/>
                 </FileInfo>
             </File>
             <File Path="../../rtl/defines.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="23"/>
+                </FileInfo>
+            </File>
+            <File Path="../../rtl/soc/icb_2m8s.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="24"/>
+                </FileInfo>
+            </File>
+            <File Path="../../rtl/soc/sys_perip/timer.v">
                 <FileInfo>
                     <Attr Name="UsedInSyn" Val="true"/>
                     <Attr Name="UsedInP&R" Val="true"/>
@@ -242,8 +250,8 @@
     <Configurations>
     </Configurations>
     <Project_Settings>
-        <Step_Last_Change>2023-02-21 16:15:18.864</Step_Last_Change>
-        <Current_Step>0</Current_Step>
+        <Step_Last_Change>2023-04-22 15:55:26.241</Step_Last_Change>
+        <Current_Step>10</Current_Step>
         <Step_Status>true</Step_Status>
     </Project_Settings>
 </Project>

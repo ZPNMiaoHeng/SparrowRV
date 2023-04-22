@@ -10,7 +10,7 @@
 //sram数据存储器大小，单位为KB
 `define SRam_KB 16
 
-//FPIOA端口数量，范围是[1,32]
+//FPIOA端口数量，支持区间为[1,32]
 `define FPIOA_PORT_NUM 16
 
 //SRAM模式配置，支持"DP_ROM" "DP_RAM" "SYN_DPR" "EG4_32K"
@@ -39,7 +39,7 @@
 //将程序固化到FPGA内部，SRAM模式必须配置为"DP_ROM"或"DP_RAM"
 `define PROG_IN_FPGA 1'b1
 //固化到FPGA内部的程序路径，只能导入转换后的文本文件，斜杠方向必须改为/
-`define PROG_FPGA_PATH "C:/Users/wu/Desktop/gitee/SparrowRV/tb/inst.txt"
+`define PROG_FPGA_PATH "../../tb/inst.txt"
 
 //启用M扩展(乘法/除法)
 `define RV32_M_ISA 1'b1
@@ -48,13 +48,13 @@
 `define RV32I_BASE_ISA 1'b1
 
 //启用JTAG调试
-`define JTAG_DBG_MODULE 1'b1
+//`define JTAG_DBG_MODULE 1'b1
 
 //启用单周期乘法器，可能会降低最大频率
 `define SGCY_MUL 1'b1
 
 //启用minstret指令计数器
-`define CSR_MINSTRET_EN 1'b1
+//`define CSR_MINSTRET_EN 1'b1
 
 //开发版本
 `define DEVELOP_REV 1'b1

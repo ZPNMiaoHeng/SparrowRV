@@ -57,46 +57,38 @@ reg [7:0] BRAM0 [0:RAM_DEPTH-1];
 reg [7:0] BRAM1 [0:RAM_DEPTH-1];
 reg [7:0] BRAM2 [0:RAM_DEPTH-1];
 reg [7:0] BRAM3 [0:RAM_DEPTH-1];
-wire [7:0] dout0;
-wire [7:0] dout1;
-wire [7:0] dout2;
-wire [7:0] dout3;
-reg [RAM_WIDTH-1:0] addr_r0;
-reg [RAM_WIDTH-1:0] addr_r1;
-reg [RAM_WIDTH-1:0] addr_r2;
-reg [RAM_WIDTH-1:0] addr_r3;
+reg [7:0] dout0;
+reg [7:0] dout1;
+reg [7:0] dout2;
+reg [7:0] dout3;
 
 always @(posedge clk)
     if (en) begin
         if(we&wem[0])
             BRAM0[addr] <= din[7:0];
-        addr_r0 <= addr;
+        dout0 = BRAM0[addr];
     end
-assign dout0 =  BRAM0[addr_r0];
 
 always @(posedge clk)
     if (en) begin
         if(we&wem[1])
             BRAM1[addr] <= din[15:8];
-        addr_r1 <= addr;
+        dout1 = BRAM1[addr];
     end
-assign dout1 =  BRAM1[addr_r1];
 
 always @(posedge clk)
     if (en) begin
         if(we&wem[2])
             BRAM2[addr] <= din[23:16];
-        addr_r2 <= addr;
+        dout2 = BRAM2[addr];
     end
-assign dout2 =  BRAM2[addr_r2];
 
 always @(posedge clk)
     if (en) begin
         if(we&wem[3])
             BRAM3[addr] <= din[31:24];
-        addr_r3 <= addr;
+        dout3 = BRAM3[addr];
     end
-assign dout3 =  BRAM3[addr_r3];
 
 assign dout = {dout3, dout2, dout1, dout0};
 

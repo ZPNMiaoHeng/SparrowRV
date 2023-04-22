@@ -344,11 +344,11 @@ always @(posedge clk or negedge rst_n) begin
     else begin
         if (hx_valid == 1'b1) begin
             if(hx_cnt < `CPU_CLOCK_HZ/4) begin
-                hx_cnt = hx_cnt + 1'b1;
+                hx_cnt <= hx_cnt + 1'b1;
             end
             else begin
-                hx_cnt = 0;
-                active_reg = ~active_reg;
+                hx_cnt <= 0;
+                active_reg <= ~active_reg;
             end
         end
     end

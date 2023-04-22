@@ -39,7 +39,7 @@
 //将程序固化到FPGA内部，SRAM模式必须配置为"DP_ROM"或"DP_RAM"
 `define PROG_IN_FPGA 1'b1
 //固化到FPGA内部的程序路径，只能导入转换后的文本文件，斜杠方向必须改为/
-`define PROG_FPGA_PATH "C:/Users/wu/Desktop/gitee/SparrowRV/tb/inst.txt"
+`define PROG_FPGA_PATH "../../tb/inst.txt"
 
 //启用M扩展(乘法/除法)
 `define RV32_M_ISA 1'b1

@@ -11,26 +11,6 @@
 `endif
 
 
-//陷阱trap相关
-//中断
-`define MCAUSE_INTP_EX   31'd11//外部中断
-`define MCAUSE_INTP_TCMP 31'd7//定时器中断
-`define MCAUSE_INTP_SOFT 31'd3//软件中断
-`define MCAUSE_INTP_XXXX 31'd12//其他中断源
-//异常
-`define MCAUSE_EXCP_ALL 31'hffff
-
-`define INT_BUS 7:0
-`define INT_NONE 8'h0
-`define INT_RET 8'hff
-`define INT_TIMER0 8'b00000001
-`define INT_TIMER0_ENTRY_ADDR 32'h4
-
-`define Hold_Flag_Bus   2:0
-`define Hold_None 3'b000
-`define Hold_Pc   3'b001
-`define Hold_If   3'b010
-`define Hold_Id   3'b011
 
 // I type inst
 `define INST_TYPE_I 7'b0010011
@@ -126,8 +106,6 @@
 `define CSR_MSIP       12'h345
 `define CSR_MPRINTS    12'h346//sim标准输出
 `define CSR_MENDS      12'h347//仿真结束
-`define CSR_MSM3IN     12'h348//sm3数据输入输出
-`define CSR_MSM3CT     12'h349//sm3控制
 
 `define CSR_MINSTRET   12'hB02//
 `define CSR_MINSTRETH  12'hB82//

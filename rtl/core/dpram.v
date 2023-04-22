@@ -11,31 +11,28 @@ module dpram #(
 ) (
     input [clogb2(RAM_DEPTH-1)-1:0] addra,  // Port A address bus, width determined from RAM_DEPTH
     input [clogb2(RAM_DEPTH-1)-1:0] addrb,  // Port B address bus, width determined from RAM_DEPTH
-    input [RAM_WIDTH-1:0] dina,           // Port A RAM input data
     input [RAM_WIDTH-1:0] dinb,           // Port B RAM input data
     input clk,                           // Clock
-    input wea,                            // Port A write enable
     input web,                            // Port B write enable
-    input [3:0] wema,
     input [3:0] wemb,
     input ena,                            // Port A RAM Enable, for additional power savings, disable port when not in use
     input enb,                            // Port B RAM Enable, for additional power savings, disable port when not in use
-    output [RAM_WIDTH-1:0] douta,         // Port A RAM output data
-    output [RAM_WIDTH-1:0] doutb          // Port B RAM output data
+    output wire [RAM_WIDTH-1:0] douta,         // Port A RAM output data
+    output wire [RAM_WIDTH-1:0] doutb          // Port B RAM output data
 );
 reg [RAM_WIDTH-1:0] BRAM [0:RAM_DEPTH-1];
 
 generate
     case(RAM_SEL)
-
-        "DP_RAM": begin
+        //生成真双端口RAM
+        "DP_RAM": begin 
             reg [RAM_WIDTH-1:0] douta_r;
             reg [RAM_WIDTH-1:0] doutb_r;
-            wire [3:0] ram_wea = {4{wea}} & wema;
             wire [3:0] ram_web = {4{web}} & wemb;
-            always @(posedge clk)
+            always @(posedge clk) begin
                 if (ena) begin
                 	douta_r <= BRAM[addra];
+                    /*
                     if(ram_wea[0])
                         BRAM[addra][7:0] <= dina[7:0];
                     if(ram_wea[1])
@@ -44,9 +41,11 @@ generate
                         BRAM[addra][23:16] <= dina[23:16];
                     if(ram_wea[3])
                         BRAM[addra][31:24] <= dina[31:24];
+                    */
                 end
+            end
 
-            always @(posedge clk)
+            always @(posedge clk) begin
                 if (enb) begin
                 	doutb_r <= BRAM[addrb];
                     if(ram_web[0])
@@ -58,25 +57,29 @@ generate
                     if(ram_web[3])
                         BRAM[addrb][31:24] <= dinb[31:24];
                 end
+            end
+
             assign douta = douta_r;
             assign doutb = doutb_r;
         end
-
+        //生成双端口ROM
         "DP_ROM": begin
-            reg [RAM_WIDTH-1:0] addra_r;
-            reg [RAM_WIDTH-1:0] addrb_r;
-            always @(posedge clk)
+            reg [RAM_WIDTH-1:0] douta_r;
+            reg [RAM_WIDTH-1:0] doutb_r;
+            always @(posedge clk) begin
                 if (ena) begin
-                    addra_r <= addra;
+                    douta_r <= BRAM[addra];
                 end
+            end
 
-            always @(posedge clk)
+            always @(posedge clk) begin
                 if (enb) begin
-                    addrb_r <= addrb;
+                    doutb_r <= BRAM[addrb];
                 end
-            assign douta = BRAM[addra_r];
-            assign doutb = BRAM[addrb_r];
+            end
 
+            assign douta = douta_r;
+            assign doutb = doutb_r;
         end
 
         "SYN_DPR": begin
@@ -108,49 +111,6 @@ doutb：数据输出a，位宽32
 */
         end
 
-
-        "EG4_32K": begin
-            localparam BRAM_EN = "32K";
-            localparam INIT_FILE = "../../bsp/obj/SparrowRV.mif";
-            EG_LOGIC_BRAM #( 
-                .DATA_WIDTH_A(32),
-                .DATA_WIDTH_B(32),
-                .ADDR_WIDTH_A(clogb2(RAM_DEPTH-1)),
-                .ADDR_WIDTH_B(clogb2(RAM_DEPTH-1)),
-                .DATA_DEPTH_A(RAM_DEPTH),
-                .DATA_DEPTH_B(RAM_DEPTH),
-                .BYTE_ENABLE(8),
-                .BYTE_A(4),
-                .BYTE_B(4),
-                .MODE("DP"),
-                .REGMODE_A("NOREG"),
-                .REGMODE_B("NOREG"),
-                .WRITEMODE_A("NORMAL"),
-                .WRITEMODE_B("NORMAL"),
-                .RESETMODE("SYNC"),
-                .IMPLEMENT(BRAM_EN),
-                .INIT_FILE(INIT_FILE),
-                .FILL_ALL("NONE"))
-            inst(
-                .dia(dina),
-                .dib(dinb),
-                .addra(addra),
-                .addrb(addrb),
-                .cea(ena),
-                .ceb(enb),
-                .ocea(1'b0),
-                .oceb(1'b0),
-                .clka(clk),
-                .clkb(clk),
-                .wea(1'b0),
-                .bea({4{wea}} & wema),
-                .web(1'b0),
-                .beb({4{web}} & wemb),
-                .rsta(1'b0),
-                .rstb(1'b0),
-                .doa(douta),
-                .dob(doutb));
-        end
     endcase
 endgenerate
 

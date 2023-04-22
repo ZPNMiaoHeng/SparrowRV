@@ -169,7 +169,8 @@ always @ (posedge clk or negedge rst_n) begin
         mends <= 0;
         mtimecmp <= 64'hffff_ffff_ffff_ffff;//比较器复位为最大值，防止误触发
         mcctr[4:0] <= 5'h0;
-    end else begin
+    end 
+    else begin
         if (idex_csr_we_i) begin //优先idex写
             case (idex_csr_addr_i)
                 `CSR_MSTATUS: begin
@@ -206,7 +207,7 @@ always @ (posedge clk or negedge rst_n) begin
                     mtimecmp[63:32] <= idex_csr_wdata_i;
                 end
                 `CSR_MCCTR: begin
-                    mcctr = idex_csr_wdata_i[MCCTR_WIDTH-1 :0];
+                    mcctr <= idex_csr_wdata_i[MCCTR_WIDTH-1 :0];
                 end
                 default: begin
 
