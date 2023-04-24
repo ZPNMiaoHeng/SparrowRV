@@ -198,11 +198,7 @@ sparrow_soc inst_sparrow_soc (
     .JTAG_TDI          (JTAG_TDI),
     .JTAG_TDO          (JTAG_TDO),
 `endif
-    .fpioa             (fpioa),//处理器IO接口
-
-    .core_ex_trap_valid(core_ex_trap_valid),
-    .core_ex_trap_id   (5'd0),
-    .core_ex_trap_ready(core_ex_trap_ready)
+    .fpioa             (fpioa)//处理器IO接口
 );
 
 

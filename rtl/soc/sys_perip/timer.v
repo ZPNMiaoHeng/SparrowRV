@@ -20,6 +20,9 @@ module timer(
 
 );
 
+reg capi_trig0;//输入捕获触发0
+reg capi_trig1;//输入捕获触发1
+
 // 寄存器(偏移)地址
 localparam TIMER_CTRL = 8'h0;
 localparam TIMER_CMPO = 8'h4;
@@ -150,8 +153,6 @@ wire cmp_of = timer_cnt < timer_of;//溢出，计数器 小于 溢出寄存器�
 wire cmpol_p = timer_cmpol;//比较输出的初始极性
 wire cmpol_n = ~timer_cmpol;//比较输出的初始极性反相
 reg cmp_out_p;//比较输出+
-reg capi_trig0;//输入捕获触发0
-reg capi_trig1;//输入捕获触发1
 
 reg [2:0]capi_pp3;//捕获输入端口打3拍，从低位到高位
 reg [15:0]timer_div_cnt;//分频器计数

@@ -1,7 +1,7 @@
 #include "system.h"
 uint8_t cnt;
 uint32_t tmp;
-//测试
+//启动定时器的比较输出和输入捕获
 int main()
 {
     init_uart0_printf(115200,0);//设置波特率

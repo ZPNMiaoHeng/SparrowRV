@@ -98,13 +98,8 @@ void core_sim_end()
     write_csr(mends,1);
 }
 
-
-
-/*
-void inst_mem_switch(uint8_t mem_sel)
+//软件中断
+void core_soft_interrupt()
 {
-    if(mem_sel == BOOT_ROM)
-        clear_csr(mcctr, 0b10000);
-    else //APP_RAM
-        set_csr(mcctr, 0b10000);
-}*/
+    set_csr(msip, 0x01);
+}

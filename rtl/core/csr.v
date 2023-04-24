@@ -171,6 +171,7 @@ always @ (posedge clk or negedge rst_n) begin
         mcctr[4:0] <= 5'h0;
     end 
     else begin
+        msip <= 1'b0;//自动清除软件中断位
         if (idex_csr_we_i) begin //优先idex写
             case (idex_csr_addr_i)
                 `CSR_MSTATUS: begin

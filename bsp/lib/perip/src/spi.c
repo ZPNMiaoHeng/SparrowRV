@@ -14,9 +14,13 @@
  *
  * @return  无
  */
-void spi_cp_model(uint32_t SPIx, uint32_t spi_cpmodel)
+void spi_cp_model(uint32_t SPIx, uint8_t spi_cpmodel)
 {
-    SYS_RWMEM_B(SPI_CTRL(SPIx)+0) = spi_cpmodel;
+    uint8_t tmp;
+    tmp = SYS_RWMEM_B(SPI_CTRL(SPIx)+0);
+    tmp = tmp | spi_cpmodel;
+    tmp = tmp & (spi_cpmodel | 0b11111001);
+    SYS_RWMEM_B(SPI_CTRL(SPIx)+0) = tmp;
 }
 
 /*********************************************************************
@@ -48,9 +52,9 @@ void spi_sclk_div(uint32_t SPIx, uint32_t spi_div)
 void spi_set_cs(uint32_t SPIx, uint32_t spi_cs)
 {
     if (spi_cs == ENABLE)
-        SYS_RWMEM_W(SPI_CTRL(SPIx)) |= 1 << 3;
+        SYS_RWMEM_W(SPI_CTRL(SPIx)) = SYS_RWMEM_W(SPI_CTRL(SPIx)) | (1 << 3);
     else
-        SYS_RWMEM_W(SPI_CTRL(SPIx)) &= ~(1 << 3);
+        SYS_RWMEM_W(SPI_CTRL(SPIx)) = SYS_RWMEM_W(SPI_CTRL(SPIx)) & (~(1 << 3));
 }
 
 /*********************************************************************
@@ -84,7 +88,7 @@ uint8_t spi_sdrv_byte(uint32_t SPIx, uint32_t data)//SPI发送1字节接收1字�
 {
     while (spi_busy_chk(SPIx)); //等待上一个操作结束
     SYS_RWMEM_W(SPI_DATA(SPIx)) = data;
-    SYS_RWMEM_W(SPI_CTRL(SPIx)) |= 1 << 0; // spi en
+    SYS_RWMEM_W(SPI_CTRL(SPIx)) = SYS_RWMEM_W(SPI_CTRL(SPIx)) | (1 << 0); // spi en
     cpu_nop;
     cpu_nop;
     while (spi_busy_chk(SPIx)); //等待一次收发结束

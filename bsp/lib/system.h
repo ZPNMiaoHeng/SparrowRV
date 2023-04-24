@@ -11,18 +11,20 @@
 #include "spi.h"
 #include "fpioa.h"
 #include "timer.h"
+#include "plic.h"
 //驱动库 driver
 #include "printf.h"
 #include "nor25_flash.h"
 
-//------ 上FPGA，必须注释掉此宏，就像这样 //#define sim_csr_printf 1
-//开启仿真模式printf。不会打印串口，只通过CSR_msprint打印至终端，极大提高速度
-#define sim_csr_printf 1
 //---------------------------------
-
+//上FPGA，必须注释掉此宏，就像这样 //#define sim_csr_printf 1
+//开启仿真模式printf。不会打印串口，只通过CSR_msprint打印至终端，极大提高仿真速度
+#define sim_csr_printf 1
 
 //系统主频
-#define CPU_FREQ_HZ   27000000UL //你的工作频率Hz
+#define CPU_FREQ_HZ   27000000UL //设置你的系统工作频率Hz
+//---------------------------------
+
 #define CPU_FREQ_MHZ  (CPU_FREQ_HZ/1000000UL)
 
 #define ENABLE  1u
@@ -38,6 +40,7 @@
 #define mtimecmp   0xB04  //mtimecmp低32位
 #define mtimecmph  0xB84  //mtimecmp高32位
 #define mcctr      0xB88  //系统控制
+#define msip       0x345  //软件中断
 //[0]:保留
 //[1]:minstret使能
 //[2]:mtime使能

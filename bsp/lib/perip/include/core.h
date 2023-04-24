@@ -5,22 +5,26 @@
 
 #define cpu_nop ({asm volatile( "nop");})
 
+//读取指定CSR
 #define __read_csr(reg) ({ unsigned long __tmp; \
   asm volatile ("csrr %0, " #reg : "=r"(__tmp)); \
   __tmp; })
 
+//写入指定CSR
 #define __write_csr(reg, val) ({ \
   if (__builtin_constant_p(val) && (unsigned long)(val) < 32) \
     asm volatile ("csrw " #reg ", %0" :: "i"(val)); \
   else \
     asm volatile ("csrw " #reg ", %0" :: "r"(val)); })
 
+//指定CSR的部分位置1
 #define __set_csr(reg, val) ({ \
   if (__builtin_constant_p(val) && (unsigned long)(val) < 32) \
     asm volatile ("csrs " #reg ", %0" :: "i"(val)); \
   else \
     asm volatile ("csrs " #reg ", %0" :: "r"(val)); })
 
+//指定CSR的部分位清0
 #define __clear_csr(reg, val) ({ \
   if (__builtin_constant_p(val) && (unsigned long)(val) < 32) \
     asm volatile ("csrc " #reg ", %0" :: "i"(val)); \
@@ -42,7 +46,7 @@ void minstret_en_ctr(uint8_t minstret_en);
 void delay_mtime_us(uint32_t us);
 void core_reset_enable();
 void core_sim_end();
-
+void core_soft_interrupt();
 
 
 

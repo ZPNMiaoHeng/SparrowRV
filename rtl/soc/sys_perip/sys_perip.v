@@ -4,7 +4,17 @@ module sys_perip (
 	input clk,
 	input rst_n,
 
-    inout wire [`FPIOA_PORT_NUM-1:0] fpioa,//处理器IO接口
+    //处理器IO接口
+    inout wire [`FPIOA_PORT_NUM-1:0] fpioa,
+
+    //sys_perip中断接口
+    output wire [3:0]irq_fpioa_eli,    //FPIOA端口外部连线中断
+    output wire irq_spi0_end,           //SPI收发结束中断
+    output wire irq_timer0_of,      //定时器溢出中断
+    output wire irq_uart0_tx,  //uart tx发送完成中断
+    output wire irq_uart0_rx,   //uart rx接收数据中断
+    output wire irq_uart1_tx,  //uart tx发送完成中断
+    output wire irq_uart1_rx,   //uart rx接收数据中断
 
     //ICB Slave sysp
     input  wire                 sysp_icb_cmd_valid,//cmd有效
@@ -91,16 +101,6 @@ assign dout = {32{rd_en_r[0]}} & data_o[0]
             | {32{rd_en_r[13]}} & data_o[13]
             | {32{rd_en_r[14]}} & data_o[14]
             | {32{rd_en_r[15]}} & data_o[15];
-
-//-------全局中断信号-------
-wire irq_uart0_tx;
-wire irq_uart0_rx;
-wire irq_uart1_tx;
-wire irq_uart1_rx;
-wire irq_spi_end ;
-wire [3:0]irq_fpioa_eli;
-//从外设拉到PLIC
-
 
 
 //0 uart0
@@ -195,10 +195,10 @@ AAA inst_AAA
     .waddr_i       (waddr),
     .data_i        (din),
     .sel_i         (sel),
-    .we_i          (we_en[3]),
+    .we_i          (we_en[4]),
     .raddr_i       (raddr),
-    .rd_i          (rd_en[3]),
-    .data_o        (data_o[3])
+    .rd_i          (rd_en[4]),
+    .data_o        (data_o[4])
 );
 */
 assign data_o[4]=0;

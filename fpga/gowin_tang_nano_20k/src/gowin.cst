@@ -12,8 +12,6 @@ IO_LOC "fpioa[1]" 69;
 IO_PORT "fpioa[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
 IO_LOC "fpioa[0]" 73;
 IO_PORT "fpioa[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
-IO_LOC "core_ex_trap_valid" 87;
-IO_PORT "core_ex_trap_valid" IO_TYPE=LVCMOS33 PULL_MODE=DOWN;
 IO_LOC "hard_rst_n" 72;
 IO_PORT "hard_rst_n" IO_TYPE=LVCMOS33 PULL_MODE=UP;
 IO_LOC "clk" 4;

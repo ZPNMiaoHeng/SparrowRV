@@ -3,14 +3,12 @@
 #include "core.h"
 
 
-extern void trap_vector_tab();
+extern void trap_vector_tab();//声明外部的中断向量表
 
-
-void _init()
+//系统初始化，会在main()函数之前执行
+void sparrowrv_system_init()
 {
-    // 设置中断向量表基地址
+    //设置中断向量表基地址
     write_csr(mtvec, &trap_vector_tab);
-    // 使能CPU全局中断
-    // MIE = 1, MPIE = 1, MPP = 11
-    //write_csr(mstatus, 0x1888);
+    //可以写点其他的初始化代码
 }

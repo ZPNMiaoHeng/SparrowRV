@@ -6,6 +6,7 @@
     <Device name="GW2AR-18C" pn="GW2AR-LV18QN88PC8/I7">gw2ar18c-011</Device>
     <FileList>
         <File path="../../rtl/config.v" type="file.verilog" enable="1"/>
+        <File path="../../rtl/defines.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/core/core.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/core/csr.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/core/div.v" type="file.verilog" enable="1"/>
@@ -16,7 +17,6 @@
         <File path="../../rtl/core/rstc.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/core/sctr.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/core/trap.v" type="file.verilog" enable="1"/>
-        <File path="../../rtl/defines.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/jtag/full_handshake_rx.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/jtag/full_handshake_tx.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/jtag/jtag_dm.v" type="file.verilog" enable="1"/>
@@ -25,6 +25,7 @@
         <File path="../../rtl/soc/icb_2m8s.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sparrow_soc.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sram.v" type="file.verilog" enable="1"/>
+        <File path="../../rtl/soc/plic.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sys_perip/fpioa.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sys_perip/spi.v" type="file.verilog" enable="1"/>
         <File path="../../rtl/soc/sys_perip/sys_perip.v" type="file.verilog" enable="1"/>

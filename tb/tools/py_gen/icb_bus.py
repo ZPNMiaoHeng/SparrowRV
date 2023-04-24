@@ -42,6 +42,11 @@ while i<8:
     i+=1
 '''
 i=0
-while i<32 :
-    print("plic_int_source_priority["+str(i)+"] <= 2'b0;")
+while i<16 :
+    print("28'd"+str(i*4)+"   : plic_prt["+str(i)+"] <= plic_icb_cmd_wdata[1:0];")
+    i=i+1
+
+i=0
+while i<16 :
+    print("28'd"+str(i*4)+"   : plic_icb_rsp_rdata <= {30'h0, plic_prt["+str(i)+"]};")
     i=i+1

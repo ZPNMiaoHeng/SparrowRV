@@ -14,15 +14,11 @@ module sparrow_soc (
     input  wire JTAG_TCK, //即使没有JTAG，也保留这个接口，使得约束可以通用
 
     //FPIOA
-    inout  wire [`FPIOA_PORT_NUM-1:0] fpioa,//处理器IO接口
-
-    input  wire core_ex_trap_valid,//外部中断，需外部下拉，高电平有效
-    input  wire [4:0]core_ex_trap_id,//外部中断源ID
-    output wire core_ex_trap_ready
+    inout  wire [`FPIOA_PORT_NUM-1:0] fpioa//处理器IO接口
 );
 
 //*********************************
-//           定义线网
+//           定义总线线网
 //
 //m0
 wire                 jtag_icb_cmd_valid;
@@ -79,10 +75,24 @@ wire                 sysp_icb_rsp_valid;
 wire                 sysp_icb_rsp_ready;
 wire                 sysp_icb_rsp_err  ;
 wire [`MemBus]       sysp_icb_rsp_rdata;
+//s3
+wire                 plic_icb_cmd_valid;
+wire                 plic_icb_cmd_ready;
+wire [`MemAddrBus]   plic_icb_cmd_addr ;
+wire                 plic_icb_cmd_read ;
+wire [`MemBus]       plic_icb_cmd_wdata;
+wire [3:0]           plic_icb_cmd_wmask;
+wire                 plic_icb_rsp_valid;
+wire                 plic_icb_rsp_ready;
+wire                 plic_icb_rsp_err  ;
+wire [`MemBus]       plic_icb_rsp_rdata;
 
 //其他信号
 wire halt_req;
 wire jtag_rst_en;
+wire [4:0]core_ex_trap_id;//中断源ID
+wire [3:0]irq_fpioa_eli;
+wire [15:0]plic_irq_port;
 
 //
 //           定义线网
@@ -193,6 +203,14 @@ sys_perip inst_sys_perip
 
     .fpioa             (fpioa),
 
+    .irq_fpioa_eli  (irq_fpioa_eli),    //FPIOA端口外部连线中断
+    .irq_spi0_end   (irq_spi0_end),           //SPI收发结束中断
+    .irq_timer0_of  (irq_timer0_of),      //定时器溢出中断
+    .irq_uart0_tx   (irq_uart0_tx),  //uart tx发送完成中断
+    .irq_uart0_rx   (irq_uart0_rx),   //uart rx接收数据中断
+    .irq_uart1_tx   (irq_uart1_tx),  //uart tx发送完成中断
+    .irq_uart1_rx   (irq_uart1_rx),   //uart rx接收数据中断
+
     .sysp_icb_cmd_valid (sysp_icb_cmd_valid),
     .sysp_icb_cmd_ready (sysp_icb_cmd_ready),
     .sysp_icb_cmd_addr  (sysp_icb_cmd_addr ),
@@ -203,6 +221,43 @@ sys_perip inst_sys_perip
     .sysp_icb_rsp_ready (sysp_icb_rsp_ready),
     .sysp_icb_rsp_err   (sysp_icb_rsp_err  ),
     .sysp_icb_rsp_rdata (sysp_icb_rsp_rdata)
+);
+
+//s3 PLIC
+assign plic_irq_port[0] = 1'b0;//中断源ID0 保留，不可以使用
+assign plic_irq_port[1] = irq_fpioa_eli[0];
+assign plic_irq_port[2] = irq_fpioa_eli[1];
+assign plic_irq_port[3] = irq_fpioa_eli[2];
+assign plic_irq_port[4] = irq_fpioa_eli[3];
+assign plic_irq_port[5] = irq_uart0_tx;
+assign plic_irq_port[6] = irq_uart0_rx;
+assign plic_irq_port[7] = irq_uart1_tx;
+assign plic_irq_port[8] = irq_uart1_rx;
+assign plic_irq_port[9] = irq_timer0_of;
+assign plic_irq_port[10] = irq_spi0_end;
+assign plic_irq_port[11] = 1'b0;
+assign plic_irq_port[12] = 1'b0;
+assign plic_irq_port[13] = 1'b0;
+assign plic_irq_port[14] = 1'b0;
+assign plic_irq_port[15] = 1'b0;
+plic inst_plic
+(
+    .clk                  (clk),
+    .rst_n                (rst_n),
+    .plic_icb_cmd_valid   (plic_icb_cmd_valid),
+    .plic_icb_cmd_ready   (plic_icb_cmd_ready),
+    .plic_icb_cmd_addr    (plic_icb_cmd_addr ),
+    .plic_icb_cmd_read    (plic_icb_cmd_read ),
+    .plic_icb_cmd_wdata   (plic_icb_cmd_wdata),
+    .plic_icb_cmd_wmask   (plic_icb_cmd_wmask),
+    .plic_icb_rsp_valid   (plic_icb_rsp_valid),
+    .plic_icb_rsp_ready   (plic_icb_rsp_ready),
+    .plic_icb_rsp_err     (plic_icb_rsp_err  ),
+    .plic_icb_rsp_rdata   (plic_icb_rsp_rdata),
+    .plic_irq_port        (plic_irq_port),
+    .core_ex_trap_valid_o (core_ex_trap_valid),
+    .core_ex_trap_id_o    (core_ex_trap_id),
+    .core_ex_trap_ready_i (core_ex_trap_ready)
 );
 
 
@@ -267,16 +322,16 @@ icb_2m8s inst_icb_2m8s
     .s2_icb_rsp_err   (sysp_icb_rsp_err  ),
     .s2_icb_rsp_rdata (sysp_icb_rsp_rdata),
 
-    .s3_icb_cmd_valid (                ),
-    .s3_icb_cmd_ready (1'b0            ),
-    .s3_icb_cmd_addr  (                ),
-    .s3_icb_cmd_read  (                ),
-    .s3_icb_cmd_wdata (                ),
-    .s3_icb_cmd_wmask (                ),
-    .s3_icb_rsp_valid (1'b0            ),
-    .s3_icb_rsp_ready (                ),
-    .s3_icb_rsp_err   (1'b0            ),
-    .s3_icb_rsp_rdata (32'h0           ),
+    .s3_icb_cmd_valid (plic_icb_cmd_valid),
+    .s3_icb_cmd_ready (plic_icb_cmd_ready),
+    .s3_icb_cmd_addr  (plic_icb_cmd_addr ),
+    .s3_icb_cmd_read  (plic_icb_cmd_read ),
+    .s3_icb_cmd_wdata (plic_icb_cmd_wdata),
+    .s3_icb_cmd_wmask (plic_icb_cmd_wmask),
+    .s3_icb_rsp_valid (plic_icb_rsp_valid),
+    .s3_icb_rsp_ready (plic_icb_rsp_ready),
+    .s3_icb_rsp_err   (plic_icb_rsp_err  ),
+    .s3_icb_rsp_rdata (plic_icb_rsp_rdata),
 
     .s4_icb_cmd_valid (                ),
     .s4_icb_cmd_ready (1'b0            ),

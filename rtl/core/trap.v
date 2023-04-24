@@ -91,7 +91,7 @@ always @(*) begin
     end
     else begin//异常
         mcause_gen[31] = 1'b0;
-        mcause_gen[30:0] = 31'h1;//异常统一入口
+        mcause_gen[30:0] = trap_exception_en ? 31'h1 : 31'h0;//异常统一入口
     end
 end
 

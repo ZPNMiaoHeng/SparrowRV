@@ -172,7 +172,7 @@ uint32_t fpioa_eli_mode_set(uint32_t ELI_CHx_SEL, uint32_t eli_mode, uint32_t se
     eli_mode_reg = SYS_RWMEM_W(FPIOA_ELI_MD);//先读取寄存器状态
     if(set_en)
     {
-        tmp = ~(0b1111 << (ELI_CHx_SEL*4));
+        tmp = ~(0x0F << (ELI_CHx_SEL*4));
         eli_mode_reg = tmp & eli_mode_reg;//需操作的位清0，其他不变
         tmp = eli_mode << (ELI_CHx_SEL*4);
         eli_mode_reg = tmp | eli_mode_reg;

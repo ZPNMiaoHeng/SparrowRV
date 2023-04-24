@@ -15,13 +15,15 @@
  */
 void uart_enable_ctrl(uint32_t UARTx, uint32_t uart_en)
 {
+    uint32_t tmp;
+    tmp = SYS_RWMEM_W(UART_CTRL(UARTx));
     if(uart_en == ENABLE)
     {
-        SYS_RWMEM_W(UART_CTRL(UARTx)) = 0x3;
+        SYS_RWMEM_W(UART_CTRL(UARTx)) = tmp | 0b0011;
     }
     else
     {
-        SYS_RWMEM_W(UART_CTRL(UARTx)) = 0x0;
+        SYS_RWMEM_W(UART_CTRL(UARTx)) = tmp & 0b1100;
     }
 }
 
