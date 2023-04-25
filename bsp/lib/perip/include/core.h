@@ -47,7 +47,7 @@ void delay_mtime_us(uint32_t us);
 void core_reset_enable();
 void core_sim_end();
 void core_soft_interrupt();
-
+void csr_msprint_string(uint8_t *str);
 
 
 

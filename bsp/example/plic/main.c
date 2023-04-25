@@ -53,10 +53,8 @@ int main()
     spi_sdrv_byte(SPI0, 56);//SPI发一次
     timer_en_ctrl(DISABLE);//关闭定时器
     delay_mtime_us(1);
-    plic_ith_set(1);
-    delay_mtime_us(1);
-    plic_ith_set(2);
-    delay_mtime_us(1);
-    plic_ith_set(3);
+    plic_ith_set(0);
+    trap_global_ctrl(ENABLE);//打开全局中断
+    trap_en_ctrl(TRAP_EXTI, ENABLE);//打开软件中断
     delay_mtime_us(500);
 }

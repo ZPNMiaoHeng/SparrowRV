@@ -60,6 +60,23 @@ void uart_send_date(uint32_t UARTx, uint8_t uart_send)
     SYS_RWMEM_W(UART_TXDATA(UARTx)) = uart_send;
 }
 
+/*********************************************************************
+ * @fn      uart_send_string
+ *
+ * @brief   串口发送数组
+ *
+ * @param   UARTx - x可以为0,1 ，去选择操作的串口，如UART0
+ * @param   *str  - 指针指向数组首地址，0x00结束
+ *
+ * @return  无
+ */
+void uart_send_string(uint32_t UARTx, uint8_t *str)
+{
+    while (*str)//检测字符串结束标志
+    {
+        uart_send_date(UARTx, *str++);//发送当前字符
+    }
+}
 
 /*********************************************************************
  * @fn      uart_recv_date

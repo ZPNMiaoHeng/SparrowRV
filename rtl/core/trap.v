@@ -55,9 +55,19 @@ Trap编码表，关联mcause
 来自PLIC外部中断的编码为 中断源ID + 4
 
 */
+//trap主状态机
+reg [2:0]sta_n,sta_p;//下一状态sta_n,当前状态sta_p
+//状态定义
+localparam IDLE = 3'd0;//空闲状态
+localparam SWFI = 3'd1;//等待中断状态
+localparam CMIE = 3'd2;//关闭全局中断mstatus->MPIE=MIE,MIE=0
+localparam WRPC = 3'd3;//写返回地址mepc=PCn
+localparam WMCA = 3'd4;//写异常原因mcause
+localparam RTVA = 3'd5;//写异常值寄存器mtval
+localparam JVPC = 3'd6;//跳转到中断入口PC=mtvec[31:2]，使能
+
 //外部中断状态机
 reg ex_trap_state;
-
 
 //-------进中断需要锁存的信息-----
 reg pex_trap_r;//外部中断
@@ -77,8 +87,8 @@ always @(*) begin
     if(trap_interrupt_en) begin//中断
         mcause_gen[31] = 1'b1;//中断位
         if(pex_trap_r) begin//优先外部中断 
-            mcause_gen[30:0] = ex_trap_id_i + 31'd4;
-            ex_trap_ready_o  = 1;
+            mcause_gen[30:0] = ex_trap_cplet_id_o + 31'd4;
+            ex_trap_ready_o  = (sta_p==CMIE) ? 1'b1 : 1'b0;//状态机在CMIE响应PLIC
         end
         else
             if(ptcmp_trap_r) begin//其次定时器中断
@@ -109,16 +119,6 @@ end
 
 
 //--------------FSM------------------
-reg [2:0]sta_n,sta_p;//下一状态sta_n,当前状态sta_p
-//状态定义
-localparam IDLE = 3'd0;//空闲状态
-localparam SWFI = 3'd1;//等待中断状态
-localparam CMIE = 3'd2;//关闭全局中断mstatus->MPIE=MIE,MIE=0
-localparam WRPC = 3'd3;//写返回地址mepc=PCn
-localparam WMCA = 3'd4;//写异常原因mcause
-localparam RTVA = 3'd5;//写异常值寄存器mtval
-localparam JVPC = 3'd6;//跳转到中断入口PC=mtvec[31:2]，使能
-
 always @(posedge clk or negedge rst_n) begin//状态切换
     if (~rst_n)
         sta_p <= IDLE;

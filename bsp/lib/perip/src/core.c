@@ -103,3 +103,11 @@ void core_soft_interrupt()
 {
     set_csr(msip, 0x01);
 }
+
+void csr_msprint_string(uint8_t *str)
+{
+    while (*str)//检测字符串结束标志
+    {
+        write_csr(msprint, *str++);//msprint打印当前字符
+    }
+}

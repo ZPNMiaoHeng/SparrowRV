@@ -21,6 +21,7 @@
 void uart_enable_ctrl(uint32_t UARTx, uint32_t uart_en);//串口使能控制
 void uart_band_ctrl(uint32_t UARTx, uint32_t uart_band);//串口波特率控制
 void uart_send_date(uint32_t UARTx, uint8_t uart_send);//串口发送
+void uart_send_string(uint32_t UARTx, uint8_t *str);//串口发送数组
 uint8_t uart_recv_date(uint32_t UARTx);//串口接收
 uint8_t uart_recv_flg(uint32_t UARTx);//串口接收状态查询
 void uart_irq_ctrl(uint32_t UARTx, uint32_t uart_irq_tr, uint32_t uart_irq_en);
