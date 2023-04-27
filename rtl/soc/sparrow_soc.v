@@ -13,6 +13,11 @@ module sparrow_soc (
 `endif
     input  wire JTAG_TCK, //即使没有JTAG，也保留这个接口，使得约束可以通用
 
+    //SD、TF卡接口
+    output wire       sd_clk,
+    inout             sd_cmd,
+    input  wire [3:0] sd_dat,//需要上拉
+
     //FPIOA
     inout  wire [`FPIOA_PORT_NUM-1:0] fpioa//处理器IO接口
 );
@@ -86,6 +91,17 @@ wire                 plic_icb_rsp_valid;
 wire                 plic_icb_rsp_ready;
 wire                 plic_icb_rsp_err  ;
 wire [`MemBus]       plic_icb_rsp_rdata;
+//s4
+wire                 sdrd_icb_cmd_valid;
+wire                 sdrd_icb_cmd_ready;
+wire [`MemAddrBus]   sdrd_icb_cmd_addr ;
+wire                 sdrd_icb_cmd_read ;
+wire [`MemBus]       sdrd_icb_cmd_wdata;
+wire [3:0]           sdrd_icb_cmd_wmask;
+wire                 sdrd_icb_rsp_valid;
+wire                 sdrd_icb_rsp_ready;
+wire                 sdrd_icb_rsp_err  ;
+wire [`MemBus]       sdrd_icb_rsp_rdata;
 
 //其他信号
 wire halt_req;
@@ -183,6 +199,7 @@ sram inst_sram
 (
     .clk              (clk),
     .rst_n            (rst_n),
+
     .sram_icb_cmd_valid (sram_icb_cmd_valid),
     .sram_icb_cmd_ready (sram_icb_cmd_ready),
     .sram_icb_cmd_addr  (sram_icb_cmd_addr ),
@@ -244,6 +261,7 @@ plic inst_plic
 (
     .clk                  (clk),
     .rst_n                (rst_n),
+
     .plic_icb_cmd_valid   (plic_icb_cmd_valid),
     .plic_icb_cmd_ready   (plic_icb_cmd_ready),
     .plic_icb_cmd_addr    (plic_icb_cmd_addr ),
@@ -254,10 +272,34 @@ plic inst_plic
     .plic_icb_rsp_ready   (plic_icb_rsp_ready),
     .plic_icb_rsp_err     (plic_icb_rsp_err  ),
     .plic_icb_rsp_rdata   (plic_icb_rsp_rdata),
+
     .plic_irq_port        (plic_irq_port),
+
     .core_ex_trap_valid_o (core_ex_trap_valid),
     .core_ex_trap_id_o    (core_ex_trap_id),
     .core_ex_trap_ready_i (core_ex_trap_ready)
+);
+
+//s4
+sdrd inst_sdrd
+(
+    .clk                (clk),
+    .rst_n              (rst_n),
+
+    .sdrd_icb_cmd_valid (sdrd_icb_cmd_valid),
+    .sdrd_icb_cmd_ready (sdrd_icb_cmd_ready),
+    .sdrd_icb_cmd_addr  (sdrd_icb_cmd_addr),
+    .sdrd_icb_cmd_read  (sdrd_icb_cmd_read),
+    .sdrd_icb_cmd_wdata (sdrd_icb_cmd_wdata),
+    .sdrd_icb_cmd_wmask (sdrd_icb_cmd_wmask),
+    .sdrd_icb_rsp_valid (sdrd_icb_rsp_valid),
+    .sdrd_icb_rsp_ready (sdrd_icb_rsp_ready),
+    .sdrd_icb_rsp_err   (sdrd_icb_rsp_err),
+    .sdrd_icb_rsp_rdata (sdrd_icb_rsp_rdata),
+
+    .sd_clk             (sd_clk),
+    .sd_cmd             (sd_cmd),
+    .sd_dat             (sd_dat)
 );
 
 
@@ -333,16 +375,16 @@ icb_2m8s inst_icb_2m8s
     .s3_icb_rsp_err   (plic_icb_rsp_err  ),
     .s3_icb_rsp_rdata (plic_icb_rsp_rdata),
 
-    .s4_icb_cmd_valid (                ),
-    .s4_icb_cmd_ready (1'b0            ),
-    .s4_icb_cmd_addr  (                ),
-    .s4_icb_cmd_read  (                ),
-    .s4_icb_cmd_wdata (                ),
-    .s4_icb_cmd_wmask (                ),
-    .s4_icb_rsp_valid (1'b0            ),
-    .s4_icb_rsp_ready (                ),
-    .s4_icb_rsp_err   (1'b0            ),
-    .s4_icb_rsp_rdata (32'h0           ),
+    .s4_icb_cmd_valid (sdrd_icb_cmd_valid),
+    .s4_icb_cmd_ready (sdrd_icb_cmd_ready),
+    .s4_icb_cmd_addr  (sdrd_icb_cmd_addr ),
+    .s4_icb_cmd_read  (sdrd_icb_cmd_read ),
+    .s4_icb_cmd_wdata (sdrd_icb_cmd_wdata),
+    .s4_icb_cmd_wmask (sdrd_icb_cmd_wmask),
+    .s4_icb_rsp_valid (sdrd_icb_rsp_valid),
+    .s4_icb_rsp_ready (sdrd_icb_rsp_ready),
+    .s4_icb_rsp_err   (sdrd_icb_rsp_err  ),
+    .s4_icb_rsp_rdata (sdrd_icb_rsp_rdata),
 
     .s5_icb_cmd_valid (                ),
     .s5_icb_cmd_ready (1'b0            ),

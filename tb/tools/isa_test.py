@@ -58,6 +58,7 @@ def 编译并仿真():
     编译命令+=r'-Y .sv '#检索sv文件
     编译命令+=r'-y ../rtl/core/ '#文件夹路径
     编译命令+=r'-y ../rtl/soc/ '#文件夹路径
+    编译命令+=r'-y ../rtl/soc/sdrd '#文件夹路径
     编译命令+=r'-y ../rtl/soc/sys_perip/ '#文件夹路径
     编译命令+=r'-y ../rtl/jtag/ '#文件夹路径
     编译命令+=r'-y ../rtl/ '#文件夹路径
@@ -65,7 +66,8 @@ def 编译并仿真():
     编译命令+=r'-D HDL_SIM '
     if sys.argv[1] == 'all_isa':
         编译命令+=r'-D ISA_TEST '
-    编译命令+=r'tb_core.sv '#仿真文件
+    编译命令+=r'tb_core.sv '#仿真头文件
+    编译命令+=r'sd_fake.sv '#SD卡仿真文件
     编译进程 = os.popen(str(编译命令))
     if sys.argv[1] != 'all_isa':
         print(编译进程.read())

@@ -12,6 +12,7 @@
 #include "fpioa.h"
 #include "timer.h"
 #include "plic.h"
+#include "sdrd.h"
 //驱动库 driver
 #include "printf.h"
 #include "nor25_flash.h"

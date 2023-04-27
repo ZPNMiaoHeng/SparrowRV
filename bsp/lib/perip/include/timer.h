@@ -1,9 +1,9 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
-
 #include "system.h"
 
-#define SYSIO_BASE           (0x40000000)
+#define ICB_SLAVE_2          2
+#define SYSIO_BASE           (ICB_SLAVE_2 * 0x20000000u)
 #define TIMER0_BASE          (SYSIO_BASE + (0x300))
 
 #define TIMER_CTRL           (TIMER0_BASE + (0x00))

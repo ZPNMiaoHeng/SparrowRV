@@ -1,7 +1,9 @@
 #ifndef _UART_H_
 #define _UART_H_
 #include "system.h"
-#define SYSIO_BASE            (0x40000000)
+
+#define ICB_SLAVE_2           2
+#define SYSIO_BASE            (ICB_SLAVE_2 * 0x20000000u)
 #define UART_BASE             (SYSIO_BASE + (0x000))
 #define UART0_BASE            (UART_BASE  + (0x000))
 #define UART1_BASE            (UART_BASE  + (0x100))

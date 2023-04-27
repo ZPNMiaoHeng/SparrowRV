@@ -1,6 +1,7 @@
 #include "system.h"
 /*
 在FPIOA[4]输出串口UART1，让FPIOA_ELI、UART0/1_RX接收，SPI收发一次，定时器溢出一次，产生中断信号
+建议在仿真环境下观察
 */
 uint32_t tmp;
 

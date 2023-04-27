@@ -66,28 +66,28 @@ always @(posedge clk)
     if (en) begin
         if(we&wem[0])
             BRAM0[addr] <= din[7:0];
-        dout0 = BRAM0[addr];
+        dout0 <= BRAM0[addr];
     end
 
 always @(posedge clk)
     if (en) begin
         if(we&wem[1])
             BRAM1[addr] <= din[15:8];
-        dout1 = BRAM1[addr];
+        dout1 <= BRAM1[addr];
     end
 
 always @(posedge clk)
     if (en) begin
         if(we&wem[2])
             BRAM2[addr] <= din[23:16];
-        dout2 = BRAM2[addr];
+        dout2 <= BRAM2[addr];
     end
 
 always @(posedge clk)
     if (en) begin
         if(we&wem[3])
             BRAM3[addr] <= din[31:24];
-        dout3 = BRAM3[addr];
+        dout3 <= BRAM3[addr];
     end
 
 assign dout = {dout3, dout2, dout1, dout0};

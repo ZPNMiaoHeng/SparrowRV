@@ -1,8 +1,9 @@
 #ifndef _SPI_H_
 #define _SPI_H_
-
 #include "system.h"
-#define SYSIO_BASE           (0x40000000)
+
+#define ICB_SLAVE_2          2
+#define SYSIO_BASE           (ICB_SLAVE_2 * 0x20000000u)
 #define SPI_BASE             (SYSIO_BASE + (0x200))
 #define SPI0_BASE            (SPI_BASE  + (0x000))
 

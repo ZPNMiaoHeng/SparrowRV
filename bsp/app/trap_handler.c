@@ -21,7 +21,7 @@ void SysTick_Handler()
 
 void SW_Handler()
 {
-    printf("interrupt soft in original function\n");
+    //printf("interrupt soft in original function\n");
 }
 
 //硬件错误引发异常

@@ -11,7 +11,8 @@ logic randem;//产生异步信号
 logic rst_n;//复位
 logic core_ex_trap_valid, core_ex_trap_ready;//外部中断线
 logic JTAG_TCK,JTAG_TMS,JTAG_TDI,JTAG_TDO;//jtag
-wire spi0_miso;
+wire sd_clk,sd_cmd,sd_dat;//sd卡
+wire [2:0]sd_dat123;//sd卡上拉线
 wire [`FPIOA_PORT_NUM-1:0]fpioa;
 
 //仿真显示信号
@@ -198,9 +199,25 @@ sparrow_soc inst_sparrow_soc (
     .JTAG_TDI          (JTAG_TDI),
     .JTAG_TDO          (JTAG_TDO),
 `endif
+    .sd_clk            (sd_clk),
+    .sd_cmd            (sd_cmd),
+    .sd_dat            ({sd_dat123,sd_dat}),
     .fpioa             (fpioa)//处理器IO接口
 );
 
+`ifndef ISA_TEST
+sd_fake inst_sd_fake
+(
+    .rstn_async       (rst_n),
+    .sdclk            (sd_clk),
+    .sdcmd            (sd_cmd),
+    .sddat            ({sd_dat123, sd_dat}),
+    .show_status_bits (),
+    .show_sdcmd_en    (),
+    .show_sdcmd_cmd   (),
+    .show_sdcmd_arg   ()
+);
+`endif
 
 //输出波形
 initial begin

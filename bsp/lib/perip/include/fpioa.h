@@ -1,12 +1,13 @@
 #ifndef _FPIOA_H_
 #define _FPIOA_H_
-
 #include "system.h"
-#define SYSIO_BASE                  (0x40000000)
-#define FPIOA_BASE                  (SYSIO_BASE + (0xF00))
-#define FPIOA_OT_BASE               (FPIOA_BASE)
-#define FPIOA_NIO_BASE              (FPIOA_OT_BASE + (0x20))
-#define FPIOA_IN_BASE               (FPIOA_BASE + (0x80))
+
+#define ICB_SLAVE_2                2
+#define SYSIO_BASE                 (ICB_SLAVE_2 * 0x20000000u)
+#define FPIOA_BASE                 (SYSIO_BASE + (0xF00))
+#define FPIOA_OT_BASE              (FPIOA_BASE)
+#define FPIOA_NIO_BASE             (FPIOA_OT_BASE + (0x20))
+#define FPIOA_IN_BASE              (FPIOA_BASE + (0x80))
 
 #define FPIOA_NIO_DIN              (FPIOA_NIO_BASE + (0x00))
 #define FPIOA_NIO_OPT              (FPIOA_NIO_BASE + (0x04))

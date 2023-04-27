@@ -9,6 +9,7 @@
 WARN  (EX3988) : Cannot open file '..\..\tb\inst.txt'("C:\Users\wu\Desktop\gitee\SparrowRV\rtl\core\dpram.v":120)
 ```
 表明综合器读入程序失败，软件程序没有随着RTL设计一起烧进FPGA  
+工程文件`gowin_xxx.gprj`的源文件默认采用绝对地址，可手动将地址改为相对地址`../../rtl/**`  
 
 #### gowin_tang_nano_20k (优先支持)
 高云GW2A-LV18PG256C8/I7，云源软件v1.9.8.09教育版  

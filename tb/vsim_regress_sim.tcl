@@ -11,6 +11,7 @@ quit -sim
 #vlog +incdir+./../rtl/  +define+MODELSIM +define+ISA_TEST ./tb_core.sv
 #vlog +incdir+./../rtl/  ./../rtl/core/*.v
 #vlog +incdir+./../rtl/  ./../rtl/soc/sys_perip/*.v
+#vlog +incdir+./../rtl/  ./../rtl/soc/sdrd/*.v
 #vlog +incdir+./../rtl/  ./../rtl/jtag/*.v
 #vlog +incdir+./../rtl/  ./../rtl/*.v
 

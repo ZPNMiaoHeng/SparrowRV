@@ -1,9 +1,9 @@
 #ifndef _PLIC_H_
 #define _PLIC_H_
-
 #include "system.h"
 
-#define PLIC_BASE            (0x60000000)
+#define ICB_SLAVE_3        3
+#define PLIC_BASE          (ICB_SLAVE_3 * 0x20000000u)
 
 #define PLIC_PRT(PLIC_ID)  (PLIC_BASE + (PLIC_ID<<2))
 #define PLIC_IP            (PLIC_BASE + (0x001000))
