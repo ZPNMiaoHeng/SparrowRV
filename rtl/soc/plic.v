@@ -3,7 +3,7 @@ module plic (
 	input clk,
 	input rst_n,
 
-    //ICB Slave sram
+    //ICB Slave
     input  wire                 plic_icb_cmd_valid,//cmd有效
     output wire                 plic_icb_cmd_ready,//cmd准备好
     input  wire [`MemAddrBus]   plic_icb_cmd_addr ,//cmd地址
