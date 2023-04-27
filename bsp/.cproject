@@ -115,8 +115,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="app|example|bootrom" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="example/sd_reader"/>
+						<entry excluding="example|bootrom" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
