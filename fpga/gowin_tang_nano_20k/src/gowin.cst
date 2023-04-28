@@ -4,15 +4,25 @@
 //GOWIN Version: 1.9.8.09 Education
 //Part Number: GW2AR-LV18QN88PC8/I7
 //Device: GW2AR-18C
-//Created Time: Wed 04 05 16:48:52 2023
+//Created Time: Fri 04 28 13:38:16 2023
 
+IO_LOC "sd_clk" 83;
+IO_PORT "sd_clk" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
 IO_LOC "core_active" 15;
 IO_PORT "core_active" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
-IO_LOC "fpioa[1]" 69;
-IO_PORT "fpioa[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
-IO_LOC "fpioa[0]" 73;
+IO_LOC "fpioa[0]" 69;
 IO_PORT "fpioa[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
-IO_LOC "hard_rst_n" 72;
+IO_LOC "sd_cmd" 82;
+IO_PORT "sd_cmd" IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+IO_LOC "sd_dat[0]" 84;
+IO_PORT "sd_dat[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "hard_rst_n" 16;
 IO_PORT "hard_rst_n" IO_TYPE=LVCMOS33 PULL_MODE=UP;
 IO_LOC "clk" 4;
 IO_PORT "clk" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "sd_dat[3]" 81;
+IO_PORT "sd_dat[3]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "sd_dat[2]" 80;
+IO_PORT "sd_dat[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+IO_LOC "sd_dat[1]" 85;
+IO_PORT "sd_dat[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP;

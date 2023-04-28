@@ -26,7 +26,8 @@
 
 /syn
 /tools/*
-/bsp/obj/*
+/bsp/bsp_app/obj/*
+/bsp/bsp_iap/obj/*
 /tb/tools/bootrom/obj/*
 
 /.vscode

@@ -158,7 +158,7 @@ end
 // 写uart_baud
 always @ (posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        uart_div <= BAUD_DIV;
+        uart_div <= 16'h0;//BAUD_DIV;
     end else begin
         if (write_reg_baud_en) begin
             if (sel_i[0]) begin

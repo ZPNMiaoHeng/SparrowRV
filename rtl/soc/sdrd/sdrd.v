@@ -43,7 +43,7 @@ reg sdrd_stat;//sdrd状态机，0:空闲，1:等待访问完成
 
 wire rstart;//开始访问扇区，期间持续拉高
 wire [ 3:0] card_stat;//SD卡初始化状态，[0,7]初始化中，8空闲，9工作中
-wire [ 1:0] card_type;//SD卡类型，0=UNKNOWN, 1=SDv1, 2=SDv2, 3=SDHCv2
+wire [ 1:0] card_type;//SD卡类型，0=UNKNOWN, 01=SDv1, 10=SDv2, 11=SDHCv2
 wire rbusy;//拉高即工作中
 wire rdone;//本次访问完成
 wire [8:0] outaddr;

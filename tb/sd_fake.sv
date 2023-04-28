@@ -37,9 +37,11 @@ always @(posedge sdclk)
 
 //提供初始化数据
 initial begin
+    //扇区1填充0-511
     for (int i=0; i<512; i++) begin
         sd_mem[i] <= i;
     end
+    //扇区2填充0xF1
     for (int i=0; i<512; i++) begin
         sd_mem[i+512] <= 8'hF1;
     end
