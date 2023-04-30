@@ -1,5 +1,4 @@
 `include "defines.v"
-
 // JTAG顶层模块
 module jtag_top (
 //时钟与复位
@@ -50,23 +49,6 @@ localparam DMI_DATA_BITS = 32;//DMI数据位宽
 localparam DMI_OP_BITS = 2;//DMI op位宽
 localparam DM_RESP_BITS = DMI_ADDR_BITS + DMI_DATA_BITS + DMI_OP_BITS;//DM输出位宽2+32+6=40
 localparam DTM_REQ_BITS = DMI_ADDR_BITS + DMI_DATA_BITS + DMI_OP_BITS;//DTM输出位宽
-
-//内存请求
-wire req_valid_o;
-wire mem_we_o;
-wire[31:0] mem_addr_o;
-wire[31:0] mem_wdata_o;
-wire[31:0] mem_rdata_i;
-wire[3:0] mem_sel_o;
-
-assign jtag_icb_cmd_valid = req_valid_o;//请求内存
-assign jtag_icb_cmd_addr  = {mem_addr_o[31:2], 2'b00};//屏蔽低位，字节选通替代
-assign jtag_icb_cmd_read  = ~mem_we_o;//转换
-assign jtag_icb_cmd_wdata = mem_wdata_o;
-assign jtag_icb_cmd_wmask = mem_sel_o;
-assign jtag_icb_rsp_ready = 1'b1;
-assign mem_rdata_i = jtag_icb_rsp_rdata;
-
 
 
 // jtag_driver输出信号
@@ -120,12 +102,16 @@ jtag_dm #(
     .dm_reg_addr_o(reg_addr_o),
     .dm_reg_wdata_o(reg_wdata_o),
     .dm_reg_rdata_i(reg_rdata_i),
-    .dm_mem_we_o(mem_we_o),
-    .dm_mem_addr_o(mem_addr_o),
-    .dm_mem_wdata_o(mem_wdata_o),
-    .dm_mem_rdata_i(mem_rdata_i),
-    .dm_mem_sel_o(mem_sel_o),
-    .req_valid_o(req_valid_o),
+    .jtag_icb_cmd_valid (jtag_icb_cmd_valid),
+    .jtag_icb_cmd_ready (jtag_icb_cmd_ready),
+    .jtag_icb_cmd_addr  (jtag_icb_cmd_addr ),
+    .jtag_icb_cmd_read  (jtag_icb_cmd_read ),
+    .jtag_icb_cmd_wdata (jtag_icb_cmd_wdata),
+    .jtag_icb_cmd_wmask (jtag_icb_cmd_wmask),
+    .jtag_icb_rsp_valid (jtag_icb_rsp_valid),
+    .jtag_icb_rsp_ready (jtag_icb_rsp_ready),
+    .jtag_icb_rsp_err   (jtag_icb_rsp_err  ),
+    .jtag_icb_rsp_rdata (jtag_icb_rsp_rdata),
     .dm_halt_req_o(halt_req_o),
     .dm_reset_req_o(reset_req_o)
 );

@@ -48,7 +48,7 @@
 `define RV32I_BASE_ISA 1'b1
 
 //启用JTAG调试
-//`define JTAG_DBG_MODULE 1'b1
+`define JTAG_DBG_MODULE 1'b1
 
 //启用单周期乘法器，可能会降低最大频率
 `define SGCY_MUL 1'b1

@@ -8,6 +8,7 @@ TF卡(microSD)与SD卡通信协议相同，可通用
 1.等待SD卡初始化完成
 2.访问MBR分区表(扇区0)
 从offset[454,457]小端读取 第一个fat分区的起始扇区号
+从offset[458,461]小端读取 第一个fat分区的扇区数
 2.访问fat分区的起始扇区
 从offset[11,12]小端读取 每扇区的字节数
 从offset[13]读取 每簇的扇区数
@@ -37,7 +38,10 @@ uint32_t app_base_addr = 16 * 1024;//程序指针
 
 //MBR
 #define MBR_PTE_Sector4 454 //小端存储的分区起始扇区号位置
-uint32_t fat_base_sector;//fat分区起始扇区号
+#define MBR_Sector_NUM4 458 //小端存储的分区的扇区数
+uint32_t fat_base_sector;//第一个fat分区起始扇区号
+uint32_t fat_sector_number;//第一个fat分区的扇区数，容量(字节)=扇区数*512
+uint32_t fat_byte_length;//第一个fat分区的大小(字节)
 //fat分区起始
 #define FATH_BPS2 11//每扇区的字节数
 #define FATH_SPC1 13//每簇的扇区数
@@ -97,7 +101,13 @@ int main()
             + (SDRD_DATA(MBR_PTE_Sector4+1)<<8)\
             + (SDRD_DATA(MBR_PTE_Sector4+2)<<16)\
             + (SDRD_DATA(MBR_PTE_Sector4+3)<<24);//第一个fat分区的起始扇区
+    fat_sector_number = SDRD_DATA(MBR_Sector_NUM4+0)\
+            + (SDRD_DATA(MBR_Sector_NUM4+1)<<8)\
+            + (SDRD_DATA(MBR_Sector_NUM4+2)<<16)\
+            + (SDRD_DATA(MBR_Sector_NUM4+3)<<24);//分区的扇区数
+    fat_byte_length = fat_sector_number/2048;//第一个fat分区的大小(字节)
     printf("fat_base_sector:%lu\n", fat_base_sector);//第一个fat分区的起始扇区
+    printf("fat_byte_length:%lu MiB\n", fat_byte_length);//分区的大小(字节)
 
     //读取FAT分区的起始扇区
     set_sdrd_sector(fat_base_sector);//访问扇区
