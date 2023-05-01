@@ -2,19 +2,17 @@ OUTPUT_ARCH( "riscv" )
 ENTRY(_start) /*定义程序入口，_start来自启动文件*/
 
 /*以下可修改*/
-_cpu_iram_size = 16K; /*iram指令存储器大小*/
-_cpu_sram_size = 16K; /*sram数据存储器大小*/
-_cpu_stack_size = 4K; /*堆栈区大小*/
+_iram_iap_size = 1024 ; /*IAP可用空间*/
+_cpu_sram_size = 4K; /*sram数据存储器大小*/
+_cpu_stack_size = 2K; /*堆栈区大小*/
 /*以上可修改*/
 
 _iram_base_addr = 0x00000000; /*iram存储器基地址*/
 _sram_base_addr = 0x20000000; /*sram存储器基地址*/
 
-_iram_app_size = _cpu_iram_size ; /*用户程序可用空间*/
-
 MEMORY
 {
-  iram (rx) : ORIGIN = _iram_base_addr, LENGTH = _iram_app_size /*iram指令存储器基地址，大小，可读可执行*/
+  iram (rx) : ORIGIN = _iram_base_addr, LENGTH = _iram_iap_size /*iram指令存储器基地址，大小，可读可执行*/
   sram (rw) : ORIGIN = _sram_base_addr, LENGTH = _cpu_sram_size /*sram存储器基地址，大小，可读可写*/
 }
 /*r只读 w可写 x可执行 a可分配 i已初始化段 l类似于i !反转其后面的所有属性*/

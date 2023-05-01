@@ -6,11 +6,9 @@ module sparrow_soc (
     output wire core_active,//处理器活动指示，以肉眼可见速度翻转
 
     //JTAG接口
-`ifdef JTAG_DBG_MODULE
     input  wire JTAG_TMS,
     input  wire JTAG_TDI,
     output wire JTAG_TDO,
-`endif
     input  wire JTAG_TCK, //即使没有JTAG，也保留这个接口，使得约束可以通用
 
     //SD、TF卡接口
@@ -191,7 +189,7 @@ jtag_top inst_jtag_top
     assign jtag_icb_cmd_wdata = 32'b0;
     assign jtag_icb_cmd_wmask = 4'b0;
     assign jtag_icb_rsp_ready = 1'b1;
-
+	assign JTAG_TDO = 1'b0;
 `endif
 
 //s1 sram外设

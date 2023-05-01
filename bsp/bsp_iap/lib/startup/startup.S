@@ -35,15 +35,7 @@ _start:
     bltu a0, a1, 1b    /*a0小于a1，跳转至往上第一个1标签；否则向下执行*/
     /*清空bss段*/
 2:
-
-    call sparrowrv_system_init  /*初始化函数*/
     call main   /*main函数*/
-
-    csrwi 0x347,1  /*仿真专用，退出仿真*/
-loop:  /*无限循环*/
-    j loop
-
-
 
 /*
 八百标兵奔北坡
