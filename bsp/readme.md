@@ -2,6 +2,7 @@
 
 ### bsp_app
 面向完整的应用程序
+如果使用SD卡加载程序，需要将`/bsp/bsp_app/link.lds`的`_iap_prog_size`改为1024
 
 ### bsp_iap
 面向在应用编程(In Application Programming, IAP)程序的BSP
