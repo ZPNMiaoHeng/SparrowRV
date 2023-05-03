@@ -7,6 +7,7 @@ _start:
 .option norelax /*禁用相对寻址*/
 .option norvc
     nop /*空操作*/
+    nop
     la gp, __global_pointer$ /*设置gp全局指针，__global_pointer$来源于链接脚本，与data段关联，指向全局变量*/
 .option pop
     la sp, _sp /*设置sp堆栈指针，_sp来源于链接脚本，指向普通的局部变量*/
@@ -36,6 +37,9 @@ _start:
     /*清空bss段*/
 2:
     call main   /*main函数*/
+
+1:
+	j 1b
 
 /*
 八百标兵奔北坡

@@ -73,8 +73,8 @@ uint32_t file_base_sector;//文件起始扇区号 = 数据区的起始扇区号 
 uint32_t i,j;
 uint8_t u8tmp0,u8tmp1;
 
-//读取SD、TF卡的第0，第1扇区
 void set_sdrd_sector(uint32_t sector_num);
+uint32_t read_mem_4byte(uint32_t start_addr);
 
 int main()
 {
@@ -91,17 +91,14 @@ int main()
 
     //等待初始化
     //printf("Wait SD init\n");
-    uart_send_string(UART0, "Wait... ");
+    uart_send_string(UART0, "IAP Wait SD Init...  ");
     while(SYS_RWMEM_B(SDRD_BASE+3) == (uint8_t)0x01);//等待启动完成，等效于while(sdrd_busy_chk());
     //tmp = sdrd_init_state_read();
     //printf("SDRD state:0x%x \n", tmp);//SD卡版本
 
     //读取MBR
     set_sdrd_sector(0);//扇区0
-    fat_base_sector = SDRD_DATA(MBR_PTE_Sector4+0)\
-            + (SDRD_DATA(MBR_PTE_Sector4+1)<<8)\
-            + (SDRD_DATA(MBR_PTE_Sector4+2)<<16)\
-            + (SDRD_DATA(MBR_PTE_Sector4+3)<<24);//第一个fat分区的起始扇区
+    fat_base_sector = read_mem_4byte(MBR_PTE_Sector4);//第一个fat分区的起始扇区
 /*
     fat_sector_number = SDRD_DATA(MBR_Sector_NUM4+0)\
             + (SDRD_DATA(MBR_Sector_NUM4+1)<<8)\
@@ -118,8 +115,8 @@ int main()
     sec_per_clus = SDRD_DATA(FATH_SPC1);//每簇的扇区数
     fat_save_sector = SDRD_DATA(FATH_FSS2)+(SDRD_DATA(FATH_FSS2+1)<<8);//FAT保留扇区数
     fat_tab_number = SDRD_DATA(FATH_FTN1);//FAT表个数
-    fat_used_sector = SDRD_DATA(FATH_FUS4)+(SDRD_DATA(FATH_FUS4+1)<<8)+(SDRD_DATA(FATH_FUS4+2)<<16)+(SDRD_DATA(FATH_FUS4+3)<<24);//FAT分区前已使用的扇区数
-    fat_tab_sector = SDRD_DATA(FATH_FTS4)+(SDRD_DATA(FATH_FTS4+1)<<8)+(SDRD_DATA(FATH_FTS4+2)<<16)+(SDRD_DATA(FATH_FTS4+3)<<24);//每个FAT表的扇区数
+    fat_used_sector = read_mem_4byte(FATH_FUS4);//FAT分区前已使用的扇区数
+    fat_tab_sector = read_mem_4byte(FATH_FTS4);//每个FAT表的扇区数
     fat_data_sector = fat_used_sector + fat_save_sector + fat_tab_number*fat_tab_sector;//fat数据区的起始扇区号 = FAT分区前已使用的扇区数 + FAT保留扇区数 + FAT表个数 * 每个FAT表的扇区数
     //printf("fat_data_sector:%lu\n", fat_data_sector);//fat数据区的起始扇区
 
@@ -136,13 +133,17 @@ int main()
             break;
         }
     }
-    if(file_FDT_base==512)//没有找到文件
+    if(file_FDT_base>=512)//没有找到文件
     {
-        uart_send_string(UART0, "None File\n");
+        uart_send_string(UART0, "Can't Find File in SD\n");
+        while(1);
         //printf("can't find file in fat32");
     }
-    file_base_clus = SDRD_DATA(file_FDT_base+FATD_FBC_0)+(SDRD_DATA(file_FDT_base+FATD_FBC_1)<<8)+(SDRD_DATA(file_FDT_base+FATD_FBC_2)<<16)+(SDRD_DATA(file_FDT_base+FATD_FBC_3)<<24);//文件起始簇号
-    file_length_byte = SDRD_DATA(file_FDT_base+FATD_FLB4)+(SDRD_DATA(file_FDT_base+FATD_FLB4+1)<<8)+(SDRD_DATA(file_FDT_base+FATD_FLB4+2)<<16)+(SDRD_DATA(file_FDT_base+FATD_FLB4+3)<<24);//文件大小(字节)
+    file_base_clus = SDRD_DATA(file_FDT_base+FATD_FBC_0)\
+            +(SDRD_DATA(file_FDT_base+FATD_FBC_1)<<8)\
+            +(SDRD_DATA(file_FDT_base+FATD_FBC_2)<<16)\
+            +(SDRD_DATA(file_FDT_base+FATD_FBC_3)<<24);//文件起始簇号
+    file_length_byte = read_mem_4byte(file_FDT_base+FATD_FLB4);//文件大小(字节)
     //printf("file_base_clus:%lu\n", file_base_clus);
     //printf("sec_per_clus:%lu\n", sec_per_clus);
     file_base_sector = fat_data_sector + (file_base_clus-2)*sec_per_clus;//文件起始扇区号 = 数据区的起始扇区号 + (文件起始簇号-2)*每簇的扇区数
@@ -168,7 +169,7 @@ int main()
     //printf("inst 8192+4:0x%x\n", SYS_RWMEM_W(8192+4));
 
     //跳转到APP
-    uart_send_string(UART0, "Load Success\n");
+    uart_send_string(UART0, "Load APP Success\n");
     asm volatile (
         "jr %[app_sa]"
         :
@@ -183,4 +184,10 @@ void set_sdrd_sector(uint32_t sector_num)
     while(SYS_RWMEM_B(SDRD_BASE+3) == (uint8_t)0x01);//等待结束访问，等效于while(sdrd_busy_chk());
 }
 
-
+//访问SDRD连续4个字节，小端读取为32bit数
+uint32_t read_mem_4byte(uint32_t start_addr)
+{
+    uint32_t tmp;
+    tmp = SDRD_DATA(start_addr)+(SDRD_DATA(start_addr+1)<<8)+(SDRD_DATA(start_addr+2)<<16)+(SDRD_DATA(start_addr+3)<<24);
+    return tmp;
+}

@@ -138,7 +138,7 @@ always @ (posedge clk) begin
                 data_o <= {16'h0, timer_cnt};
             end
             default: begin
-                data_o <= 32'h3F2D1C0A;
+                data_o <= 32'h0;
             end
         endcase
     end

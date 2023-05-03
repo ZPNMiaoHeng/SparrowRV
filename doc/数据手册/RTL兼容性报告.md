@@ -3,8 +3,9 @@
 ## SRAM模式配置
 `define SRAM_MODEL "DP_RAM"`  
 支持以下综合器：  
-1. 高云Gowin V1.9.8.09 Education
+1. 高云 Gowin V1.9.8.09 Education
 2. AMD Vivado 2019.2
+3. 智多晶 HqFPGA 3.0.0
 
 以下综合器存在问题：  
 1. 紫光同创Pango Design Suite 2021.4-SP1.2

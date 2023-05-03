@@ -1,9 +1,9 @@
 #ifndef SYSTEM_H_
 #define SYSTEM_H_
 
+//---------------可修改区域------------------
 //标准库 stdxx.h
 #include <stdint.h>
-
 //外设库 perip
 #include "core.h"
 #include "trap.h"
@@ -17,11 +17,11 @@
 #include "printf.h"
 #include "nor25_flash.h"
 
-//---------------------------------
-//开启仿真模式printf。不会打印串口，只通过CSR_msprint打印至终端，极大提高仿真速度
-//上FPGA，必须注释掉此宏，就像这样: //#define sim_csr_printf 1
-//#define sim_csr_printf 1
-//---------------------------------
+//此宏开启仿真模式printf。不会打印串口，只通过CSR_msprint打印至终端，极大提高仿真速度
+//如果上FPGA，必须注释掉此宏，否则printf无法输出
+//#define sim_csr_printf
+
+//---------------可修改区域------------------
 
 #define ENABLE  1u
 #define DISABLE 0u
@@ -49,16 +49,17 @@
 #define MCAUSE_INTP_TCMP 3//定时器中断
 #define MCAUSE_INTP_SOFT 2//软件中断
 
-//访存
+//访存宏
 #define SYS_RWMEM_W(addr) (*((volatile uint32_t *)(addr)))   //必须4字节对齐访问(低2位为0)
 #define SYS_RWMEM_H(addr) (*((volatile uint16_t *)(addr)))   //半字(16bit)访问，但是部分外设不支持半字寻址写
 #define SYS_RWMEM_B(addr) (*((volatile uint8_t  *)(addr)))   //允许访问4G地址空间任意字节，但是部分外设不支持字节寻址写
 
-//读取系统信息
+//系统信息
 uint32_t system_cpu_freq;//处理器频率
 uint32_t system_cpu_freqM;//处理器频率，单位M
 uint32_t system_iram_size;//指令存储器大小kb
 uint32_t system_sram_size;//数据存储器大小kb
 uint32_t system_vendorid;//Vendor ID
+
 
 #endif
