@@ -1,130 +1,65 @@
 # 小麻雀处理器
 [![rvlogo](/doc/图库/Readme/rvlogo.bmp)RISC-V官网收录](https://riscv.org/exchange/?_sf_s=sparrowrv)  
 [![teelogo](/doc/图库/Readme/giteetj.bmp)Gitee推荐项目](https://gitee.com/explore/risc-v)  
-[![book](/doc/图库/Readme/book.png)处理器文档导航页](/doc/文档导航.md)  
+[![book](/doc/图库/Readme/book.png)**处理器文档导航页**](/doc/文档导航.md)  
 
 ## 简介
-小麻雀处理器(SparrowRV)是一款RISC-V架构的32位单周期两级流水线处理器。它的控制逻辑简单，没有复杂的流水线控制结构，代码注释完备，配有易上手的仿真环境和软件开发环境，适合用于学习。  
-此项目处于开发阶段，master分支更新频繁，稳定版请参阅[release发行版](https://gitee.com/xiaowuzxc/SparrowRV/releases)  
+小麻雀处理器(SparrowRV)是一个综合性的开源处理器项目，包含了一款RISC-V架构的32位单周期两级流水线处理器内核及SoC设计、用于C语言开发的板级支持包BSP、易上手的软硬件联合仿真环境、FPGA工程示例等内容，贯穿了嵌入式软硬件、计算机体系结构、数字逻辑设计等领域。小麻雀处理器面向于低功耗、小面积的应用场景，对标Cortex-M系列内核。它使用可综合的Verilog语言完成SoC的RTL设计，代码注释完备，提供了详细的说明文档，可以快速移植到任意FPGA平台并直接进行工程开发，适合用于研究和学习。  
+
 **设计指标：**  
 - 顺序两级流水线结构(IF -> ID+EX+MEM+WB)  
-- RV32I RV32E M、Zicsr扩展可配置  
-- 向量中断系统，仅支持机器模式(开发中)  
+- 支持可配置的RV32I/E/M/Zicsr指令集组合及机器模式  
+- 向量中断系统，PLIC接管外部中断  
 - 哈佛结构，指令存储器映射至存储器空间  
-- 支持C语言，有配套BSP  
-- 支持ICB总线  
-- 支持JTAG调试  
-
-**2级流水线**  
-![流水线](/doc/图库/Readme/流水线.svg)  
+- 支持C语言开发，配有BSP及相关例程  
+- 配有SoC实现方案，包含ICB总线和常用外设  
+- 支持JTAG接口，实现了RISC-V调试规范0.13.2的子集  
+- 参数化配置，设计具备极强的伸缩性  
 
 **系统功能框图**  
 ![soc架构](/doc/图库/Readme/soc架构.svg)  
 
-**内核原理图**  
-![内核原理图](/doc/图库/内核手册/内核原理图.svg)  
+详细内容及使用教程请参阅[**处理器文档导航页**](/doc/文档导航.md)    
 
-软件开发请参阅[板级支持包BSP](#板级支持包bsp)  
-仿真环境搭建请参阅[仿真流程](#仿真)  
+## 工程组织框架
+小麻雀处理器包含了RTL、软件、硬件设计。  
+![组织框架](/doc/图库/Readme/工程结构.svg)  
+- SoC RTL设计由硬件描述语言HDL完成，实现了小麻雀内核及配套的总线系统和常用外设。  
+- 软件设计包含了BSP、相关例程及IAP程序，实现了C语言开发，使用固件库封装了底层硬件操作。  
+- 硬件设计包含了FPGA例程和参考设计，指导使用者将小麻雀处理器放在FPGA上运行。  
+- 脚本工具贯穿了小麻雀处理器的每一处设计，实现了逻辑仿真、数据转换、自测试等功能。  
 
 
-## 开发工具
-- 处理器RTL设计采用Verilog-2001可综合子集。此版本代码密度更高，可读性更强，并且受到综合器的广泛支持。  
-- 处理器RTL验证采用System Verilog-2005。此版本充分满足仿真需求，并且受到仿真器的广泛支持。   
-- 数字逻辑仿真采用iverilog/Modelsim。可根据使用平台与具体需求选择合适工具。  
-- 脚本采用 Batchfile批处理(Win)/Makefile(Linux) + Python3。发挥各种脚本语言的优势，最大程度地简化操作。  
-- 板级支持包采用MRS(MounRiver Studio)图形化集成开发环境，做到开箱即用。  
+**主要工具**  
+- 处理器的RTL设计采用Verilog-2001的可综合子集。此版本代码密度更高，可读性更强，并且受到综合器的广泛支持。  
+- 处理器的TestBench采用System Verilog-2005。此版本充分满足仿真需求，并且受到仿真器的广泛支持。  
+- 逻辑仿真采用iverilog/Modelsim。可根据使用平台与具体需求选择合适工具。  
+- 脚本采用 批处理(Win)/Makefile(跨平台) + Python3。发挥各种脚本语言的优势，最大程度地简化操作。  
+- BSP采用MRS(MounRiver Studio)图形化集成开发环境，开箱即用。  
 - 所有文本采用UTF-8编码，具备良好的多语言和跨平台支持。  
 
-## 仿真
-本工程使用`批处理/Makefile + Python3 + Modelsim/iverilog`可根据个人喜好与平台使用合适的工具完成仿真全流程。如果已配置相关工具，可跳过环境搭建步骤。    
-若需要编写c语言程序并仿真，请参阅[板级支持包BSP](#板级支持包bsp)  
-**仿真环境框架**  
-![soc架构](/doc/图库/Readme/仿真环境.svg)  
-
-### Linux环境搭建与仿真
-必须使用带有图形化界面的Linux的系统，否则无法正常仿真。    
-Linux下仅支持iverilog  
-Debian系(Ubuntu、Debian、Deepin)执行以下命令：  
+**目录结构说明**  
 ```
-sudo apt install make git python3 python3-tk gtkwave gcc g++ bison flex gperf autoconf
-git clone -b v12_0 --depth=1 https://gitee.com/xiaowuzxc/iverilog/
-cd iverilog
-sh autoconf.sh
-./configure
-make
-sudo make install
-cd ..
-rm -rf iverilog/
+SparrowRV根目录
+  ├─bsp  板级支持包
+  |  ├─bsp_app  编写程序所需的BSP
+  |  ├─bsp_iap  实现SD卡IAP启动的工程
+  |  ├─OpenOCD  OpenOCD上位机
+  |  ├─readme.md  说明文件
+  |  └─SparrowRV_IAP.bin  SD卡IAP程序的二进制文件
+  ├─doc  所有文档都在这里
+  ├─fpga  FPGA示例工程
+  ├─rtl  RTL设计
+  └─tb  各种工具、仿真脚本、仿真激励
 ```
-其他Linux发行版暂不提供支持，请自行探索。  
-
-- `/tb/makefile`是Linux环境下的实现各项仿真功能的启动器  
-
-进入`/tb/`目录，终端输入`make`即可启动人机交互界面。根据提示，输入`make`+`空格`+`单个数字或符号`，按下回车即可执行对应项目。   
-
-Makefile支持以下命令：  
-- [0]导入inst.txt，RTL仿真并显示波形  
-- [1]收集指令测试集程序，测试所有指令  
-- [2]转换bin文件为inst.txt，可被testbench读取  
-- [3]转换bin文件并进行RTL仿真、显示波形，主要用于仿真c语言程序  
-- [4]显示上一次的仿真波形  
-- [c]清理缓存文件  
-
-### Windows环境搭建
-- 进入[Python官网](https://www.python.org/)，下载并安装Python 3.x版本(建议使用稳定版)  
-- (可跳过)如果想在Win系统使用make，请参阅[Makefile开发](#Makefile开发)第2步。  
-#### iverilog仿真
-进入[iverilog Win发行版](http://bleyer.org/icarus/)，下载并安装iverilog-v12-20220611-x64_setup[18.2MB]  
-Windows下iverilog安装流程及仿真可参考[视频教程](https://www.bilibili.com/video/bv1dS4y1H7zn)  
-**可选择以下任意一种方式进行仿真**  
-- `/tb/run_zh.bat`是Windows环境下的启动器，进入`/tb/`目录，仅需双击`run_zh.bat`即可启动人机交互界面。根据提示，输入单个数字或符号，按下回车即可执行对应项目。  
-- `/tb/makefile`是Windows/Linux环境下的启动器，进入`/tb/`目录，终端输入`make`即可启动人机交互界面。根据提示，输入`make`+`空格`+`单个数字或符号`，按下回车即可执行对应项目。   
-
-处理器运行C语言程序，见[板级支持包BSP](#板级支持包bsp)。需要将生成的`obj.bin`转换为`inst.txt`文件，才能导入程序并执行仿真。命令2仅转换，命令3可以转换并仿真。  
-
-`/tb/tools/isa_test.py`是仿真脚本的核心，负责控制仿真流程，转换文件类型，数据收集。使用者通过启动器与此脚本交互，一般情况下不建议修改。  
-iverilog是仿真工具，gtkwave用于查看波形。  
-
-
-#### Modelsim仿真
-仅限Windows系统  
-本工程提供了Modelsim仿真脚本，启动方式与iverilog类似，软件安装问题请各显神通  
-- `/tb/run_zh.bat`是Windows环境下的启动器，进入`/tb/`目录，仅需双击`run_zh.bat`即可启动人机交互界面。根据提示，输入单个数字或符号，按下回车即可执行对应项目。   
-- 处理器运行C语言程序，见[板级支持包BSP](#板级支持包bsp)。需要将生成的`obj.bin`转换为`inst.txt`文件(命令2转换，命令3可以直接转换并仿真)，才能导入程序并执行仿真。  
-- `/tb/tools/vsim_xxx.tcl`主导Modelsim的启动、配置、编译、仿真流程，由批处理脚本启动，Modelsim启动后读入。  
-
-  
-
-### 问题说明
-- inst.txt是被testbench读入指令存储器的文件，必须存在此文件处理器才可运行  
-- 程序编译生成的bin文件不能直接被读取，需要先转换为inst.txt  
-- iverilog版本建议大于v11，低于此版本可能会无法运行  
-- Makefile环境下可能会出现gtkwave开着的情况下不显示打印信息  
-- Windows下`make`建议使用Powershell，经测试Bash存在未知bug(实验性修复)   
-- (已修复)~~run_zh.bat是中文的启动器，但是由于`git CRLF`相关问题无法使用~~  
-- 若出现`WARNING: tb_core.sv:23: $readmemh(inst.txt):...`或`ERROR: tb_core.sv:24: $readmemh:`警告或错误信息，请忽略，它不会有任何影响  
-- 本项目基于Modelsim SE 2019.2进行环境搭建，此版本保证脚本的有效性；10.6d版本存在问题  
-
-
-
-## 板级支持包BSP
-位于`/bsp/`文件夹下   
-本工程使用MRS(MounRiver Studio)作为图形化集成开发环境。MRS基于Eclipse开发，支持中文界面和帮助信息，配置了完善的GCC工具链，可以做到开箱即用。  
-官网链接http://www.mounriver.com/  
-使用流程：  
-1. 下载并安装MRS  
-2. 切换中文界面。打开MRS主界面，`Help`->`Language`->`Simplified Chinese`  
-3. 双击打开`/bsp/SparrowRV.wvproj`
-4. 点击`构建项目`，编译并生成bin文件
 
 ## 致谢
 本项目借鉴了[tinyriscv](https://gitee.com/liangkangnan/tinyriscv)的RTL设计和Python脚本。tinyriscv使用[Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)协议。  
-本项目使用了[printf](https://github.com/mpaland/printf)的轻量化printf实现。printf使用MIT协议。    
+本项目使用了[printf](https://github.com/mpaland/printf)的轻量化printf实现。printf使用MIT协议。  
 本项目使用了[蜂鸟E203](https://gitee.com/riscv-mcu/e203_hbirdv2)的ICB总线。蜂鸟E203使用[Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)协议。  
-本项目使用了[FPGA-SDcard-Reader](https://github.com/WangXuan95/FPGA-SDcard-Reader)的SD读卡器功能。  
+本项目使用了[FPGA-SDcard-Reader](https://github.com/WangXuan95/FPGA-SDcard-Reader)的SD卡按扇区读取功能。  
 感谢先驱者为我们提供的灵感  
 感谢众多开源软件提供的好用的工具  
 感谢MRS开发工具提供的便利   
 感谢导师对我学习方向的支持和理解  
-大家的支持是我前进的动力！  
+大家的支持是我前进的动力  

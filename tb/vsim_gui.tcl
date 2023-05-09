@@ -19,7 +19,7 @@ vlib work
 vmap work work
 
 # 编译文件
-vlog +incdir+./../rtl/  +define+MODELSIM +define+HDL_SIM  ./tb_core.sv
+vlog +incdir+./../rtl/  +define+MODELSIM +define+HDL_SIM  ./tb_soc.sv
 vlog +incdir+./../rtl/                                    ./sd_fake.sv
 vlog +incdir+./../rtl/  +define+HDL_SIM     ./../rtl/core/*.v
 vlog +incdir+./../rtl/                      ./../rtl/soc/*.v
@@ -29,8 +29,8 @@ vlog +incdir+./../rtl/                      ./../rtl/jtag/*.v
 vlog +incdir+./../rtl/                      ./../rtl/*.v
 
 #
-vsim -voptargs=+acc work.tb_core
-#vsim -novopt work.tb_core
+vsim -voptargs=+acc work.tb_soc
+#vsim -novopt work.tb_soc
 
 
 # ==========================================================================

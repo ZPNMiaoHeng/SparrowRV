@@ -81,7 +81,11 @@ assign iram_icb_cmd_ready = 1'b1;
 assign iram_icb_rsp_err = addrb > (`IRamSize-1);
 assign iram_icb_rsp_rdata = doutb;
 assign addrb = iram_icb_cmd_addr[31:2];
+`ifdef LIMIT_IRAM_L1K_W
+assign web = icb_whsk && (iram_icb_cmd_addr>=1024);
+`else
 assign web = icb_whsk;
+`endif
 assign wemb = iram_icb_cmd_wmask;
 assign dinb = iram_icb_cmd_wdata;
 assign enb = iram_icb_cmd_valid;

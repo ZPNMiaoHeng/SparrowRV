@@ -66,7 +66,7 @@ wire[`RegBus] mvendorid = `MVENDORID_NUM;//Vendor ID
 wire[`RegBus] marchid   = `MARCHID_NUM;//微架构编号
 //硬件实现编号
 wire [14:0] CPU_FRED1W = `CPU_CLOCK_HZ/10000;
-wire DEVELP = `DEVELOP_REV;
+wire DEVELP = `STABLE_REV_RTL;
 wire [7:0] CPU_IRAM_SIZEK = `IRam_KB;
 wire [7:0] CPU_SRAM_SIZEK = `SRam_KB;
 wire[`RegBus] mimpid    = {CPU_SRAM_SIZEK, CPU_IRAM_SIZEK, DEVELP, CPU_FRED1W};

@@ -4,10 +4,10 @@
 `define SRamSize (`SRam_KB*1024/4) //kB->B->4B
 `define RstPC 32'h0000_0000 //复位后PC值在0000
 
-`ifdef DEVELOP_REV
-`define DEVELOP_REV 1'b1
+`ifdef STABLE_REV_RTL
+`define STABLE_REV_RTL 1'b1
 `else
-`define DEVELOP_REV 1'b0
+`define STABLE_REV_RTL 1'b0
 `endif
 
 

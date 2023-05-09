@@ -1,7 +1,7 @@
 /*--------------------------------
  *          参数配置区           
- *--------------------------------*/
-//系统主频，根据具体场景填写
+ */
+//系统主频，必须设置为处理器的实际工作频率
 `define CPU_CLOCK_HZ 27_000_000
 
 //iram指令存储器大小，单位为KB
@@ -13,7 +13,7 @@
 //FPIOA端口数量，支持区间为[1,32]
 `define FPIOA_PORT_NUM 16
 
-//SRAM模式配置，支持"DP_ROM" "DP_RAM" "SYN_DPR" "EG4_32K"
+//SRAM模式配置，支持"DP_ROM" "DP_RAM" "SYN_DPR"
 `define SRAM_MODEL "DP_RAM"
 
 //Vendor ID
@@ -28,14 +28,15 @@
 //除法器模式，支持"HF_DIV" "HP_DIV" "SIM_DIV"
 `define DIV_MODE "HF_DIV"
 
-/*--------------------------------
+/*
  *          参数配置区           
  *--------------------------------*/
 
 
+
 /*--------------------------------
  *          开关配置区           
- *--------------------------------*/
+ */
 //将程序固化到FPGA内部，SRAM模式必须配置为"DP_ROM"或"DP_RAM"
 `define PROG_IN_FPGA 1'b1
 //固化到FPGA内部的程序路径，只能导入转换后的文本文件，斜杠方向必须改为/
@@ -48,7 +49,7 @@
 `define RV32I_BASE_ISA 1'b1
 
 //启用JTAG调试
-//`define JTAG_DBG_MODULE 1'b1
+`define JTAG_DBG_MODULE 1'b1
 
 //启用单周期乘法器，可能会降低最大频率
 `define SGCY_MUL 1'b1
@@ -56,10 +57,12 @@
 //启用minstret指令计数器
 //`define CSR_MINSTRET_EN 1'b1
 
-//开发版本
-`define DEVELOP_REV 1'b1
+//指令存储器iram低1kB禁止写入，防止破坏IAP
+//`define LIMIT_IRAM_L1K_W 1'b1
 
+//稳定版本
+`define STABLE_REV_RTL 1'b1
 
-/*--------------------------------
+/*
  *          开关配置区           
  *--------------------------------*/

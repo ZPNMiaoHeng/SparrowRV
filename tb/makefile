@@ -22,19 +22,19 @@ list:
 #-------------------------------------------------------------------------------------------------------
 .PHONY : 0
 0 : 
-	python3 tools/isa_test.py sim_rtl
+	python3 tools/tools.py sim_rtl
 
 .PHONY : 1
 1 : 
-	python3 tools/isa_test.py all_isa
+	python3 tools/tools.py all_isa
 
 .PHONY : 2
 2 : 
-	python3 tools/isa_test.py tsr_bin
+	python3 tools/tools.py tsr_bin
 
 .PHONY : 3
 3 : 
-	python3 tools/isa_test.py sim_bin
+	python3 tools/tools.py sim_bin
 
 .PHONY : 4
 4 : 
@@ -42,7 +42,7 @@ list:
 
 .PHONY : t
 t : 
-	python3 tools/isa_test.py tsr_app
+	python3 tools/tools.py tsr_app
 
 #-------------------------------------------------------------------------------------------------------
 .PHONY : c
