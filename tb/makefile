@@ -11,12 +11,11 @@ list:
 	@echo You can sim D bus 
 	@echo ==============================
 	@echo [cmd]: information---------------Tools
-	@echo 0: load inst.txt and sim rtl-----iverilog   
-	@echo 1: regress ISA test--------------iverilog   
+	@echo 0: load inst.txt and sim RTL-----iverilog   
+	@echo 1: ISA test----------------------iverilog   
 	@echo 2: .bin file turn into inst.txt
-	@echo 3: load .bin file and sim rtl----iverilog   
+	@echo 3: load .bin file and sim RTL----iverilog   
 	@echo 4: show last wave file-----------gtkwave
-	@echo t: UART write iram
 	@echo c: clean tb file
 	@echo ==============================
 #-------------------------------------------------------------------------------------------------------
@@ -40,9 +39,6 @@ list:
 4 : 
 	python3 gtkwave tb.lxt
 
-.PHONY : t
-t : 
-	python3 tools/tools.py tsr_app
 
 #-------------------------------------------------------------------------------------------------------
 .PHONY : c

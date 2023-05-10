@@ -31,7 +31,7 @@ See the man page for details.
 本教程的命令仅适用于自带`apt包管理器`的Linux发行版，如Debian、乌班图、Deepin/UOS等  
 **不推荐**直接使用`sudo apt install iverilog`安装`iverilog`，因为软件版本很老，难以正常使用  
 但是可以使用`sudo apt install gtkwave`安装`gtkwave`  
-推荐执行以下命令编译安装。  
+推荐执行以下命令编译安装iverilog。  
 我提供了国内镜像仓库，稳定快捷，默认安装`v12稳定版`  
 ```
 sudo apt install make git gtkwave gcc g++ bison flex gperf autoconf
