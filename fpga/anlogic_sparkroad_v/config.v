@@ -2,7 +2,7 @@
  *          参数配置区           
  *--------------------------------*/
 //系统主频，根据具体场景填写
-`define CPU_CLOCK_HZ 27_000_000
+`define CPU_CLOCK_HZ 24_000_000
 
 //iram指令存储器大小，单位为KB
 `define IRam_KB 32 
@@ -38,7 +38,7 @@
  *--------------------------------*/
 //将程序固化到FPGA内部，SRAM模式必须配置为"DP_ROM"或"DP_RAM"
 `define PROG_IN_FPGA 1'b1
-//固化到FPGA内部的程序路径，只能导入转换后的文本文件，斜杠方向必须改为/
+//固化到FPGA内部的程序路径，只能导入转换后的文本文件，反斜杠"\"的必须改为"/"
 `define PROG_FPGA_PATH "../../tb/inst.txt"
 
 //启用M扩展(乘法/除法)
@@ -48,7 +48,7 @@
 `define RV32I_BASE_ISA 1'b1
 
 //启用JTAG调试
-//`define JTAG_DBG_MODULE 1'b1
+`define JTAG_DBG_MODULE 1'b1
 
 //启用单周期乘法器，可能会降低最大频率
 `define SGCY_MUL 1'b1
@@ -56,8 +56,11 @@
 //启用minstret指令计数器
 //`define CSR_MINSTRET_EN 1'b1
 
-//开发版本
-`define DEVELOP_REV 1'b1
+//指令存储器iram低1kB禁止写入，防止破坏IAP
+//`define LIMIT_IRAM_L1K_W 1'b1
+
+//稳定版本
+`define STABLE_REV_RTL 1'b1
 
 
 /*--------------------------------
