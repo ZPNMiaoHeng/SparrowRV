@@ -4,7 +4,7 @@
 /tb/tb
 /tb/*.lxt
 /tb/*.vcd
-#/tb/inst.txt
+/tb/inst.txt
 /tb/uart.txt
 /tb/MEM.TXT
 /tb/SFDP.TXT
