@@ -5,16 +5,13 @@
 `define CPU_CLOCK_HZ 27_000_000
 
 //iram指令存储器大小，单位为KB
-`define IRam_KB 32 
+`define IRam_KB 32
 
 //sram数据存储器大小，单位为KB
 `define SRam_KB 16
 
 //FPIOA端口数量，支持区间为[1,32]
 `define FPIOA_PORT_NUM 16
-
-//SRAM模式配置，支持"DP_ROM" "DP_RAM" "SYN_DPR"
-`define SRAM_MODEL "DP_RAM"
 
 //Vendor ID
 `define MVENDORID_NUM 32'h114514
@@ -59,6 +56,9 @@
 
 //指令存储器iram低1kB禁止写入，防止破坏IAP
 //`define LIMIT_IRAM_L1K_W 1'b1
+
+//Verilog推断双端口SRAM
+`define RTL_TO_SRAM_MODEL 1'b1
 
 //稳定版本
 `define STABLE_REV_RTL 1'b1

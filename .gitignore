@@ -42,7 +42,11 @@
 /fpga/gowin_tang_primer_20k/impl/temp
 /fpga/gowin_tang_primer_20k/gowin_tang_primer_20k.gprj.user
 
-/fpga/gowin_gw1n_lv9qn48/impl/gwsynthesis
-/fpga/gowin_gw1n_lv9qn48/impl/pnr
-/fpga/gowin_gw1n_lv9qn48/impl/temp
-/fpga/gowin_gw1n_lv9qn48/gowin_gw1n_lv9qn48.gprj.user
+/fpga/amd_bcjx_k7_r3/AMD_7k325.sim
+/fpga/amd_bcjx_k7_r3/AMD_7k325.cache
+/fpga/amd_bcjx_k7_r3/AMD_7k325.ioplanning
+/fpga/amd_bcjx_k7_r3/AMD_7k325.ip_user_files
+/fpga/amd_bcjx_k7_r3/AMD_7k325.runs
+/fpga/amd_bcjx_k7_r3/*.jou
+/fpga/amd_bcjx_k7_r3/*.log
+/fpga/amd_bcjx_k7_r3/*.str

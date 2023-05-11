@@ -53,7 +53,7 @@ module idex(
 );
 
 //指令
-wire [6:0] opcode ={inst_i[6:2], 2'b11};//RV32I指令的低2位永远是2'b11
+wire [6:0] opcode ={inst_i[6:1], 1'b1};//RV32I指令的低1位永远是1'b1
 wire [2:0] funct3 = inst_i[14:12];
 wire [6:0] funct7 = inst_i[31:25];
 wire [4:0] rd = inst_i[11:7];//写回地址

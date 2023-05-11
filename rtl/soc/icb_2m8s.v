@@ -1,7 +1,6 @@
 `include "defines.v"
 module icb_2m8s (
-	input clk,
-	input rst_n,
+    input clk,
     //ICB总线桥，2主8从，带优先级
     //m0优先
     input  wire                 m0_icb_cmd_valid,

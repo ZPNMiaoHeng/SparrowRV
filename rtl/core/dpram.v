@@ -5,9 +5,7 @@ dpram生成一个不完全的双端口RAM，数据位宽为32位，en使能，we
 */
 module dpram #(
     parameter RAM_WIDTH = 32,//RAM数据位宽
-    parameter RAM_DEPTH = 2048, //RAM深度
-    parameter RAM_SEL = "DP_RAM" //选择模型
-
+    parameter RAM_DEPTH = 2048 //RAM深度
 ) (
     input [clogb2(RAM_DEPTH-1)-1:0] addra,  // Port A address bus, width determined from RAM_DEPTH
     input [clogb2(RAM_DEPTH-1)-1:0] addrb,  // Port B address bus, width determined from RAM_DEPTH
@@ -21,70 +19,66 @@ module dpram #(
     output wire [RAM_WIDTH-1:0] doutb          // Port B RAM output data
 );
 reg [RAM_WIDTH-1:0] BRAM [0:RAM_DEPTH-1];
+`ifdef RTL_TO_SRAM_MODEL
+//Verilog推断
+reg [RAM_WIDTH-1:0] douta_r=0;
+reg [RAM_WIDTH-1:0] doutb_r;
+wire [3:0] ram_web = {4{web}} & wemb;
+always @(posedge clk) begin
+    if (ena) begin
+    	douta_r <= BRAM[addra];
+        /*
+        if(ram_wea[0])
+            BRAM[addra][7:0] <= dina[7:0];
+        if(ram_wea[1])
+            BRAM[addra][15:8] <= dina[15:8];
+        if(ram_wea[2])
+            BRAM[addra][23:16] <= dina[23:16];
+        if(ram_wea[3])
+            BRAM[addra][31:24] <= dina[31:24];
+        */
+    end
+end
+always @(posedge clk) begin
+    if (enb) begin
+    	doutb_r <= BRAM[addrb];
+        if(ram_web[0])
+            BRAM[addrb][7:0] <= dinb[7:0];
+        if(ram_web[1])
+            BRAM[addrb][15:8] <= dinb[15:8];
+        if(ram_web[2])
+            BRAM[addrb][23:16] <= dinb[23:16];
+        if(ram_web[3])
+            BRAM[addrb][31:24] <= dinb[31:24];
+    end
+end
+assign douta = douta_r;
+assign doutb = doutb_r;
 
-generate
-    case(RAM_SEL)
-        //生成真双端口RAM
-        "DP_RAM": begin 
-            reg [RAM_WIDTH-1:0] douta_r;
-            reg [RAM_WIDTH-1:0] doutb_r;
-            wire [3:0] ram_web = {4{web}} & wemb;
-            always @(posedge clk) begin
-                if (ena) begin
-                	douta_r <= BRAM[addra];
-                    /*
-                    if(ram_wea[0])
-                        BRAM[addra][7:0] <= dina[7:0];
-                    if(ram_wea[1])
-                        BRAM[addra][15:8] <= dina[15:8];
-                    if(ram_wea[2])
-                        BRAM[addra][23:16] <= dina[23:16];
-                    if(ram_wea[3])
-                        BRAM[addra][31:24] <= dina[31:24];
-                    */
-                end
-            end
-
-            always @(posedge clk) begin
-                if (enb) begin
-                	doutb_r <= BRAM[addrb];
-                    if(ram_web[0])
-                        BRAM[addrb][7:0] <= dinb[7:0];
-                    if(ram_web[1])
-                        BRAM[addrb][15:8] <= dinb[15:8];
-                    if(ram_web[2])
-                        BRAM[addrb][23:16] <= dinb[23:16];
-                    if(ram_web[3])
-                        BRAM[addrb][31:24] <= dinb[31:24];
-                end
-            end
-
-            assign douta = douta_r;
-            assign doutb = doutb_r;
-        end
-        //生成双端口ROM
-        "DP_ROM": begin
-            reg [RAM_WIDTH-1:0] douta_r;
-            reg [RAM_WIDTH-1:0] doutb_r;
-            always @(posedge clk) begin
-                if (ena) begin
-                    douta_r <= BRAM[addra];
-                end
-            end
-
-            always @(posedge clk) begin
-                if (enb) begin
-                    doutb_r <= BRAM[addrb];
-                end
-            end
-
-            assign douta = douta_r;
-            assign doutb = doutb_r;
-        end
-
-        "SYN_DPR": begin
+`else 
+//其他方式
 /*
-请在这里例化相应FPGA平台的双端口BRAM，并与端口连接
+reg [RAM_WIDTH-1:0] douta_r;
+reg [RAM_WIDTH-1:0] doutb_r;
+always @(posedge clk) begin
+    if (ena) begin
+        douta_r <= BRAM[addra];
+    end
+end
+
+always @(posedge clk) begin
+    if (enb) begin
+        doutb_r <= BRAM[addrb];
+    end
+end
+
+assign douta = douta_r;
+assign doutb = doutb_r;
+*/
+`endif
+
+/*
+可手动例化相应FPGA平台的双端口BRAM，并与端口连接
 基本参数：
 双端口RAM
 数据位宽都为32
@@ -109,13 +103,11 @@ enb：端口b使能/片选输入，高电平才能让其他信号起作用，低
 douta：数据输出a，位宽32
 doutb：数据输出a，位宽32
 */
-        end
 
-    endcase
-endgenerate
 
 `ifndef HDL_SIM
 `ifdef PROG_IN_FPGA
+integer init_index;
 initial begin
     $readmemh (`PROG_FPGA_PATH, BRAM);
 end

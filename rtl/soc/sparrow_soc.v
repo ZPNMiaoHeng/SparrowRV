@@ -305,7 +305,6 @@ sdrd inst_sdrd
 icb_2m8s inst_icb_2m8s
 (
     .clk              (clk),
-    .rst_n            (rst_n),
     
     .m0_icb_cmd_valid (jtag_icb_cmd_valid),
     .m0_icb_cmd_ready (jtag_icb_cmd_ready),

@@ -90,12 +90,7 @@ assign wemb = iram_icb_cmd_wmask;
 assign dinb = iram_icb_cmd_wdata;
 assign enb = iram_icb_cmd_valid;
 dpram #(
-    .RAM_DEPTH(`IRamSize),
-`ifdef HDL_SIM
-    .RAM_SEL("DP_RAM")
-`else
-    .RAM_SEL(`SRAM_MODEL)
-`endif
+    .RAM_DEPTH(`IRamSize)
 ) inst_appram (
     .clk    (clk),
     .addra  (addra[clogb2(`IRamSize-1)-1:0]),
