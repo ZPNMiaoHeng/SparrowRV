@@ -21,7 +21,7 @@
 //如果上FPGA，必须注释掉此宏，否则printf无法输出
 //#define sim_csr_printf
 
-//---------------可修改区域------------------
+//不需要在system.h中修改时钟，初始化阶段init.c会从CSR读取config.v设置的时钟频率
 
 #define ENABLE  1u
 #define DISABLE 0u

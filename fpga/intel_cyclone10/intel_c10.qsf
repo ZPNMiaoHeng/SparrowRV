@@ -66,6 +66,7 @@ set_global_assignment -name VERILOG_FILE ../../rtl/soc/sdrd/sd_reader.v
 set_global_assignment -name VERILOG_FILE ../../rtl/soc/sram.v
 set_global_assignment -name VERILOG_FILE ../../rtl/soc/sparrow_soc.v
 set_global_assignment -name VERILOG_FILE ../../rtl/soc/plic.v
+set_global_assignment -name VERILOG_FILE ../../rtl/soc/rstc.v
 set_global_assignment -name VERILOG_FILE ../../rtl/soc/icb_2m8s.v
 set_global_assignment -name VERILOG_FILE ../../rtl/jtag/jtag_top.v
 set_global_assignment -name VERILOG_FILE ../../rtl/jtag/jtag_driver.v
@@ -74,7 +75,6 @@ set_global_assignment -name VERILOG_FILE ../../rtl/jtag/full_handshake_tx.v
 set_global_assignment -name VERILOG_FILE ../../rtl/jtag/full_handshake_rx.v
 set_global_assignment -name VERILOG_FILE ../../rtl/core/trap.v
 set_global_assignment -name VERILOG_FILE ../../rtl/core/sctr.v
-set_global_assignment -name VERILOG_FILE ../../rtl/core/rstc.v
 set_global_assignment -name VERILOG_FILE ../../rtl/core/regs.v
 set_global_assignment -name VERILOG_FILE ../../rtl/core/iram.v
 set_global_assignment -name VERILOG_FILE ../../rtl/core/idex.v

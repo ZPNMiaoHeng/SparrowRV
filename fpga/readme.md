@@ -1,10 +1,11 @@
 # 说明
-此目录存放了可以直接综合并烧录的FPGA工程。默认的`inst.txt`是IAP程序。  
+此目录存放了可以直接综合并烧录的FPGA工程。默认自带的`/tb/inst.txt`是IAP程序。  
 若需要烧录其他程序，按照[快速开始](/doc/使用手册/快速开始.md)的步骤完成程序编译，生成`inst.txt`，再使用FPGA厂商软件完成综合步骤。  
-如果使用自建的FPGA工程，需要手动将`/rtl/config.h`的`PROG_FPGA_PATH`宏定义内容改为`inst.txt`的文件路径。  
+若想详细了解小麻雀处理器，可参阅[处理器文档导航页](/doc/文档导航.md)  
+如果使用其他厂商的FPGA并自建工程，需要手动将`/rtl/config.h`的`PROG_FPGA_PATH`宏定义内容改为`inst.txt`的文件路径。  
+如果使用高云、AMD等厂商的FPGA，仅需修改示例工程的FPGA器件型号和IO管脚约束，即可移植到其他硬件平台。`config.h`的`PROG_FPGA_PATH`已通过相对寻址的方式指向了`/tb/inst.txt`，使用示例工程无需修改此项，直接使用`工具箱.bat`生成`inst.txt`即可。  
 
 ## 高云GOWIN
-优先支持高云FPGA平台  
 综合器支持Verilog推断双端口RAM，使用简单。  
 若自建的FPGA工程在综合过程中如果出现如下报错：  
 ```
@@ -53,7 +54,7 @@ IO分配如下：
 |N11|sd_dat\[3\]|SD卡的SDIO_D3|
 
 ## 安路Anlogic
-不建议使用，不支持IAP  
+仅支持RTL推断双端口ROM模式    
 ### anlogic_sparkroad_v
 安路EG4S20BG256，TD 5.0.5版本  
 使用[SparkRoad-V开发板](https://gitee.com/verimake/SparkRoad-V)，时序/IO约束与此硬件匹配。  
@@ -62,6 +63,8 @@ IO分配如下：
 - 希望TD日后可以改进。  
 
 ## AMD/赛灵思
+Vivado比较靠谱，就是综合太慢了  
+
 ### amd_bcjx_k7_r3
 AMD XC7325T-2FFG676，Vivado 2019.2  
 使用小熊猫店里的博宸精芯Kintex-7 Eco R3开发板，时序/IO约束与此硬件匹配。  
@@ -82,3 +85,10 @@ IO分配如下：
 |F22|sd_dat\[1\]|SD卡的SDIO_D1|
 |F25|sd_dat\[2\]|SD卡的SDIO_D2|
 |F24|sd_dat\[3\]|SD卡的SDIO_D3|
+
+## Intel
+Quartus Lite版本无需lic  
+### intel_cyclone10
+Intel 10CL040YF484C6G，Quartus Lite 18.1  
+测试用工程，仅添加源文件和时序约束，未约束IO  
+

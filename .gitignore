@@ -1,6 +1,8 @@
-# drawio
+#忽略drawio临时文件
 *.drawio.bkp
 *.svg.bkp
+
+#忽略tb临时文件
 /tb/tb
 /tb/*.lxt
 /tb/*.vcd
@@ -17,19 +19,17 @@
 /tb/modelsim.ini
 /tb/vsim.wlf
 
-/rtl/perips/sm3/tb/tb
-/rtl/perips/sm3/tb/tb_sm3_core_top.sv
-
-/py_gen
-
+#忽略输出文件
 /syn
 /tools/*
 /bsp/bsp_app/obj/*
 /bsp/bsp_iap/obj/*
 /tb/tools/bootrom/obj/*
 
+#忽略VSCode的配置文件
 /.vscode
 
+#忽略FPGA工程生成的临时文件
 /fpga/anlogic/anlogic.bit
 
 /fpga/gowin_tang_nano_20k/impl/gwsynthesis
@@ -50,3 +50,8 @@
 /fpga/amd_bcjx_k7_r3/*.jou
 /fpga/amd_bcjx_k7_r3/*.log
 /fpga/amd_bcjx_k7_r3/*.str
+
+/fpga/intel_cyclone10/db
+/fpga/intel_cyclone10/incremental_db
+/fpga/intel_cyclone10/output_files
+/fpga/intel_cyclone10/*.qws
