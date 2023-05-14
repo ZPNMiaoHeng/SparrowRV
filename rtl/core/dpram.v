@@ -28,8 +28,8 @@ wire [3:0] ram_web = {4{web}} & wemb;
 wire [31:0] dina = 32'h0;
 always @(posedge clk) begin
     if (ena) begin
-    	douta_r <= BRAM[addra];
-    	/*
+        douta_r <= BRAM[addra];
+/*
         if(ram_wea[0])//a端口不需要写
             BRAM[addra][7:0] <= dina[7:0];
         if(ram_wea[1])
@@ -38,12 +38,12 @@ always @(posedge clk) begin
             BRAM[addra][23:16] <= dina[23:16];
         if(ram_wea[3])
             BRAM[addra][31:24] <= dina[31:24];
-        */
+*/
     end
 end
 always @(posedge clk) begin
-    if (enb) begin
-    	doutb_r <= BRAM[addrb];
+    //if (enb) begin
+        doutb_r <= BRAM[addrb];
         if(ram_web[0])
             BRAM[addrb][7:0] <= dinb[7:0];
         if(ram_web[1])
@@ -52,7 +52,7 @@ always @(posedge clk) begin
             BRAM[addrb][23:16] <= dinb[23:16];
         if(ram_web[3])
             BRAM[addrb][31:24] <= dinb[31:24];
-    end
+    //end
 end
 assign douta = douta_r;
 assign doutb = doutb_r;

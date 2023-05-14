@@ -25,15 +25,7 @@ module jtag_dm #(
     output wire [4:0]  dm_reg_addr_o,
     output wire [31:0] dm_reg_wdata_o,
     input  wire [31:0] dm_reg_rdata_i,
-/*
-    //system bus访问接口
-    output wire        dm_mem_we_o,
-    output wire [31:0] dm_mem_addr_o,
-    output wire [31:0] dm_mem_wdata_o,
-    input  wire [31:0] dm_mem_rdata_i,
-    output wire [3:0]  dm_mem_sel_o,
-    output wire req_valid_o,//访问请求
-*/
+
     //ICB总线访问接口(system bus)
     output reg                  jtag_icb_cmd_valid,//cmd有效
     input  wire                 jtag_icb_cmd_ready,//cmd准备好
