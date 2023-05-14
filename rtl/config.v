@@ -54,8 +54,11 @@
 //启用minstret指令计数器
 //`define CSR_MINSTRET_EN 1'b1
 
-//指令存储器iram低1kB禁止写入，防止破坏IAP
+//指令存储器iram低1kB禁止写入，防止破坏IAP，可能降低Fmax
 //`define LIMIT_IRAM_L1K_W 1'b1
+
+//启用外部复位数字滤波，提高复位可靠性
+`define HARD_RST_DIGT_FILTER 1'b1
 
 //RTL建模推断双端口RAM
 `define RTL_MODEL_TO_DPRAM 1'b1

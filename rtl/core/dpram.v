@@ -41,6 +41,7 @@ always @(posedge clk) begin
 */
     end
 end
+//若严格按照设计，这组if (enb) begin ... end不应该被注释，但是这会导致Intel FPGA综合失败。注释了也不会有影响，但是需要处理器读操作在2周期内完成(写地址+读数据)
 always @(posedge clk) begin
     //if (enb) begin
         doutb_r <= BRAM[addrb];

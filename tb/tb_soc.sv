@@ -143,9 +143,10 @@ task sysrst;//复位任务
     JTAG_TMS=0;
     JTAG_TDI=0;
     rst_n <= '0;//复位
-    #15
+    #20
     rst_n <= '1;
     #10;
+
 endtask : sysrst
 
 task ex_trap;//外部中断
