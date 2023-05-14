@@ -210,6 +210,38 @@
                     <Attr Name="CompileOrder" Val="25"/>
                 </FileInfo>
             </File>
+            <File Path="../../rtl/soc/plic.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="26"/>
+                </FileInfo>
+            </File>
+            <File Path="../../rtl/soc/sdrd/sd_reader.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="27"/>
+                </FileInfo>
+            </File>
+            <File Path="../../rtl/soc/sdrd/sdcmd_ctrl.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="28"/>
+                </FileInfo>
+            </File>
+            <File Path="../../rtl/soc/sdrd/sdrd.v">
+                <FileInfo>
+                    <Attr Name="UsedInSyn" Val="true"/>
+                    <Attr Name="UsedInP&R" Val="true"/>
+                    <Attr Name="BelongTo" Val="design_1"/>
+                    <Attr Name="CompileOrder" Val="29"/>
+                </FileInfo>
+            </File>
         </Verilog>
         <ADC_FILE>
             <File Path="io.adc">
@@ -250,7 +282,7 @@
     <Configurations>
     </Configurations>
     <Project_Settings>
-        <Step_Last_Change>2023-04-22 15:55:26.241</Step_Last_Change>
+        <Step_Last_Change>2023-05-13 16:12:43.053</Step_Last_Change>
         <Current_Step>10</Current_Step>
         <Step_Status>true</Step_Status>
     </Project_Settings>
