@@ -19,16 +19,18 @@ module dpram #(
     output wire [RAM_WIDTH-1:0] doutb          // Port B RAM output data
 );
 reg [RAM_WIDTH-1:0] BRAM [0:RAM_DEPTH-1];
-`ifdef RTL_TO_SRAM_MODEL
+`ifdef RTL_MODEL_TO_DPRAM
 //Verilog推断
-reg [RAM_WIDTH-1:0] douta_r=0;
+reg [RAM_WIDTH-1:0] douta_r;
 reg [RAM_WIDTH-1:0] doutb_r;
+wire [3:0] ram_wea = 4'b0;
 wire [3:0] ram_web = {4{web}} & wemb;
+wire [31:0] dina = 32'h0;
 always @(posedge clk) begin
     if (ena) begin
     	douta_r <= BRAM[addra];
-        /*
-        if(ram_wea[0])
+    	/*
+        if(ram_wea[0])//a端口不需要写
             BRAM[addra][7:0] <= dina[7:0];
         if(ram_wea[1])
             BRAM[addra][15:8] <= dina[15:8];
@@ -54,10 +56,9 @@ always @(posedge clk) begin
 end
 assign douta = douta_r;
 assign doutb = doutb_r;
+`endif
 
-`else 
-//其他方式
-/*
+`ifdef RTL_MODEL_TO_DPROM
 reg [RAM_WIDTH-1:0] douta_r;
 reg [RAM_WIDTH-1:0] doutb_r;
 always @(posedge clk) begin
@@ -74,11 +75,11 @@ end
 
 assign douta = douta_r;
 assign doutb = doutb_r;
-*/
 `endif
 
+`ifdef RTL_MODEL_TO_OTHER
 /*
-可手动例化相应FPGA平台的双端口BRAM，并与端口连接
+若综合器不支持Verilog/RTL建模推断双端口存储器，可手动例化相应FPGA平台的双端口BRAM，并与端口连接
 基本参数：
 双端口RAM
 数据位宽都为32
@@ -86,7 +87,7 @@ assign doutb = doutb_r;
 地址线宽度为clogb2(RAM_DEPTH-1)
 需要有字节写选通功能，即wem[3:0]选通32位的4个字节
 不需要输出寄存器打一拍
-工作模式建议设置为普通模式，不要使用写穿模式！
+工作模式建议设置为普通模式、写不变模式，不要使用写穿模式！
 
 将下面端口与BRAM连接
 clk：时钟输入
@@ -103,10 +104,11 @@ enb：端口b使能/片选输入，高电平才能让其他信号起作用，低
 douta：数据输出a，位宽32
 doutb：数据输出a，位宽32
 */
+`endif
 
 
-`ifndef HDL_SIM
-`ifdef PROG_IN_FPGA
+`ifndef HDL_SIM //没在仿真
+`ifdef PROG_IN_FPGA //开启宏写入FPGA
 integer init_index;
 initial begin
     $readmemh (`PROG_FPGA_PATH, BRAM);

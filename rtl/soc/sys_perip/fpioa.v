@@ -229,7 +229,7 @@ end
 //---------FPIOA数据交互-------------
 genvar i;
 generate//perips_ot,perips_oe连接至fpioa_ot,fpioa_oe
-for ( i=0 ; i<`FPIOA_PORT_NUM ; i=i+1 ) begin
+for ( i=0 ; i<`FPIOA_PORT_NUM ; i=i+1 ) begin: fpioa_o_gen
     assign fpioa_ot[i] = (fpioa_ot_reg[i]==7'h0) ? fpioa_nio_out[i] : perips_ot[fpioa_ot_reg[i]];//mux选择输出数据来源
     assign fpioa_oe[i] = (fpioa_ot_reg[i]==7'h0) ? fpioa_nio_oe [i] : perips_oe[fpioa_ot_reg[i]];//mux选择输出使能来源
     assign fpioa[i] = fpioa_oe[i] ? fpioa_ot[i] : 1'bz;//选择端口模式 输入输出控制
@@ -238,7 +238,7 @@ endgenerate
 
 assign fpioa_in = {{(32-`FPIOA_PORT_NUM){1'b0}}, fpioa};//数据输入
 generate//fpioa_in连接至perips_in
-for ( i=0 ; i<32 ; i=i+1 ) begin
+for ( i=0 ; i<32 ; i=i+1 ) begin: fpioa_i_gen
     assign perips_in[i] = fpioa_in[fpioa_in_reg[i]];
 end
 endgenerate
@@ -253,7 +253,7 @@ end
 
 //输出模式、使能
 generate
-for (i=0; i<32; i=i+1) begin
+for (i=0; i<32; i=i+1) begin: nio_gen
     always @(*) begin
         case ({fpioa_nio_md1[i], fpioa_nio_md0[i]})
             2'b00: begin
@@ -418,7 +418,7 @@ end
  */
 
 generate//ELI仲裁
-for ( i=0 ; i<4 ; i=i+1 ) begin
+for ( i=0 ; i<4 ; i=i+1 ) begin: eli_gen
     assign irq_fpioa_eli[i] = (fpioa_eli_md[i*4] & eli_rr[i]) | (fpioa_eli_md[i*4+1] & ~eli_rr[i]) | (fpioa_eli_md[i*4+2] & (eli_r[i] & ~eli_rr[i])) | (fpioa_eli_md[i*4+3] & (~eli_r[i] & eli_rr[i]));
 end
 endgenerate

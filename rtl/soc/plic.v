@@ -154,7 +154,7 @@ assign plic_zip[0] = 2'b0;
 assign plic_zid[0] = 3'b0;
 genvar i;//生成块循环变量
 generate//中断源仲裁
-for ( i=1 ; i<16 ; i=i+1 ) begin
+for ( i=1 ; i<16 ; i=i+1 ) begin: zhongcai_gen
     assign plic_pip[i] = (plic_ip[i] & plic_ie[i]) ? plic_prt[i] : 2'b00;//生成每个中断源的优先级
     assign plic_pco[i] = (plic_pip[i]>plic_zip[i-1]) ? 1'b1 : 1'b0;//如果当前中断源优先级大于前一级的优先级
     assign plic_zip[i] = plic_pco[i] ? plic_pip[i] : plic_zip[i-1];//塞入当前中断源的优先级
@@ -172,7 +172,7 @@ assign core_ex_trap_id_o = {1'b0, plic_cpc};
 
 //控制PLIC_P
 generate
-    for ( i=0 ; i<16 ; i=i+1 ) begin
+    for ( i=0 ; i<16 ; i=i+1 ) begin: ctrl_gen
         always @(posedge clk or negedge rst_n) begin
             if(~rst_n) 
                 plic_ip[i] <= 1'b0;

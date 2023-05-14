@@ -65,15 +65,15 @@ end
 wire [15:0]we_en;
 genvar i;
 generate
-for (i = 0; i<16; i=i+1) begin
-    assign we_en[i] = (sysp_icb_cmd_addr[11:8] == i)? icb_whsk : 1'b0;
-end
+    for (i = 0; i<16; i=i+1) begin: we_gen
+        assign we_en[i] = (sysp_icb_cmd_addr[11:8] == i)? icb_whsk : 1'b0;
+    end
 endgenerate
 
 //读通道处理
 wire [15:0]rd_en;
 generate
-for (i = 0; i<16; i=i+1) begin
+for (i = 0; i<16; i=i+1) begin: rd_gen
     assign rd_en[i] = (sysp_icb_cmd_addr[11:8] == i)? icb_rhsk : 1'b0;
 end
 endgenerate

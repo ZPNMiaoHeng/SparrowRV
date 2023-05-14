@@ -57,8 +57,12 @@
 //指令存储器iram低1kB禁止写入，防止破坏IAP
 //`define LIMIT_IRAM_L1K_W 1'b1
 
-//Verilog推断双端口SRAM
-`define RTL_TO_SRAM_MODEL 1'b1
+//RTL建模推断双端口RAM
+`define RTL_MODEL_TO_DPRAM 1'b1
+//RTL建模推断双端口ROM
+//`define RTL_MODEL_TO_DPROM 1'b1
+//使用其他形式存储器
+//`define RTL_MODEL_TO_OTHER 1'b1
 
 //稳定版本
 `define STABLE_REV_RTL 1'b1
