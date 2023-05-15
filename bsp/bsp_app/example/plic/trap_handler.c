@@ -1,10 +1,9 @@
 #include "system.h"
 
 /* 功能解释
-__attribute__((weak)) 表示本函数弱定义，可以在其他地方写同名函数来覆盖
 __attribute__((interrupt("machine"))) 表示本函数用于中断，编译器自动为其保存上下文
 interrupt("machine") 表示本函数是机器模式中断
-__attribute__((weak)) void XXX_Handler() __attribute__((interrupt("machine"))); 表示XXX_Handler()用于机器模式中断，同时可以用同名函数覆盖
+void XXX_Handler() __attribute__((interrupt("machine"))); 表示XXX_Handler()用于机器模式中断，同时可以用同名函数覆盖
 */
 //函数声明区
 void PLIC1_FPIOA_ELI0_Handler() __attribute__((interrupt("machine")));
@@ -73,7 +72,7 @@ void PLIC10_SPI0_END_Handler()
 
 /*
 //定时器中断服务程序
-__attribute__((weak)) void SysTick_Handler() __attribute__((interrupt("machine")));
+void SysTick_Handler() __attribute__((interrupt("machine")));
 void SysTick_Handler()
 {
     //printf("interrupt tcmp in original function\n");
@@ -81,7 +80,7 @@ void SysTick_Handler()
 */
 /*
 //软件中断服务程序
-__attribute__((weak)) void SW_Handler() __attribute__((interrupt("machine")));
+void SW_Handler() __attribute__((interrupt("machine")));
 void SW_Handler()
 {
     //printf("interrupt soft in original function\n");
@@ -89,7 +88,7 @@ void SW_Handler()
 */
 /*
 //硬件错误引发异常
-//__attribute__((weak)) void HardFault_Handler() __attribute__((interrupt("machine")));
+void HardFault_Handler() __attribute__((interrupt("machine")));
 void HardFault_Handler()
 {
     while(1);
