@@ -15,7 +15,7 @@ WARN  (EX3988) : Cannot open file '..\..\tb\inst.txt'("XXX\SparrowRV\rtl\core\dp
 工程文件`gowin_xxx.gprj`的源文件默认采用绝对地址，可手动将地址改为相对地址`../../rtl/**`，移动文件夹也能正常使用。   
 
 ### gowin_tang_nano_20k (优先支持)
-高云GW2A-LV18PG256C8/I7，云源软件v1.9.8.09教育版  
+高云GW2AR-LV18QN88C8/I7，云源软件v1.9.8.11教育版  
 使用[Sipeed Tang nano 20K开发板](https://wiki.sipeed.com/hardware/zh/tang/tang-nano-20k/nano-20k.html)，时序/IO约束与此硬件匹配。  
 IO分配如下：  
 |IO编号|引脚名称|功能|
