@@ -110,7 +110,6 @@ doutb：数据输出a，位宽32
 
 `ifndef HDL_SIM //没在仿真
 `ifdef PROG_IN_FPGA //开启宏写入FPGA
-integer init_index;
 initial begin
     $readmemh (`PROG_FPGA_PATH, BRAM);
 end

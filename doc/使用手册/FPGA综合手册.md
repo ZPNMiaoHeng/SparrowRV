@@ -45,11 +45,31 @@ rtl
         ├── timer.v   定时器
         └── uart.v   串口
 ```
-顶层说明  
-引脚功能说明  
-readmemh
-施工中
+#### 顶层文件
+其中，`sparrow_soc.v`是小麻雀SoC的顶层文件，即`sparrow_soc`是小麻雀SoC的顶层模块。    
+顶层接口说明如下：  
+|接口|方向|位宽|功能|
+|-|-|-|-|
+|clk|输入|1|时钟输入|
+|hard_rst_n|输入|1|低电平复位引脚|
+|core_active|输出|1|活动状态指示，建议接LED|
+|JTAG_XXX|-|4|JTAG接口，与调试器的同名接口相连|
+|sd_clk|输出|1|SD卡的clk|
+|sd_cmd|双向|1|SD卡的cmd|
+|sd_dat|输入|4|SD卡的数据线|
+|fpioa|双向|可变|现场可编程IO阵列|
 
+其中，`config.v`的`CPU_CLOCK_HZ`必须修改为`clk`引脚的输入时钟频率。`sd_dat`的位宽为4，实际上仅sd_dat[0]有效。  
+
+#### 读入程序
+`/rtl/core/dpram.v`的最下面  
+```
+initial begin
+    $readmemh (`PROG_FPGA_PATH, BRAM);
+end
+```
+用于读入程序。  
+`PROG_FPGA_PATH`在`config.h`中指定为`inst.txt`的路径，在FPGA逻辑综合阶段读入。烧录比特流文件后，FPGA中对应的程序存储器RAM会初始化为`inst.txt`的数据。  
 
 ### Verilog头文件
 在RTL设计中，头文件`config.v` `defines.v`分别有不同的功能。  
@@ -107,8 +127,14 @@ set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets JTAG_TCK_IBUF]
 7. FPGA工作流
 逻辑综合(Synthesize)，布局(Place)，布线(Route)，生成比特流文件(Gen bitstream)，烧录  
 
+## 板级调试
+`core_active`建议接到LED灯上，只要在闪就表明程序在运行。  
+默认情况下，C语言的printf通过`fpioa[0]`以`115200`波特率的串口形式输出。通过`CH343`等USB转串口工具可以读取。  
+同时引出了JTAG接口，支持`CH347` `DAPLink`等调试器。  
+`fpioa`可以接各种各样的外围电路。  
+
 ## 常见问题
-#### 为什么LUT消耗得太多，FPGA资源不够报错？
+- 为什么LUT消耗得太多，FPGA资源不够报错？
 正常情况下，小麻雀处理器需要消耗不大于10k的LUT资源，如果超得太多，可能是程序存储器综合失败了，主要原因如下：  
 为了提高可移植性，程序存储器使用Verilog行为级建模，由综合器推断出等效的RAM硬核，而不是手动调用。但是，由于程序存储器需要有双端口和字节写使能，反而导致部分综合器不支持这种操作，内部的RAM硬核即使功能支持也用不上，强行将程序存储器综合成LUTRAM，消耗巨量的逻辑资源。  
 本人测试了部分FPGA厂商的兼容性，欢迎大家补充    
@@ -125,16 +151,16 @@ set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets JTAG_TCK_IBUF]
 
 不支持或存在问题不代表不能用，而是需要手动建立IP核，通过初始化文件导入程序，具体配置方式见`/rtl/core/dpram.v`  
 
-#### 为什么综合器报错找不到define.v/config.v？
+- 为什么综合器报错找不到define.v/config.v？
 `/rtl/defien.v`和`/rtl/config.v`是头文件，通过`include`导入，需要独立设置，仅仅加入工程文件是不行的。一般来说，在FPGA工程设置中，会有一个include路径选项，在这里添加`rtl`文件夹的路径就行了。  
 
-#### 我使用Vivado，在impl阶段报错了？
+- 我使用Vivado，在impl阶段报错了？
 或许是因为`JTAG_TCK`没有分配在时钟专用管脚上，Vivado不许这样做。加入约束：  
 ```
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets JTAG_TCK_IBUF]
 ```
 强制忽略此错误，并变为警告。  
 
-#### 我怎么知道程序有没有在运行？
+- 我怎么知道程序有没有在运行？
 建议将`core_active`管脚接到外置LED灯。如果程序正常运行，LED将以肉眼可见的频率闪烁。  
 

@@ -2,13 +2,13 @@ OUTPUT_ARCH( "riscv" )
 ENTRY(_start) /*定义程序入口，_start来自启动文件*/
 
 /*可修改*/
-_iap_prog_size = 0;/*1024*/ /*IAP程序大小，若使用IAP功能需将0改为1024*/
+_use_sd_iap = 0; /*使用SD IAP程序启动，1有效*/
 _cpu_iram_size = 32K; /*iram指令存储器大小*/
 _cpu_sram_size = 16K; /*sram数据存储器大小*/
 _cpu_stack_size = 4K; /*堆栈区大小*/
 /*可修改*/
 
-
+_iap_prog_size = _use_sd_iap ? 1024 : 0;/*IAP程序大小*/
 _app_base_addr = _iap_prog_size; /*APP基地址*/
 _sram_base_addr = 0x20000000; /*sram存储器基地址*/
 _app_prog_size = _cpu_iram_size - _iap_prog_size; /*实际APP可用空间*/

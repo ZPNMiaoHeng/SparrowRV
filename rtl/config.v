@@ -34,6 +34,13 @@
 /*--------------------------------
  *          开关配置区           
  */
+//RTL建模推断双端口RAM
+`define RTL_MODEL_TO_DPRAM 1'b1
+//RTL建模推断双端口ROM
+//`define RTL_MODEL_TO_DPROM 1'b1
+//使用其他形式存储器
+//`define RTL_MODEL_TO_OTHER 1'b1
+
 //将程序固化到FPGA内部，SRAM模式必须配置为"DP_ROM"或"DP_RAM"
 `define PROG_IN_FPGA 1'b1
 //固化到FPGA内部的程序路径，只能导入转换后的文本文件，反斜杠"\"的必须改为"/"
@@ -59,13 +66,6 @@
 
 //启用外部复位数字滤波，提高复位可靠性
 `define HARD_RST_DIGT_FILTER 1'b1
-
-//RTL建模推断双端口RAM
-`define RTL_MODEL_TO_DPRAM 1'b1
-//RTL建模推断双端口ROM
-//`define RTL_MODEL_TO_DPROM 1'b1
-//使用其他形式存储器
-//`define RTL_MODEL_TO_OTHER 1'b1
 
 //稳定版本
 `define STABLE_REV_RTL 1'b1
