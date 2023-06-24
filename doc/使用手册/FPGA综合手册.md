@@ -72,18 +72,15 @@ end
 `PROG_FPGA_PATH`在`config.h`中指定为`inst.txt`的路径，在FPGA逻辑综合阶段读入。烧录比特流文件后，FPGA中对应的程序存储器RAM会初始化为`inst.txt`的数据。  
 
 ### Verilog头文件
-在RTL设计中，头文件`config.v` `defines.v`分别有不同的功能。  
-**config.v**  
-用于参数化配置小麻雀处理器的各项功能。  
-施工中  
-**defines.v**  
-向全局设计导入宏定义。  
+在RTL设计中，头文件`config.v`、`defines.v`分别有不同的功能。  
+**config.v**用于参数化配置小麻雀处理器的各项功能，实现弹性化设计，具体内容见[系统配置选项](/doc/使用手册/系统配置选项.md)。  
+**defines.v**向全局Verilog源码提供通用的宏定义，并且内部`include`了`config.v`，不建议修改其内容。  
 
 ## 约束文件
 小麻雀处理器存在2个时钟域  
 1. 系统主时钟域`clk`  
 2. JTAG模块时钟域`jtag_clk`  
-由于`clk`和`jtag_clk`是异步的，以下约束信息必不可少：  
+`clk`和`jtag_clk`是异步的，以下约束信息必不可少：  
 ```
 create_clock -period 30 -name clk [get_ports {clk}]
 create_clock -period 100 -name jtag_clk [get_ports {JTAG_TCK}]
@@ -91,8 +88,8 @@ set_clock_groups -asynchronous -group [get_clocks {clk}] -group [get_clocks {jta
 ```
 第1行，`-period 30`中，`20`指的是系统主时钟的周期，请根据具体硬件平台作出调整。  
 第2行，`-period 100`中，`100`指的是JTAG接口`TCK`的时钟周期，一般不会超过10MHz。  
-第3行，声明`clk`和`jtag_clk`是异步的，不进行跨时钟域分析。  
-时钟周期是频率的倒数    
+第3行，创建时钟组，声明`clk`和`jtag_clk`是异步的，不进行跨时钟域分析。  
+时钟周期是频率的倒数  
 
 若系统主时钟来源于PLL，时钟约束方式请自行探索。  
 
