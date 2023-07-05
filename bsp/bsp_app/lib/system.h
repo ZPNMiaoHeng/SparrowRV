@@ -43,8 +43,8 @@
 //[3]:soft_rst写1复位
 //[4]:保留
 
-//陷阱相关
-#define MCAUSE_INTERRUPT 0x80000000 //进入陷阱的原因是中断
+//中断相关
+#define MCAUSE_INTERRUPT 0x80000000 //进入中断的原因是中断
 #define MCAUSE_INTP_EX   4//外部中断
 #define MCAUSE_INTP_TCMP 3//定时器中断
 #define MCAUSE_INTP_SOFT 2//软件中断
