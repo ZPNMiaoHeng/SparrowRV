@@ -66,18 +66,18 @@ def 编译并仿真():
     编译命令+=r'-D HDL_SIM '
     if sys.argv[1] == 'all_isa':
         编译命令+=r'-D ISA_TEST '
-    编译命令+=r'tb_soc.sv '#仿真头文件
-    编译命令+=r'sd_fake.sv '#SD卡仿真文件
+    编译命令+=r'./tb_soc.sv '#仿真头文件
+    编译命令+=r'./sd_fake.sv '#SD卡仿真文件
     编译进程 = os.popen(str(编译命令))
     if sys.argv[1] != 'all_isa':
         print(编译进程.read())
     编译进程.close()
-    仿真进程 = os.popen(r'vvp -n tb')
+    仿真进程 = os.popen(r'vvp -n ./tb')
     仿真输出 = 仿真进程.read()
     仿真进程.close()
     if sys.argv[1] != 'all_isa':
         print(仿真输出)
-        波形进程 = os.popen(r'gtkwave tb.vcd')
+        波形进程 = os.popen(r'gtkwave ./tb.vcd')
         波形进程.close()
     return 仿真输出
 

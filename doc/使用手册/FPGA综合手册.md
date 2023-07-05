@@ -134,10 +134,10 @@ set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets JTAG_TCK_IBUF]
 `fpioa`可以接各种各样的外围电路。  
 
 ## 常见问题
-- 为什么LUT消耗得太多，FPGA资源不够报错？
+**为什么LUT消耗得太多，FPGA资源不够报错？**  
 正常情况下，小麻雀处理器需要消耗不大于10k的LUT资源，如果超得太多，可能是程序存储器综合失败了，主要原因如下：  
 为了提高可移植性，程序存储器使用Verilog行为级建模，由综合器推断出等效的RAM硬核，而不是手动调用。但是，由于程序存储器需要有双端口和字节写使能，反而导致部分综合器不支持这种操作，内部的RAM硬核即使功能支持也用不上，强行将程序存储器综合成LUTRAM，消耗巨量的逻辑资源。  
-本人测试了部分FPGA厂商的兼容性，欢迎大家补充    
+本人测试了部分FPGA厂商的兼容性，欢迎大家补充。      
 |厂商|软件|版本|支持情况|
 |---|---|---|---|
 |高云|Gowin|V1.9.8.09教育版|完美支持|
@@ -147,20 +147,19 @@ set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets JTAG_TCK_IBUF]
 |安路|TD|5.6.1|不支持RAM，支持ROM配置|
 |Lattice|Diamond|3.12|综合器崩溃，真的太逊了|
 |Intel|Quartus|18.1|完美支持|
-|||||
 
 不支持或存在问题不代表不能用，而是需要手动建立IP核，通过初始化文件导入程序，具体配置方式见`/rtl/core/dpram.v`  
 
-- 为什么综合器报错找不到define.v/config.v？
+**为什么综合器报错找不到define.v/config.v？**  
 `/rtl/defien.v`和`/rtl/config.v`是头文件，通过`include`导入，需要独立设置，仅仅加入工程文件是不行的。一般来说，在FPGA工程设置中，会有一个include路径选项，在这里添加`rtl`文件夹的路径就行了。  
 
-- 我使用Vivado，在impl阶段报错了？
+**我使用Vivado，在impl阶段报错了？**  
 或许是因为`JTAG_TCK`没有分配在时钟专用管脚上，Vivado不许这样做。加入约束：  
 ```
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets JTAG_TCK_IBUF]
 ```
 强制忽略此错误，并变为警告。  
 
-- 我怎么知道程序有没有在运行？
+**我怎么知道程序有没有在运行？**  
 建议将`core_active`管脚接到外置LED灯。如果程序正常运行，LED将以肉眼可见的频率闪烁。  
 
