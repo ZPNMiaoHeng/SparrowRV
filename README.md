@@ -61,6 +61,7 @@ SparrowRV根目录
 本项目使用了[蜂鸟E203](https://gitee.com/riscv-mcu/e203_hbirdv2)的ICB总线。蜂鸟E203使用[Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0)协议。  
 本项目使用了[FPGA-SDcard-Reader](https://github.com/WangXuan95/FPGA-SDcard-Reader)的SD卡按扇区读取功能。  
 感谢先驱者为我们提供的灵感  
+感谢李轻水@a1579472700帮助我发现了致命错误  
 感谢众多开源软件提供的好用的工具  
 感谢MRS开发工具提供的便利   
 感谢导师对我学习方向的支持和理解  
