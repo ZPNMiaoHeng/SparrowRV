@@ -114,19 +114,21 @@ else begin
 end
 assign rstart = sdrd_stat;
 
-initial begin
-buffer[0] <= 8'h11;
-buffer[1] <= 8'h01;
-buffer[2] <= 8'h02;
-buffer[48] <= 8'h48;
-end
+localparam SDRD_CLK_DIV = (`CPU_CLOCK_HZ<25_000_000) ? 3'd0 : // when clk =   0~ 25MHz , set CLK_DIV = 3'd0
+                          (`CPU_CLOCK_HZ>=25_000_000 && `CPU_CLOCK_HZ<50_000_000)   ? 3'd1 : // when clk =  25~ 50MHz , set CLK_DIV = 3'd1
+                          (`CPU_CLOCK_HZ>=50_000_000 && `CPU_CLOCK_HZ<100_000_000)  ? 3'd2 : // when clk =  50~100MHz , set CLK_DIV = 3'd2
+                          (`CPU_CLOCK_HZ>=100_000_000 && `CPU_CLOCK_HZ<200_000_000) ? 3'd3 : // when clk = 100~200MHz , set CLK_DIV = 3'd3
+                          (`CPU_CLOCK_HZ>=200_000_000 && `CPU_CLOCK_HZ<400_000_000) ? 3'd4 : // when clk = 200~400MHz , set CLK_DIV = 3'd4
+                          (`CPU_CLOCK_HZ>=400_000_000 && `CPU_CLOCK_HZ<800_000_000) ? 3'd5 : // when clk = 400~800MHz , set CLK_DIV = 3'd5
+                          (`CPU_CLOCK_HZ>=800_000_000 && `CPU_CLOCK_HZ<1600_000_000) ? 3'd6 : // when clk = 800~1600MHz , set CLK_DIV = 3'd6
+                          3'd7;//clk>1.6GHz 设置分频系数
 
 sd_reader #(
 `ifdef HDL_SIM
     .CLK_DIV(0),
     .SIMULATE(1)
 `else 
-    .CLK_DIV(`CPU_CLOCK_HZ / 25_000_000),
+    .CLK_DIV(SDRD_CLK_DIV),
     .SIMULATE(0)
 `endif
 ) inst_sd_reader (
