@@ -29,10 +29,9 @@ See the man page for details.
 
 ## Linux平台
 本教程的命令仅适用于自带`apt包管理器`的Linux发行版，如Debian、乌班图、Deepin/UOS等  
-**不推荐**直接使用`sudo apt install iverilog`安装`iverilog`，因为软件版本很老，难以正常使用  
+**不推荐**直接使用`sudo apt install iverilog`安装`iverilog`，因为版本可能会很老。  
 但是可以使用`sudo apt install gtkwave`安装`gtkwave`  
-推荐执行以下命令编译安装iverilog。  
-我提供了国内镜像仓库，稳定快捷，默认安装`v12稳定版`  
+我提供了国内镜像仓库，稳定快捷，默认安装`v12稳定版`，推荐依次执行以下命令编译安装iverilog。  
 ```
 sudo apt install make git gtkwave gcc g++ bison flex gperf autoconf
 git clone -b v12_0 --depth=1 https://gitee.com/xiaowuzxc/iverilog/
@@ -63,6 +62,5 @@ See the man page for details.
 
 ## 如何使用
 iverilog只有命令行交互界面，没有图形化GUI交互界面。  
-如果你真的想要图形化界面也不是没有，请看[iVerilog Assistant](https://gitee.com/sunzhenyu59/i-verilog-assistant)  
-大部分情况下，iverilog都是使用命令行驱动的，具体命令可以看[官方wiki](https://iverilog.fandom.com/wiki/Main_Page)，需要配合翻译工具阅读  
+大部分情况下，iverilog都是使用命令行驱动的，具体命令可以看[iverilog官方手册](https://steveicarus.github.io/iverilog/)，需要配合翻译工具阅读  
 也可以依葫芦画瓢，改一改现有的工程[LCD1602显示驱动模组](https://gitee.com/xiaowuzxc/LCD1602-display-IP/)  
