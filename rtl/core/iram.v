@@ -2,7 +2,7 @@
 module iram (
     input wire clk,
     input wire rst_n,
-    input wire [`InstAddrBus] pc_n_i,//读地址
+    input wire [`InstAddrBus] pc_n_i,//读地址         //  ????
     input wire iram_rd_i,//读使能
     output reg [`InstAddrBus] pc_o,//指令地址
     output wire[`InstBus] inst_o,//指令
