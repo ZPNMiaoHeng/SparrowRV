@@ -29,7 +29,7 @@ wire icb_rhsk = sram_icb_cmd_valid & sram_icb_cmd_read;//读握手
 
 localparam [clogb2(`SRamSize-1)-1:0] addr_zero0 = 0;
 
-always @(posedge clk or negedge rst_n)//读响应控制
+always @(posedge clk or negedge rst_n)//读响应控制                       // FIXME - 写操作rsp无信号返回  // TODO - 查看外部如何通信的
 if (~rst_n)
     sram_icb_rsp_valid <=1'b0;
 else begin

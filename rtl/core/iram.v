@@ -2,12 +2,14 @@
 module iram (
     input wire clk,
     input wire rst_n,
-    input wire [`InstAddrBus] pc_n_i,//读地址         //  ????
+    input wire [`InstAddrBus] pc_n_i,//读地址
     input wire iram_rd_i,//读使能
     output reg [`InstAddrBus] pc_o,//指令地址
     output wire[`InstBus] inst_o,//指令
 
     output reg iram_rstn_o,//iram模块阻塞
+           // TODO - 这里应该添加一个 **2icb模块，作为一个master接入总线桥；
+
 
     //ICB Slave iram
     input  wire                 iram_icb_cmd_valid,//cmd有效
