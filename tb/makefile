@@ -43,5 +43,5 @@ list:
 #-------------------------------------------------------------------------------------------------------
 .PHONY : c
 c  :
-	rm  -rf  tb *.lxt *.vcd inst.txt work transcript vlog.opt vsim.wlf
+	rm  -rf  tb *.lxt *.vcd inst.txt work transcript vlog.opt vsim.wlf *gtkw
 #-------------------------------------------------------------------------------------------------------
